@@ -3,4 +3,6 @@
     <color name="colorPrimary">#6AB344</color>
     <color name="colorPrimaryDark">#73B74F</color>
     <color name="colorAccent">#90C653</color>
+    <color name="lpg_name_bkgrnd">#6AB344</color>
+    <color name="lpg_expiry_textcolor">#ED819A</color>
 </resources>
