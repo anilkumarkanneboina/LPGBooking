@@ -10,4 +10,68 @@
     tools:showIn="@layout/activity_add_lpgconnection"
     tools:context="com.aekan.navya.lpgbooking.AddLPGConnection">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add_Connection_Name"
+        android:textSize="@dimen/add_text_size_lable"
+        android:id="@+id/add_lpgconnectionnamelabel"/>
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/add_lpgconnectionnameedittext"
+        android:layout_toRightOf="@id/add_lpgconnectionnamelabel"
+        android:layout_alignBottom="@id/add_lpgconnectionnamelabel"
+        android:layout_marginLeft="@dimen/add_edit_text_leftmargin"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/add_text_size_lable"
+        android:layout_marginTop="@dimen/add_label_margintop"
+        android:id="@+id/add_providerlabel"
+        android:text="@string/Provider"
+        android:layout_below="@id/add_lpgconnectionnamelabel"/>
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/add_provideredittext"
+        android:layout_toRightOf="@id/add_providerlabel"
+        android:layout_alignBottom="@id/add_providerlabel"
+        android:layout_marginLeft="@dimen/add_edit_text_leftmargin"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/add_agencylabel"
+        android:layout_marginTop="@dimen/add_label_margintop"
+        android:textSize="@dimen/add_text_size_lable"
+        android:text="@string/add_agency"
+        android:layout_below="@id/add_providerlabel"/>
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/add_edit_text_leftmargin"
+        android:hint="@string/hint"
+        android:id="@+id/add_agencyedittext"
+        android:layout_toRightOf="@id/add_agencylabel"
+        android:layout_alignBottom="@id/add_agencylabel"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/add_agencyphonelabel"
+        android:text="@string/add_AgencyPhone"
+        android:layout_marginTop="@dimen/add_label_margintop"
+        android:textSize="@dimen/add_text_size_lable"
+        android:layout_below="@id/add_agencylabel"/>
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/add_agencyphoneedittext"
+        android:layout_alignBottom="@id/add_agencylabel"
+        android:layout_toRightOf="@id/add_agencyphonelabel"
+        android:layout_marginLeft="@dimen/add_edit_text_leftmargin"/>
+
+
 </RelativeLayout>

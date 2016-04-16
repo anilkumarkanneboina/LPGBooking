@@ -4,26 +4,33 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/lpg_card_view"
     android:layout_margin="4dp"
+    android:layout_marginStart ="8dp"
+    android:layout_marginLeft="8dp"
     android:layout_width="match_parent"
     card_view:cardCornerRadius="4dp"
     android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginLeft="2dp"
+        android:layout_marginStart="2dp">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:id="@+id/lpg_cylinder_name"
         android:background="@color/lpg_name_bkgrnd"
-        android:layout_marginLeft="10dp"
+        android:drawablePadding="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="5dp"
         android:layout_marginBottom="5dp"
         android:layout_marginTop="5dp"
-        android:layout_marginRight="5dp"
+        android:layout_marginEnd="5dp"
         android:gravity="center_vertical"
         android:textColor="@android:color/white"
-        android:textSize="@dimen/lpg_cylinder_name"
+        android:textSize="24sp"
         />
 
     <TextView
@@ -33,7 +40,9 @@
         android:textColor="@android:color/black"
         android:layout_below="@id/lpg_cylinder_name"
         android:layout_marginTop="5dp"
+        android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
+        android:layout_marginEnd="5dp"
         android:layout_marginRight="5dp"
         android:gravity="center_vertical"
         android:textSize="@dimen/lpg_cylinder_company_text_height"/>
@@ -46,7 +55,9 @@
         android:textColor="@color/lpg_expiry_textcolor"
         android:layout_below="@id/lpg_cylinder_company"
         android:layout_marginTop="5dp"
+        android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
+        android:layout_marginEnd="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginBottom="5dp"
         android:textSize="@dimen/lpg_expiry_textheight"

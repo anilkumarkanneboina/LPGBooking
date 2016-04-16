@@ -14,7 +14,7 @@ public class AddLPGConnection extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_lpgconnection);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.addlpg_toolbar);
         //setSupportActionBar(toolbar);
         //Set Navigation icon for the toolbar
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
@@ -40,7 +40,7 @@ public class AddLPGConnection extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+       // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
 }

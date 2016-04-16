@@ -4,6 +4,9 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="lpg_cylinder_name">24dp</dimen>
-    <dimen name="lpg_cylinder_company_text_height">16dp</dimen>
-    <dimen name="lpg_expiry_textheight">12dp</dimen>
+    <dimen name="lpg_cylinder_company_text_height">16sp</dimen>
+    <dimen name="lpg_expiry_textheight">12sp</dimen>
+    <dimen name="add_text_size_lable">20sp</dimen>
+    <dimen name="add_edit_text_leftmargin">8dp</dimen>
+    <dimen name="add_label_margintop">8dp</dimen>
 </resources>
