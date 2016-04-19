@@ -32,6 +32,13 @@ public class AddLPGConnection extends AppCompatActivity {
 
         });
 
+        //Set listener events for Save button and Cancel button.
+        // To set listener events, initialize counter value for primary key ID;
+
+        //create DB query to get counter value
+        
+
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

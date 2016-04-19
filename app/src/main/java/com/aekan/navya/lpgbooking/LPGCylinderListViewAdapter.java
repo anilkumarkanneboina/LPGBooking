@@ -1,5 +1,7 @@
 package com.aekan.navya.lpgbooking;
 
+import android.database.sqlite.SQLiteCursor;
+import android.support.annotation.BoolRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,6 +68,28 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
                     "Cylinder will expiry in " + i + " days"
             ));
         }
+    }
+
+    //Constructor using SQLiteCursor as input
+    public LPGCylinderListViewAdapter(SQLiteCursor sqLiteCursor){
+        //get count in cursor ;
+        int cursorCount = sqLiteCursor.getCount();
+        LPGCylinderList = new ArrayList<LPGCylinderListInfo>();
+
+
+        switch (cursorCount){
+            case 0 :
+                //create the Array list with notification messages to user to create new connections
+                LPGCylinderList.add(new LPGCylinderListInfo( "No Connections Found"  ,"You can add your LPG connection now!!","Just click on Add button below"));
+                break;
+            default:
+                //create the Array list from SQLiteCursor
+                for (int i=0;i<cursorCount;++i){
+
+                }
+
+        }
+
     }
 
     //Implement Create view

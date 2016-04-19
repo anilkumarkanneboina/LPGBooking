@@ -73,5 +73,29 @@
         android:layout_toRightOf="@id/add_agencyphonelabel"
         android:layout_marginLeft="@dimen/add_edit_text_leftmargin"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp"
+        android:layout_below="@+id/add_agencyphonelabel"
+
+        >
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:text="Submit"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            android:background="@color/lpg_name_bkgrnd"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:text="Cancel"
+            android:background="@color/lpg_expiry_textcolor"/>
+
+
+
+    </LinearLayout>
 
 </RelativeLayout>

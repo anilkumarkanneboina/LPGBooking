@@ -1,6 +1,9 @@
 package com.aekan.navya.lpgbooking;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,7 +15,17 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
+
 public class MainActivity extends AppCompatActivity {
+
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+   private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,9 +34,21 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         //Create or open the database ;
-        
+       /* LPG_SQLOpenHelperClass lPG_DB = new LPG_SQLOpenHelperClass(getApplicationContext());
+        SQLiteDatabase DB_LPG_CONNECTION = lPG_DB.getWritableDatabase();*/
+        //Instantiate DB and Alert Box;
+        ((LPGApplication) this.getApplication()).LPG_AlertBoxInstantiate();
+
+        DialogInterface.OnClickListener setOKButton = new DialogInterface.OnClickListener(){
+            public void onClick(DialogInterface dialogInterface, int id){
+                dialogInterface.cancel();
+            }
 
 
+        };
+        //Create Alert Box
+        ((LPGApplication) this.getApplication()).LPG_Alert.showDialogHelper("Setting up","Ok",null, setOKButton,null);
+        ((LPGApplication) this.getApplication()).LPG_Alert.show(getFragmentManager(),"Dialog");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -41,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
                             }
 
 
-
                         }).show();
             }
 
@@ -52,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         //Create recycler view and initialize it
         ///////////////////////////////////////
 
-        RecyclerView recyclerView= (RecyclerView) findViewById(R.id.lpg_recycler_view);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.lpg_recycler_view);
         //set recycler view to have same size
         recyclerView.setHasFixedSize(true);
         //set layout manager
@@ -62,6 +86,9 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(new LPGCylinderListViewAdapter());
 
 
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     @Override
@@ -84,5 +111,45 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Main Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://com.aekan.navya.lpgbooking/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Main Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://com.aekan.navya.lpgbooking/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(client, viewAction);
+        client.disconnect();
     }
 }

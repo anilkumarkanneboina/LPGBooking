@@ -9,5 +9,8 @@
     <string name="add_LastBooked">Last Booked</string>
     <string name="add_ExpectedExpiry">Expected Expiry</string>
     <string name="hint">This is a hint</string>
+    <string name="NoConnection_Cylinder_name">No Connections Found</string>
+    <string name="NoConnetion_Cylider_Company">You can add your LPG connection now!!</string>
+    <string name="NoConnection_CylinderExpiry">Just click on Add button below</string>
 
 </resources>
