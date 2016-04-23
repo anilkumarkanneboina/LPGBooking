@@ -2,6 +2,7 @@ package com.aekan.navya.lpgbooking;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -50,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
         ((LPGApplication) this.getApplication()).LPG_Alert.showDialogHelper("Setting up","Ok",null, setOKButton,null);
         ((LPGApplication) this.getApplication()).LPG_Alert.show(getFragmentManager(),"Dialog");
 
+
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
         ///////////////////////////////////////
         //Create recycler view and initialize it
+        //Create the query for database and set up recycler view
         ///////////////////////////////////////
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.lpg_recycler_view);
@@ -83,9 +88,37 @@ public class MainActivity extends AppCompatActivity {
         LinearLayoutManager LPGLinearLayoutMgr = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(LPGLinearLayoutMgr);
         //Set view holder adapter
-        recyclerView.setAdapter(new LPGCylinderListViewAdapter());
+      //  recyclerView.setAdapter(new LPGCylinderListViewAdapter());
 
+        //Columns for database ;
+        String[] sqLiteColumns = {LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME, LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER, LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY};
+        SQLiteCursor sqLiteCursor;
 
+        sqLiteCursor = (SQLiteCursor) ((LPGApplication) getApplication()).LPGDB.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,
+                sqLiteColumns,
+                null,
+                null,
+                null,
+                null,
+                null
+                );
+
+      /*  //print data set count for the cursor
+        String[] iDCountArray = {"MAX("+LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID+") AS MAXID" };
+
+        SQLiteCursor sqLiteCursor1 = (SQLiteCursor) ((LPGApplication) getApplication()).LPGDB.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,iDCountArray,null,null,null,null,null) ;
+        String strIDConcat = new String() ;
+        sqLiteCursor1.moveToFirst();
+        for (int i=0;i<sqLiteCursor1.getCount();++i){
+            Log.v("ID value ","Counter"+ i);
+            strIDConcat = strIDConcat + sqLiteCursor1.getString(0) + " ";
+            sqLiteCursor1.moveToNext();
+
+        }
+        sqLiteCursor1.moveToFirst();
+        ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper("ID count " + sqLiteCursor1.getString(sqLiteCursor1.getColumnIndex("MAXID")),"Ok",null,setOKButton,null);
+*/
+        recyclerView.setAdapter(new LPGCylinderListViewAdapter(sqLiteCursor));
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();

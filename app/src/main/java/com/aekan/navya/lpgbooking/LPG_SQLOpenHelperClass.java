@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class LPG_SQLOpenHelperClass extends SQLiteOpenHelper {
     //create database name and version
     public static final String SQLDBNAME = "LPGCON";
-    public static final int VERSION = 1 ;
+    public static final int VERSION = 2 ;
 
     public LPG_SQLOpenHelperClass (Context context){
         super(context,SQLDBNAME,null,VERSION);
@@ -21,7 +21,8 @@ public class LPG_SQLOpenHelperClass extends SQLiteOpenHelper {
             + " ( " + LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME + " VARCHAR(350) ,"
                     + LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY + " VARCHAR(1000) ,"
                     + LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER + " VARCHAR(1000) ,"
-                    + LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_PHONE_NUMBER + " INT"
+                    + LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_PHONE_NUMBER + " INT ,"
+                    + LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID + " INT"
             + " );" ;
 
 
@@ -38,6 +39,8 @@ public class LPG_SQLOpenHelperClass extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         //Nothing needed in this method for now
+        db.execSQL("DROP TABLE " + LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME);
+        db.execSQL(QUERY);
     }
 
 

@@ -3,6 +3,7 @@ package com.aekan.navya.lpgbooking;
 import android.database.sqlite.SQLiteCursor;
 import android.support.annotation.BoolRes;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,16 +76,32 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
         //get count in cursor ;
         int cursorCount = sqLiteCursor.getCount();
         LPGCylinderList = new ArrayList<LPGCylinderListInfo>();
+        Log.v("Initialisation","Cursor " + cursorCount);
 
-
-        switch (cursorCount){
-            case 0 :
-                //create the Array list with notification messages to user to create new connections
-                LPGCylinderList.add(new LPGCylinderListInfo( "No Connections Found"  ,"You can add your LPG connection now!!","Just click on Add button below"));
-                break;
-            default:
+        if (cursorCount == 0) {
+//            case 0 :
+            //create the Array list with notification messages to user to create new connections
+            LPGCylinderList.add(new LPGCylinderListInfo("No Connections Found", "You can add your LPG connection now!!", "Just click on Add button below"));
+            Log.v("Initialisation",Integer.toString( LPGCylinderList.size()));
+        }else{
+//            default:
                 //create the Array list from SQLiteCursor
-                for (int i=0;i<cursorCount;++i){
+                sqLiteCursor.moveToFirst();
+
+                //get column count
+                int columnCount = sqLiteCursor.getColumnCount();
+                String lpgConnection, lpgAgency, lpgProvider;
+                while (sqLiteCursor.isAfterLast() != true   ){
+                    {
+                        lpgConnection = sqLiteCursor.getString(0);
+                        lpgProvider = sqLiteCursor.getString(1);
+                        lpgAgency = sqLiteCursor.getString(2);
+
+                        LPGCylinderList.add( new LPGCylinderListInfo(lpgConnection,lpgProvider,lpgAgency));
+
+                        sqLiteCursor.moveToNext();
+                    }
+
 
                 }
 
@@ -105,8 +122,12 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
 
     @Override
     public void onBindViewHolder(LPGViewHolder LVH, int i){
-        //get the contact list for the LPG view holder
+        //get the contact list for the LPG view holderc
+        Log.v("Adapter on Bind", "Position " + i);
         LPGCylinderListInfo CurrentRow = LPGCylinderList.get(i);
+        Log.v("Adapter on Bind",CurrentRow.LPGCylinderName);
+        Log.v("Adapter on Bind",CurrentRow.LPGCylinderCompany);
+        Log.v("Adapter on Bind",CurrentRow.LPGCylinderExpiry);
 
         //Assign the text value for each of the item
         LVH.mARLPGName.setText(CurrentRow.LPGCylinderName);
@@ -116,6 +137,6 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
 
     @Override
     public int getItemCount(){
-        return LPG_CYLINDER_LIST_LENGTH;
+        return LPGCylinderList.size();
     }
 }
