@@ -8,5 +8,10 @@
     <dimen name="lpg_expiry_textheight">12sp</dimen>
     <dimen name="add_text_size_lable">20sp</dimen>
     <dimen name="add_edit_text_leftmargin">8dp</dimen>
-    <dimen name="add_label_margintop">8dp</dimen>
+    <dimen name="add_label_margintop">4dp</dimen>
+    <dimen name="add_edittext_margintop">20dp</dimen>
+
+
+    <dimen name="textinputlayout_height">56dp</dimen>
+    <dimen name="textfield_width">300dp</dimen>
 </resources>

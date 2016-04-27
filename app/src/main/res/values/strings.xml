@@ -13,4 +13,12 @@
     <string name="NoConnetion_Cylider_Company">You can add your LPG connection now!!</string>
     <string name="NoConnection_CylinderExpiry">Just click on Add button below</string>
 
+    <string name="Add_Connection_Name">Connection Name</string>
+    <string name="Hint_Connection_Name">Enter Connection Name</string>
+    <string name="Add_Provider">Provider</string>
+    <string name="Hint_Provider">Enter Provider Name</string>
+    <string name="Add_Agency">Agency Name</string>
+    <string name="Hint_Agency">Enter Agency Name</string>
+    <string name="Add_Agency_Phone">Agency Phone</string>
+    <string name="Hint_Agency_Phone">Enter Agency Phone no</string>
 </resources>
