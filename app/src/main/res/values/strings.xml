@@ -13,6 +13,7 @@
     <string name="NoConnetion_Cylider_Company">You can add your LPG connection now!!</string>
     <string name="NoConnection_CylinderExpiry">Just click on Add button below</string>
 
+    <!--String values for form in Add Connection page-->
     <string name="Add_Connection_Name">Connection Name</string>
     <string name="Hint_Connection_Name">Enter Connection Name</string>
     <string name="Add_Provider">Provider</string>
@@ -21,4 +22,10 @@
     <string name="Hint_Agency">Enter Agency Name</string>
     <string name="Add_Agency_Phone">Agency Phone</string>
     <string name="Hint_Agency_Phone">Enter Agency Phone no</string>
+    <string name="Add_Connection_id">Enter Connection Id</string>
+    <string name="Add_Last_Booked_Date">Enter Last Booked Date</string>
+    <string name="Calendar_Accessibility_message">Click on this image to select latest booked date for your LPG connection</string>
+    <string name="btn_Submit">Submit</string>
+    <string name="btn_Cancel">Cancel</string>
+
 </resources>

@@ -2,113 +2,185 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:layout_height="500dp" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/activity_add_lpgconnection"
     tools:context="com.aekan.navya.lpgbooking.AddLPGConnection">
-<android.support.design.widget.TextInputLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/add_lpgconnectionnamelabel"
-    app:errorEnabled = "true"
-    app:counterEnabled="true"
-    app:hintAnimationEnabled="true"    >
-    <EditText
-        android:layout_width="300dp"
-        android:layout_height="@dimen/textinputlayout_height"
-        android:id="@+id/add_lpgconnectionnameedittext"
-        android:textSize="@dimen/add_text_size_lable"
-        android:layout_marginLeft="@dimen/add_edit_text_leftmargin"
-        android:hint="@string/Hint_Connection_Name"
-        android:paddingBottom="2dp"    />
-</android.support.design.widget.TextInputLayout>
-
-    <android.support.design.widget.TextInputLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/add_text_size_lable"
-        android:layout_marginTop="@dimen/add_label_margintop"
-        android:id="@+id/add_providerlabel"
-        android:layout_below="@id/add_lpgconnectionnamelabel"
-        app:hintAnimationEnabled="true"
-        app:errorEnabled = "true"
-        app:counterEnabled="true">
-    <EditText
-        android:layout_width="@dimen/textfield_width"
-        android:layout_height="@dimen/textinputlayout_height"
-        android:id="@+id/add_provideredittext"
-        android:textSize="@dimen/add_text_size_lable"
-        android:hint="@string/Hint_Provider"
-        android:layout_marginLeft="@dimen/add_edit_text_leftmargin" />
-</android.support.design.widget.TextInputLayout>
+        android:layout_height="400dp"
+        android:id="@+id/form_scroll_view"    >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/add_lpgconnectionnamelabel"
+                    app:errorEnabled = "true"
+                    app:counterEnabled="true"
+                    app:hintAnimationEnabled="true"    >
+                    <EditText
+                        android:layout_width="300dp"
+                        android:layout_height="@dimen/textinputlayout_height"
+                        android:id="@+id/add_lpgconnectionnameedittext"
+                        android:textSize="@dimen/add_text_size_lable"
+                        android:layout_marginLeft="@dimen/add_edit_text_leftmargin"
+                        android:layout_marginStart="@dimen/add_edit_text_leftmargin"
+                        android:hint="@string/Hint_Connection_Name"
+                        android:paddingBottom="2dp"    />
+                </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/add_text_size_lable"
+                android:layout_marginTop="@dimen/add_label_margintop"
+                android:id="@+id/add_providerlabel"
+                android:layout_below="@id/add_lpgconnectionnamelabel"
+                app:hintAnimationEnabled="true"
+                app:errorEnabled = "true"
+                app:counterEnabled="true">
+            <EditText
+                android:layout_width="@dimen/textfield_width"
+                android:layout_height="@dimen/textinputlayout_height"
+                android:id="@+id/add_provideredittext"
+                android:textSize="@dimen/add_text_size_lable"
+                android:hint="@string/Hint_Provider"
+                android:layout_marginLeft="@dimen/add_edit_text_leftmargin"
+                android:layout_marginStart="@dimen/add_edit_text_leftmargin"/>
+        </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/add_agencylabel"
+                    android:textSize="@dimen/add_text_size_lable"
+                    app:hintAnimationEnabled="true"
+                    app:errorEnabled = "true"
+                    app:counterEnabled="true"
+                    android:layout_below="@id/add_providerlabel"
 
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/add_agencylabel"
-        android:layout_marginTop="@dimen/add_label_margintop"
-        android:textSize="@dimen/add_text_size_lable"
-        android:layout_below="@id/add_providerlabel"
-        app:hintAnimationEnabled="true"
-        app:errorEnabled = "true"
-        app:counterEnabled="true" >
-    <EditText
-        android:layout_width="@dimen/textfield_width"
-        android:layout_height="@dimen/textinputlayout_height"
-        android:layout_marginLeft="@dimen/add_edit_text_leftmargin"
-        android:hint="@string/Hint_Agency"
-        android:id="@+id/add_agencyedittext"
-        android:textSize="@dimen/add_text_size_lable"
-        />
-</android.support.design.widget.TextInputLayout>
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/add_agencyphonelabel"
-        android:textSize="@dimen/add_text_size_lable"
-        android:layout_below="@id/add_agencylabel"
-        app:hintAnimationEnabled="true"
-        app:errorEnabled = "true"
-        app:counterEnabled="true">
-    <EditText
-        android:layout_width="@dimen/textfield_width"
-        android:layout_height="@dimen/textinputlayout_height"
-        android:id="@+id/add_agencyphoneedittext"
-        android:hint="@string/Hint_Agency_Phone"
-        android:layout_marginLeft="@dimen/add_edit_text_leftmargin"
-        android:textSize="@dimen/add_text_size_lable"    />
-    </android.support.design.widget.TextInputLayout>
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true">
+                <EditText
+                    android:layout_width="@dimen/textfield_width"
+                    android:layout_height="@dimen/textinputlayout_height"
+                    android:layout_marginLeft="@dimen/add_edit_text_leftmargin"
+                    android:layout_marginStart="@dimen/add_edit_text_leftmargin"
+                    android:hint="@string/Hint_Agency"
+                    android:id="@+id/add_agencyedittext"
+                    android:textSize="@dimen/add_text_size_lable"
+                    />
+            </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/add_agencyphonelabel"
+                android:textSize="@dimen/add_text_size_lable"
+                android:layout_below="@id/add_agencylabel"
+                app:hintAnimationEnabled="true"
+                app:errorEnabled = "true"
+                app:counterEnabled="true">
+                <EditText
+                    android:layout_width="@dimen/textfield_width"
+                    android:layout_height="@dimen/textinputlayout_height"
+                    android:id="@+id/add_agencyphoneedittext"
+                    android:hint="@string/Hint_Agency_Phone"
+                    android:textSize="@dimen/add_text_size_lable"
+                    android:layout_alignTop="@+id/add_providerlabel"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true" />
 
-    <LinearLayout
+            </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/add_connectionidlabel"
+            android:textSize="@dimen/add_text_size_lable"
+            android:layout_below="@id/add_agencyphonelabel"
+            app:hintAnimationEnabled="true"
+            app:errorEnabled = "true"
+            app:counterEnabled="true">
+            <EditText
+                android:layout_width="@dimen/textfield_width"
+                android:layout_height="@dimen/textinputlayout_height"
+                android:id="@+id/add_connectionid"
+                android:hint="@string/Add_Connection_id"
+                android:layout_marginLeft="@dimen/add_edit_text_leftmargin"
+                android:layout_marginStart="@dimen/add_edit_text_leftmargin"
+                android:textSize="@dimen/add_text_size_lable"    />
+            </android.support.design.widget.TextInputLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:id="@+id/add_lastbookeddate_layout"
+                android:layout_below="@id/add_connectionidlabel"
+                >
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/add_lastbookeddatelabel"
+                    android:textSize="@dimen/add_text_size_lable"
+
+                    app:hintAnimationEnabled="true"
+                    app:errorEnabled = "true"
+                    app:counterEnabled="true">
+                    <EditText
+                        android:layout_width="@dimen/lastbookeddate_width"
+                        android:layout_height="@dimen/textinputlayout_height"
+                        android:id="@+id/add_lastbookeddate"
+                        android:hint="@string/Add_Last_Booked_Date"
+                        android:layout_marginLeft="@dimen/add_edit_text_leftmargin"
+                        android:layout_marginStart="@dimen/add_edit_text_leftmargin"
+                        android:textSize="@dimen/add_text_size_lable"    />
+
+                </android.support.design.widget.TextInputLayout>
+                <ImageButton
+                    android:layout_width="@dimen/calendarimage_width"
+                    android:layout_height="@dimen/calendarimage_height"
+                    android:id="@+id/btn_calendarimage"
+                    android:scaleType="centerCrop"
+                    android:contentDescription="@string/Calendar_Accessibility_message"
+                    android:src="@drawable/iconfinder_calendar"
+                    android:layout_marginLeft="@dimen/calendarmargin"
+                    android:layout_marginEnd="@dimen/calendarmargin"
+                    android:layout_marginStart="@dimen/calendarmargin"
+                    android:layout_marginRight="@dimen/calendarmargin"
+                    android:layout_marginTop="12dp"
+                    />
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+<LinearLayout
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:orientation="horizontal"
+        android:gravity="center|bottom"
         android:layout_marginTop="16dp"
-        android:layout_below="@+id/add_agencyphonelabel"
-        android:gravity="center_horizontal"
+        android:layout_below="@+id/form_scroll_view"
+
         >
+        <Button
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:text="@string/btn_Cancel"
+        android:background="@color/lpg_expiry_textcolor"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="36dp"
-            android:text="Submit"
+            android:text="@string/btn_Submit"
             android:id="@+id/save_button"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:layout_marginRight="24dp"
+            android:layout_marginEnd="24dp"
             android:background="@color/lpg_name_bkgrnd"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="36dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:text="Cancel"
-            android:background="@color/lpg_expiry_textcolor"/>
-
-
-
-    </LinearLayout>
+</LinearLayout>
 
 </RelativeLayout>
