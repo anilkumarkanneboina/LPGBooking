@@ -90,8 +90,9 @@
                     android:hint="@string/Hint_Agency_Phone"
                     android:textSize="@dimen/add_text_size_lable"
                     android:layout_alignTop="@+id/add_providerlabel"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true" />
+                    android:layout_marginLeft="@dimen/add_edit_text_leftmargin"
+                    android:layout_marginStart="@dimen/add_edit_text_leftmargin"
+                     />
 
             </android.support.design.widget.TextInputLayout>
             <android.support.design.widget.TextInputLayout
@@ -142,9 +143,10 @@
                     android:layout_width="@dimen/calendarimage_width"
                     android:layout_height="@dimen/calendarimage_height"
                     android:id="@+id/btn_calendarimage"
-                    android:scaleType="centerCrop"
+                    android:background="@color/colorWhite"
+                    android:scaleType="fitXY"
                     android:contentDescription="@string/Calendar_Accessibility_message"
-                    android:src="@drawable/iconfinder_calendar"
+                    android:src="@drawable/iconfinder_calendar_green"
                     android:layout_marginLeft="@dimen/calendarmargin"
                     android:layout_marginEnd="@dimen/calendarmargin"
                     android:layout_marginStart="@dimen/calendarmargin"

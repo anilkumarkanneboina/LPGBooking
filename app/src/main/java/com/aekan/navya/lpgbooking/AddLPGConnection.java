@@ -54,6 +54,7 @@ public class AddLPGConnection extends AppCompatActivity {
 
 
         });
+        toolbar.setTitle("Add Connection");
 
         //Create values for edit text
         final EditText lpgConnection = (EditText) findViewById(R.id.add_lpgconnectionnameedittext);
