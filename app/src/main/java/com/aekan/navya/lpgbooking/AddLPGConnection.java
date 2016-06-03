@@ -15,7 +15,10 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -56,11 +59,15 @@ public class AddLPGConnection extends AppCompatActivity {
         });
         toolbar.setTitle("Add Connection");
 
+        //set keyboard behaviour
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
         //Create values for edit text
         final EditText lpgConnection = (EditText) findViewById(R.id.add_lpgconnectionnameedittext);
         final EditText lpgProvider = (EditText) findViewById(R.id.add_provideredittext);
         final EditText lpgAgency = (EditText) findViewById(R.id.add_agencyedittext);
-
+        EditText lpglastdatelabel = (EditText) findViewById(R.id.add_lastbookeddate);
+        lpglastdatelabel.setEnabled(false);
         //Set listener events for Save button and Cancel button.
         // To set listener events, initialize counter value for primary key ID;
 
@@ -96,7 +103,7 @@ public class AddLPGConnection extends AppCompatActivity {
 
         //Set onclick listener for Save button ;
 
-        Button buttonSave = (Button) findViewById(R.id.save_button);
+        FloatingActionButton buttonSave = (FloatingActionButton) findViewById(R.id.fab_save_connection);
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,6 +139,23 @@ public class AddLPGConnection extends AppCompatActivity {
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event){
+        //Close the key board if being shown;
+        Log.v("Touch","Within OnTouchEvent" );
+        InputMethodManager inputMethodManager =(InputMethodManager) getApplicationContext().getSystemService(INPUT_METHOD_SERVICE);
+
+        if (inputMethodManager.isActive()) {
+            Log.v("Touch","Keypad is active");
+            View view = this.getCurrentFocus();
+            //* if (view != null)*//* {
+            {  inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+        }
+    }
+
+    return true;
+}
 
     @Override
     public void onStart() {
