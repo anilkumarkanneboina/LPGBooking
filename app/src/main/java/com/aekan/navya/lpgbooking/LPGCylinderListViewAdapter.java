@@ -25,13 +25,14 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
         protected String LPGCylinderName;
         protected String LPGCylinderCompany;
         protected String LPGCylinderExpiry;
+        protected String LPG_ROW_ID;
 
         //Constructor for LPG Cylinder list
-        public LPGCylinderListInfo (String LPGCylinderNameInit, String LPGCylinderCompanyInit,String LPGCylinderExpiryInit) {
+        public LPGCylinderListInfo (String LPGCylinderNameInit, String LPGCylinderCompanyInit,String LPGCylinderExpiryInit, String LPGrowid) {
             LPGCylinderName = LPGCylinderNameInit;
             LPGCylinderCompany = LPGCylinderCompanyInit;
             LPGCylinderExpiry = LPGCylinderExpiryInit;
-
+            LPG_ROW_ID = LPGrowid;
         }
     }
 
@@ -66,7 +67,7 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
             //Initialise the Arraylist
             LPGCylinderList.add(new LPGCylinderListInfo("Cylinder no " + i,
                     "Cylinder Company is Cylinder " + i,
-                    "Cylinder will expiry in " + i + " days"
+                    "Cylinder will expiry in " + i + " days", "NA"
             ));
         }
     }
@@ -81,7 +82,7 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
         if (cursorCount == 0) {
 //            case 0 :
             //create the Array list with notification messages to user to create new connections
-            LPGCylinderList.add(new LPGCylinderListInfo("No Connections Found", "You can add your LPG connection now!!", "Just click on Add button below"));
+            LPGCylinderList.add(new LPGCylinderListInfo("No Connections Found", "You can add your LPG connection now!!", "Just click on Add button below","NA"));
             Log.v("Initialisation",Integer.toString( LPGCylinderList.size()));
         }else{
 //            default:
@@ -90,14 +91,15 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
 
                 //get column count
                 int columnCount = sqLiteCursor.getColumnCount();
-                String lpgConnection, lpgAgency, lpgProvider;
+                String lpgConnection, lpgAgency, lpgProvider,lpgRowId;
                 while (sqLiteCursor.isAfterLast() != true   ){
                     {
                         lpgConnection = sqLiteCursor.getString(0);
                         lpgProvider = sqLiteCursor.getString(1);
                         lpgAgency = sqLiteCursor.getString(2);
+                        lpgRowId = sqLiteCursor.getString(3);
 
-                        LPGCylinderList.add( new LPGCylinderListInfo(lpgConnection,lpgProvider,lpgAgency));
+                        LPGCylinderList.add( new LPGCylinderListInfo(lpgConnection,lpgProvider,lpgAgency,lpgRowId));
 
                         sqLiteCursor.moveToNext();
                     }

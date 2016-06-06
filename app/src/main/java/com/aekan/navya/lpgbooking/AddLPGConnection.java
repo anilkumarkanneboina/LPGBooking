@@ -1,5 +1,7 @@
 package com.aekan.navya.lpgbooking;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,6 +14,7 @@ import android.support.annotation.StringDef;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -20,13 +23,20 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CalendarView;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.w3c.dom.Text;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class AddLPGConnection extends AppCompatActivity {
 
@@ -66,7 +76,9 @@ public class AddLPGConnection extends AppCompatActivity {
         final EditText lpgConnection = (EditText) findViewById(R.id.add_lpgconnectionnameedittext);
         final EditText lpgProvider = (EditText) findViewById(R.id.add_provideredittext);
         final EditText lpgAgency = (EditText) findViewById(R.id.add_agencyedittext);
-        EditText lpglastdatelabel = (EditText) findViewById(R.id.add_lastbookeddate);
+        final EditText lpgAgencyPhoneNo = (EditText) findViewById(R.id.add_agencyphoneedittext);
+        final EditText lpgConnectionId = (EditText) findViewById(R.id.add_connectionid);
+        final EditText lpglastdatelabel = (EditText) findViewById(R.id.add_lastbookeddate);
         lpglastdatelabel.setEnabled(false);
         //Set listener events for Save button and Cancel button.
         // To set listener events, initialize counter value for primary key ID;
@@ -112,6 +124,9 @@ public class AddLPGConnection extends AppCompatActivity {
                 contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME, lpgConnection.getText().toString());
                 contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER, lpgProvider.getText().toString());
                 contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY, lpgAgency.getText().toString());
+                contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_PHONE_NUMBER, lpgAgencyPhoneNo.getText().toString());
+                contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_ID, lpgConnectionId.getText().toString());
+                contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.LAST_BOOKED_DATE,lpglastdatelabel.getText().toString());
 
                 long insertRow = sqLiteDatabase.insert(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME, null, contentValuesDB);
                 if (insertRow != -1) {
@@ -137,6 +152,16 @@ public class AddLPGConnection extends AppCompatActivity {
         // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
+
+//        set onclick listener for image button
+        ImageButton lastBookedDate = (ImageButton) findViewById(R.id.btn_calendarimage);
+        lastBookedDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BookedDateFragment datePicker = new BookedDateFragment();
+                datePicker.show(getSupportFragmentManager(),"t");
+            }
+        });
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
@@ -196,4 +221,27 @@ public class AddLPGConnection extends AppCompatActivity {
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();
     }
+
+    public static class BookedDateFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState){
+            //Create a date picker dialog
+            final Calendar calendar = Calendar.getInstance();
+            int currentDate = calendar.get(Calendar.DATE);
+            int currentMonth = calendar.get(Calendar.MONTH);
+            int currentYear = calendar.get(Calendar.YEAR);
+//            return the DatePickerDialog instance
+            return new DatePickerDialog(getContext(),this,currentYear,currentMonth,currentDate);
+        }
+
+        public void onDateSet(DatePicker datePicker,int setYear,int setMonth,int setDay){
+            GregorianCalendar setDateG = new GregorianCalendar(setYear,setMonth,setDay);
+            EditText lastBookedDateView = (EditText) getActivity().findViewById(R.id.add_lastbookeddate);
+            String selectedDate = Integer.toString(setMonth + 1) + "/" + Integer.toString(setDay)+"/"+Integer.toString(setYear);
+            Log.v("DateSelected",selectedDate);
+            lastBookedDateView.setText(selectedDate);
+        }
+    }
+
 }

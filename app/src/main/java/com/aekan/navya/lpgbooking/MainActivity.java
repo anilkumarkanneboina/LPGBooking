@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
       //  recyclerView.setAdapter(new LPGCylinderListViewAdapter());
 
         //Columns for database ;
-        String[] sqLiteColumns = {LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME, LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER, LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY};
+        String[] sqLiteColumns = {LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME, LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER, LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY,LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID};
         SQLiteCursor sqLiteCursor;
 
         sqLiteCursor = (SQLiteCursor) ((LPGApplication) getApplication()).LPGDB.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,
