@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class LPG_SQLOpenHelperClass extends SQLiteOpenHelper {
     //create database name and version
     public static final String SQLDBNAME = "LPGCON";
-    public static final int VERSION = 3 ;
+    public static final int VERSION = 1 ;
 
     public LPG_SQLOpenHelperClass (Context context){
         super(context,SQLDBNAME,null,VERSION);
@@ -24,7 +24,8 @@ public class LPG_SQLOpenHelperClass extends SQLiteOpenHelper {
                     + LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_PHONE_NUMBER + " INT , "
                     + LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_ID + " VARCHAR(30) , "
                     + LPG_SQL_ContractClass.LPG_CONNECTION_ROW.LAST_BOOKED_DATE + " DATE , "
-                    + LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID + " INT"
+                    + LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID + " INT , "
+                    + LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS + " INT"
             + " );" ;
 
 
@@ -42,8 +43,7 @@ public class LPG_SQLOpenHelperClass extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         //Nothing needed in this method for now
         db.execSQL("ALTER TABLE " + LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME + " ADD "
-                + LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_ID + " VARCHAR(30) , "
-                + LPG_SQL_ContractClass.LPG_CONNECTION_ROW.LAST_BOOKED_DATE + " DATE"
+                + LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS + " INT"
         );
 //        db.execSQL(QUERY);
     }

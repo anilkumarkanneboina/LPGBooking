@@ -1,12 +1,15 @@
 package com.aekan.navya.lpgbooking;
 
+import android.content.Intent;
 import android.database.sqlite.SQLiteCursor;
+import android.os.Bundle;
 import android.support.annotation.BoolRes;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -42,6 +45,7 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
         protected TextView mARLPGName;
         protected TextView marLPGCompanyName;
         protected TextView marLPGExpiry;
+        protected ImageButton marEditConnection;
 
         public LPGViewHolder(View v){
             super(v);
@@ -49,6 +53,7 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
             mARLPGName = (TextView) v.findViewById(R.id.lpg_cylinder_name);
             marLPGCompanyName = (TextView) v.findViewById(R.id.lpg_cylinder_company);
             marLPGExpiry = (TextView) v.findViewById(R.id.lpg_expiry);
+            marEditConnection = (ImageButton) v.findViewById(R.id.edit_connection_btn);
         }
 
     }
@@ -126,7 +131,7 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
     public void onBindViewHolder(LPGViewHolder LVH, int i){
         //get the contact list for the LPG view holderc
         Log.v("Adapter on Bind", "Position " + i);
-        LPGCylinderListInfo CurrentRow = LPGCylinderList.get(i);
+        final LPGCylinderListInfo CurrentRow = LPGCylinderList.get(i);
         Log.v("Adapter on Bind",CurrentRow.LPGCylinderName);
         Log.v("Adapter on Bind",CurrentRow.LPGCylinderCompany);
         Log.v("Adapter on Bind",CurrentRow.LPGCylinderExpiry);
@@ -135,6 +140,26 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
         LVH.mARLPGName.setText(CurrentRow.LPGCylinderName);
         LVH.marLPGCompanyName.setText(CurrentRow.LPGCylinderCompany);
         LVH.marLPGExpiry.setText(CurrentRow.LPGCylinderExpiry);
+
+        //Assign a onclick listener event for showing activity
+        LVH.marEditConnection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.v("Edit Click","Clicked the view");
+                Log.v("Edit Click","Value of Row id " + CurrentRow.LPG_ROW_ID);
+                Intent intent = new Intent(v.getContext(),AddLPGConnection.class);
+                Bundle bundle = new Bundle();
+                CharSequence lpgRowId = CurrentRow.LPG_ROW_ID;
+                intent.putExtra(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.FIELD_CONNECTION_ID_EDIT,CurrentRow.LPG_ROW_ID);
+                bundle.putCharSequence(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.FIELD_CONNECTION_ID_EDIT,CurrentRow.LPG_ROW_ID);
+                //intent.putExtra(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.BUNDLE_NAME_EDIT_CONNECTION.toString(),bundle);
+                Bundle checkb = intent.getExtras();
+                Log.v("Edit Click","Bundle Value " +checkb.toString());
+                v.getContext().startActivity(intent);
+
+            }
+        });
+
     }
 
     @Override

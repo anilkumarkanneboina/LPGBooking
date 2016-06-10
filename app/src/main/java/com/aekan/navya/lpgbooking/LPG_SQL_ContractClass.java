@@ -20,6 +20,12 @@ public final class LPG_SQL_ContractClass {
         public static final String AGENCY_PHONE_NUMBER ="agency_phone_no";
         public static final String CONNECTION_ID = "connection_id_with_agency";
         public static final String LAST_BOOKED_DATE = "last_booked_date";
+        public static final String CONNECTION_EXPIRY_DAYS = "connection_expiry_date";
+
+//        charsequence value associated with editing a connection
+        public static final String FIELD_CONNECTION_ID_EDIT = "Connection Id for editing";
+        public static final CharSequence BUNDLE_NAME_EDIT_CONNECTION = "com.aekan.navya.lpgbooking.editconnectionbundle";
+        public static final CharSequence VALUE_CONNECTION_ID_NULL = "No connection to retrieve";
     }
 
 }

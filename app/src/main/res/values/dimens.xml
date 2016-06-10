@@ -18,4 +18,13 @@
     <dimen name="calendarimage_width">50dp</dimen>
     <dimen name="calendarimage_height">50dp</dimen>
     <dimen name="calendarmargin">20dp</dimen>
+
+    <!--dimensions for card view -->
+    <dimen name="buttonrightmargin">36dp</dimen>
+    <dimen name="buttonleftmargin">36dp</dimen>
+    <dimen name="buttonheight">16dp</dimen>
+    <dimen name="buttonwidth">16dp</dimen>
+    <dimen name="buttonpadleft">16dp</dimen>
+    <dimen name="buttonpadright">16dp</dimen>
+
 </resources>
