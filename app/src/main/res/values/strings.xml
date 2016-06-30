@@ -23,6 +23,7 @@
     <string name="Add_Agency_Phone">Agency Phone</string>
     <string name="Hint_Agency_Phone">Enter Agency Phone no</string>
     <string name="Add_Connection_id">Enter Connection Id</string>
+    <string name="Add_Expiry_days">Enter best-guess expiry time in days</string>
     <string name="Add_Last_Booked_Date">Enter Last Booked Date</string>
     <string name="Calendar_Accessibility_message">Click on this image to select latest booked date for your LPG connection</string>
     <string name="btn_Submit">Submit</string>

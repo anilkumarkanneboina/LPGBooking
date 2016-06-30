@@ -289,7 +289,7 @@ public class AddLPGConnection extends AppCompatActivity {
                 if(lastBookedDate.length() == 0){
                     lpglastdatelabel.setError(" Please select a date by clicking on the calendar icon ");
                     dataEnteredRight = false;
-                    yScrollPosition = 350;
+                    yScrollPosition = 280;
                 }
 
 
@@ -299,6 +299,7 @@ public class AddLPGConnection extends AppCompatActivity {
                 if (connectionName.length() == 0 ){
                     lpgConnection.setError("Connection Name is Mandatory");
                     dataEnteredRight = false;
+                    yScrollPosition = 0;
                 }
 
                 if (dataEnteredRight == true)
@@ -327,13 +328,16 @@ public class AddLPGConnection extends AppCompatActivity {
                         ((LPGApplication) getApplication()).LPG_Alert.show(getFragmentManager(), "DB");
                     } else {
                         int updateDBCount = sqLiteDatabase.update(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME, contentValuesDB, LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID + " = " + finalIDCount, null);
+                        Log.v("EditConnection "," Update DB Count " + Integer.toString(updateDBCount));
                         if (updateDBCount > 0) {
+                            Log.v("EditConnection"," Inside udpate count dialog caller");
                             ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper("LPG Connection updated", "Ok", null, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
                                 }
                             }, null);
+                            ((LPGApplication)getApplication()).LPG_Alert.show(getFragmentManager(),"DB");
                         }
 
                     }
@@ -341,7 +345,7 @@ public class AddLPGConnection extends AppCompatActivity {
 
                 }
                 else {
-                    scrollView.scrollTo(0,yScrollPosition);
+                   scrollView.scrollTo(0,yScrollPosition);
                 }
             }
         });
