@@ -1,8 +1,11 @@
 package com.aekan.navya.lpgbooking;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -16,11 +19,14 @@ import android.support.annotation.StringDef;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AlertDialog;
+
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -39,6 +45,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.w3c.dom.Text;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -227,33 +235,7 @@ public class AddLPGConnection extends AppCompatActivity {
                         connectionPrimaryKey = "1";
                     }
             }
-              /* String[] sqlIDMax = {"MAX(" + LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID +") AS MAXID"};
-        try {
-        SQLiteCursor sqLiteCursorID = (SQLiteCursor) ((LPGApplication)getApplication()).LPGDB.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,sqlIDMax,null,null,null,null,null);
-
-        if (sqLiteCursorID.getCount() == 1) {
-            iDCount = 1;
-        } else {
-            try {
-                String strIDCount = sqLiteCursorID.getString(0);
-                iDCount = Integer.parseInt(strIDCount) + 1;
-            } catch (SQLiteException se) {
-                Log.v("SQLiteException", "SQL Invalid");
-
-            }
-        } }catch(SQLiteException se){
-                if (iDCount == 0 ){
-                    iDCount = 1;
-                }
-
-            }
-
-
-*/
-
-
-
-        }
+    }
 
 
         final String finalIDCount = connectionPrimaryKey; // Integer.toString(iDCount);
@@ -291,7 +273,7 @@ public class AddLPGConnection extends AppCompatActivity {
                     dataEnteredRight = false;
                     yScrollPosition = 280;
                 }
-
+                //Validation for Date to be entered in future
 
 
                 //Validations for Agency to be mandatory field
@@ -341,6 +323,56 @@ public class AddLPGConnection extends AppCompatActivity {
                         }
 
                     }
+                    // set alarms based on last confirmed date and expiry time
+                    // get the last booked date and get the date which would be mid-way till expiry
+                    // if the mid-way date is not in the past, then set an alarm on that day
+
+                    //Get the date object from the lastdatelabel text field, by splitting the string and creating a date
+                    String[] strDateFields = lpglastdatelabel.getText().toString().split("/");
+                    int lpglastbookeddate, lpglastbookedmonth, lpglastbookedyear;
+                    Calendar sysDate = Calendar.getInstance();
+                    Date lpgLastBooked;
+                    GregorianCalendar lpgLastBookedGregCalendar;
+                    int lpgExpiryDays = Integer.getInteger(lpgconnnectionexpiry.getText().toString());
+
+
+                    if (strDateFields.length != 0 ){
+
+                        // From the split string, get the integer values for date, month and year fields
+                        // and create a date object with these values
+                        lpglastbookeddate= Integer.getInteger(strDateFields[1]);
+                        lpglastbookedmonth = Integer.getInteger(strDateFields[0]);
+                        lpglastbookedyear = Integer.getInteger(strDateFields[2]);
+                        //Create the AlarmManager object to set alarms
+                        AlarmManager AlarmManager = (android.app.AlarmManager)getSystemService(Context.ALARM_SERVICE);
+//                        String selectedDate = Integer.toString(setMonth + 1) + "/" + Integer.toString(setDay) + "/" + Integer.toString(setYear);
+                        // Create the gregorian calendar based on the last booked date
+                        // add half of expected expiry time to this date, to arrive at mid-way expiry date
+                        lpgLastBookedGregCalendar = new GregorianCalendar(lpglastbookedyear,lpglastbookedmonth - 1, lpglastbookeddate);
+                        GregorianCalendar midwayExpiryDate = lpgLastBookedGregCalendar;
+                        midwayExpiryDate.add(Calendar.DATE, Math.round( lpgExpiryDays/2));
+                        Date lpgMidWayExpiryDate = midwayExpiryDate.getTime();
+
+                        //compare this midway expiry time with sys date and
+//                        create an alarm only if this date is in future
+
+                        if ( sysDate.compareTo(midwayExpiryDate) <= 0  ) {
+                            //set the alarm for this date with the notification class
+                            Intent notificationIntent = new Intent(getApplicationContext(),LPG_AlarmReceiver.class);
+                            PendingIntent notificationPendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0,notificationIntent,0);
+                            midwayExpiryDate.set(Calendar.HOUR_OF_DAY,12);
+                            midwayExpiryDate.set(Calendar.MINUTE,1);
+
+                            AlarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,2000,notificationPendingIntent);
+                            Log.v("Alarm", "Alarm Set for  " + midwayExpiryDate.toString());
+
+
+
+
+
+                        }
+
+                    }
 
 
                 }
@@ -349,7 +381,6 @@ public class AddLPGConnection extends AppCompatActivity {
                 }
             }
         });
-
       /*  FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -433,6 +464,11 @@ public class AddLPGConnection extends AppCompatActivity {
 
     public static class BookedDateFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
+        // Instantiate an alert box class to give dialog
+       // public LPG_AlertBoxClass lpg_alertBoxClass;
+
+
+
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState){
             //Create a date picker dialog
@@ -446,11 +482,76 @@ public class AddLPGConnection extends AppCompatActivity {
 
         public void onDateSet(DatePicker datePicker,int setYear,int setMonth,int setDay){
             GregorianCalendar setDateG = new GregorianCalendar(setYear,setMonth,setDay);
-            EditText lastBookedDateView = (EditText) getActivity().findViewById(R.id.add_lastbookeddate);
-            String selectedDate = Integer.toString(setMonth + 1) + "/" + Integer.toString(setDay)+"/"+Integer.toString(setYear);
-            Log.v("DateSelected",selectedDate);
-            lastBookedDateView.setText(selectedDate);
+            // Check if the date is in future
+            // else, create an alarm to notify user mid way through booking expiry and one day before expiry
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
+            Date date = setDateG.getTime();
+
+//                Get system date
+            Calendar calendar = Calendar.getInstance();
+
+            if ((date.compareTo(calendar.getTime())) <= 0 ) {
+                LPG_secAlertBox lpg_secAlertBox = new LPG_secAlertBox();
+                lpg_secAlertBox.showDialogHelper("Invalid Last Booking Date","Ok",null, new DialogInterface.OnClickListener(){
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                },null);
+                lpg_secAlertBox.show(getFragmentManager(),"DB");
+            } else {
+
+
+                EditText lastBookedDateView = (EditText) getActivity().findViewById(R.id.add_lastbookeddate);
+                String selectedDate = Integer.toString(setMonth + 1) + "/" + Integer.toString(setDay) + "/" + Integer.toString(setYear);
+                Log.v("DateSelected", selectedDate);
+                lastBookedDateView.setText(selectedDate);
+
+
+
+            }
         }
+    }
+
+    public static class LPG_secAlertBox extends DialogFragment {
+        //create members to support Dialog options;
+        public String ALERTDIALOGTITLE;
+        public String SETPOSITIVETEXT;
+        public String SETNEGATIVETEXT;
+        public DialogInterface.OnClickListener SETPOSITIVECLICKLISTENER;
+        public DialogInterface.OnClickListener SETNEGATIVECLICKLISTENER;
+
+        public Dialog onCreateDialog(Bundle SavedInstance){
+            //Create the dialog box
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+            //set dialog Title, positive and negative strings;
+            if (SETNEGATIVECLICKLISTENER != null) {
+                builder.setTitle(ALERTDIALOGTITLE).setPositiveButton(SETPOSITIVETEXT, SETPOSITIVECLICKLISTENER).setNegativeButton(SETNEGATIVETEXT, SETNEGATIVECLICKLISTENER);
+            }
+            else {
+                builder.setTitle(ALERTDIALOGTITLE).setNeutralButton(SETPOSITIVETEXT,SETPOSITIVECLICKLISTENER);
+            }
+            //return the Dialog box;
+            return builder.create();
+        }
+
+        public void showDialogHelper(String Title, String PositiveText, String NegativeText, DialogInterface.OnClickListener PositiveClickListener,DialogInterface.OnClickListener NegativeClickListener){
+            //Set the positive and negative texts
+            ALERTDIALOGTITLE = Title;
+            SETPOSITIVETEXT = PositiveText;
+            SETNEGATIVETEXT = NegativeText;
+            SETPOSITIVECLICKLISTENER = PositiveClickListener;
+            SETNEGATIVECLICKLISTENER = NegativeClickListener;
+
+            //Show the dialog;
+            // super.show(getFragmentManager(),"Dialog");
+
+
+        }
+
     }
 
 }

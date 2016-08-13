@@ -13,13 +13,14 @@ public class LPGApplication extends Application {
 
     //Initialize global state objects and properties
     public SQLiteDatabase LPGDB;
-    public LPG_AlertBoxClass LPG_Alert = new LPG_AlertBoxClass();
+    public LPG_AlertBoxClass LPG_Alert ;
 
     public void LPG_AlertBoxInstantiate(){
 
        // LPG_Alert.showDialogHelper("Setting up","Ok","Cancel",new DialogInterface.OnClickListener());
 
         LPGDB = (new LPG_SQLOpenHelperClass(getApplicationContext())).getWritableDatabase();
+        LPG_Alert = new LPG_AlertBoxClass();
 
     }
 
