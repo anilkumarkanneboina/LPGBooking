@@ -358,8 +358,13 @@ public class AddLPGConnection extends AppCompatActivity {
 
                         if ( sysDate.compareTo(midwayExpiryDate) <= 0  ) {
                             //set the alarm for this date with the notification class
+                            // Create an intent and use that to create the pending intent for alarm manager
                             Intent notificationIntent = new Intent(getApplicationContext(),LPG_AlarmReceiver.class);
+                            // Add notification informatino to the intent
+                            notificationIntent.putExtra("NotificationTitle","Cylinder is half done");
+                            notificationIntent.putExtra("NotificationContent", lpgConnection.getText().toString() + " is half empty now. Please click on Book icon to book the cylinder now!!");
                             PendingIntent notificationPendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0,notificationIntent,0);
+
                             midwayExpiryDate.set(Calendar.HOUR_OF_DAY,12);
                             midwayExpiryDate.set(Calendar.MINUTE,1);
 
