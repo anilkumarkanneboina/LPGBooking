@@ -363,7 +363,7 @@ public class AddLPGConnection extends AppCompatActivity {
                             midwayExpiryDate.set(Calendar.HOUR_OF_DAY,12);
                             midwayExpiryDate.set(Calendar.MINUTE,1);
 
-                            AlarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,2000,notificationPendingIntent);
+                            AlarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,midwayExpiryDate.getTimeInMillis() ,notificationPendingIntent);
                             Log.v("Alarm", "Alarm Set for  " + midwayExpiryDate.toString());
 
 
