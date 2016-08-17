@@ -202,6 +202,8 @@ public class AddLPGConnection extends AppCompatActivity {
             lpgconnnectionexpiry.setText(cursor.getString(cursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS)));
             //create DB query to get counter value
             connectionPrimaryKey = connectionIdString;
+            //close the cursor
+            cursor.close();
         } else {
             // set primary key vallue for connection id
             String[] connectionID = {LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID};
@@ -235,6 +237,8 @@ public class AddLPGConnection extends AppCompatActivity {
                         connectionPrimaryKey = "1";
                     }
             }
+            //close and release the cursor
+            cursorID.close();
     }
 
 
@@ -284,7 +288,7 @@ public class AddLPGConnection extends AppCompatActivity {
                     yScrollPosition = 0;
                 }
 
-                if (dataEnteredRight == true)
+                if (dataEnteredRight)
                 {
                     ContentValues contentValuesDB = new ContentValues();
                     contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID, finalIDCount);
@@ -333,16 +337,19 @@ public class AddLPGConnection extends AppCompatActivity {
                     Calendar sysDate = Calendar.getInstance();
                     Date lpgLastBooked;
                     GregorianCalendar lpgLastBookedGregCalendar;
-                    int lpgExpiryDays = Integer.getInteger(lpgconnnectionexpiry.getText().toString());
+                    Log.v("Error ", "LPG Connectioni Expiry Days " + lpgconnnectionexpiry.getText().toString() );
+                    String strLPGConnectionDays = lpgconnnectionexpiry.getText().toString();
+
+                    int lpgExpiryDays = Integer.parseInt(strLPGConnectionDays);
 
 
                     if (strDateFields.length != 0 ){
 
                         // From the split string, get the integer values for date, month and year fields
-                        // and create a date object with these values
-                        lpglastbookeddate= Integer.getInteger(strDateFields[1]);
-                        lpglastbookedmonth = Integer.getInteger(strDateFields[0]);
-                        lpglastbookedyear = Integer.getInteger(strDateFields[2]);
+                        // and create a date object with these values Integer.getInteger
+                        lpglastbookeddate= Integer.parseInt(strDateFields[1]);
+                        lpglastbookedmonth = Integer.parseInt(strDateFields[0]);
+                        lpglastbookedyear = Integer.parseInt(strDateFields[2]);
                         //Create the AlarmManager object to set alarms
                         AlarmManager AlarmManager = (android.app.AlarmManager)getSystemService(Context.ALARM_SERVICE);
 //                        String selectedDate = Integer.toString(setMonth + 1) + "/" + Integer.toString(setDay) + "/" + Integer.toString(setYear);
@@ -490,13 +497,13 @@ public class AddLPGConnection extends AppCompatActivity {
             // Check if the date is in future
             // else, create an alarm to notify user mid way through booking expiry and one day before expiry
 
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
+        //    SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
             Date date = setDateG.getTime();
 
 //                Get system date
             Calendar calendar = Calendar.getInstance();
 
-            if ((date.compareTo(calendar.getTime())) <= 0 ) {
+            if ((date.compareTo(calendar.getTime())) >= 0 ) {
                 LPG_secAlertBox lpg_secAlertBox = new LPG_secAlertBox();
                 lpg_secAlertBox.showDialogHelper("Invalid Last Booking Date","Ok",null, new DialogInterface.OnClickListener(){
 
