@@ -2,7 +2,7 @@ package com.aekan.navya.lpgbooking;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
+import android.support.v4.app.DialogFragment;
 import android.content.DialogInterface;
 import android.graphics.Matrix;
 import android.os.Bundle;
