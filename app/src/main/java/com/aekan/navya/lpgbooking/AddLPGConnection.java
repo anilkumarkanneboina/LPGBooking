@@ -202,6 +202,8 @@ public class AddLPGConnection extends AppCompatActivity {
             lpgconnnectionexpiry.setText(cursor.getString(cursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS)));
             //create DB query to get counter value
             connectionPrimaryKey = connectionIdString;
+            //close the cursor
+            cursor.close();
         } else {
             // set primary key vallue for connection id
             String[] connectionID = {LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID};
@@ -235,6 +237,8 @@ public class AddLPGConnection extends AppCompatActivity {
                         connectionPrimaryKey = "1";
                     }
             }
+            //close and release the cursor
+            cursorID.close();
     }
 
 
@@ -284,7 +288,7 @@ public class AddLPGConnection extends AppCompatActivity {
                     yScrollPosition = 0;
                 }
 
-                if (dataEnteredRight == true)
+                if (dataEnteredRight)
                 {
                     ContentValues contentValuesDB = new ContentValues();
                     contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID, finalIDCount);
@@ -307,7 +311,7 @@ public class AddLPGConnection extends AppCompatActivity {
                                 }
                             }, null);
                         }
-                        ((LPGApplication) getApplication()).LPG_Alert.show(getFragmentManager(), "DB");
+                        ((LPGApplication) getApplication()).LPG_Alert.show(getSupportFragmentManager(), "DB");
                     } else {
                         int updateDBCount = sqLiteDatabase.update(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME, contentValuesDB, LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID + " = " + finalIDCount, null);
                         Log.v("EditConnection "," Update DB Count " + Integer.toString(updateDBCount));
@@ -319,7 +323,7 @@ public class AddLPGConnection extends AppCompatActivity {
                                     dialog.dismiss();
                                 }
                             }, null);
-                            ((LPGApplication)getApplication()).LPG_Alert.show(getFragmentManager(),"DB");
+                            ((LPGApplication)getApplication()).LPG_Alert.show(getSupportFragmentManager(),"DB");
                         }
 
                     }
@@ -333,16 +337,19 @@ public class AddLPGConnection extends AppCompatActivity {
                     Calendar sysDate = Calendar.getInstance();
                     Date lpgLastBooked;
                     GregorianCalendar lpgLastBookedGregCalendar;
-                    int lpgExpiryDays = Integer.getInteger(lpgconnnectionexpiry.getText().toString());
+                    Log.v("Error ", "LPG Connectioni Expiry Days " + lpgconnnectionexpiry.getText().toString() );
+                    String strLPGConnectionDays = lpgconnnectionexpiry.getText().toString();
+
+                    int lpgExpiryDays = Integer.parseInt(strLPGConnectionDays);
 
 
                     if (strDateFields.length != 0 ){
 
                         // From the split string, get the integer values for date, month and year fields
-                        // and create a date object with these values
-                        lpglastbookeddate= Integer.getInteger(strDateFields[1]);
-                        lpglastbookedmonth = Integer.getInteger(strDateFields[0]);
-                        lpglastbookedyear = Integer.getInteger(strDateFields[2]);
+                        // and create a date object with these values Integer.getInteger
+                        lpglastbookeddate= Integer.parseInt(strDateFields[1]);
+                        lpglastbookedmonth = Integer.parseInt(strDateFields[0]);
+                        lpglastbookedyear = Integer.parseInt(strDateFields[2]);
                         //Create the AlarmManager object to set alarms
                         AlarmManager AlarmManager = (android.app.AlarmManager)getSystemService(Context.ALARM_SERVICE);
 //                        String selectedDate = Integer.toString(setMonth + 1) + "/" + Integer.toString(setDay) + "/" + Integer.toString(setYear);
@@ -363,7 +370,15 @@ public class AddLPGConnection extends AppCompatActivity {
                             // Add notification informatino to the intent
                             notificationIntent.putExtra("NotificationTitle","Cylinder is half done");
                             notificationIntent.putExtra("NotificationContent", lpgConnection.getText().toString() + " is half empty now. Please click on Book icon to book the cylinder now!!");
-                            PendingIntent notificationPendingIntent = PendingIntent.getBroadcast(getApplicationContext(),0,notificationIntent,0);
+                            // Create a pending intent request code, which will refer to the alarm being set for this lpg connnection id
+                            // Utilising the same pending intent request code will help to replace the existing alarm, if there is a change in
+                            // lpg expiry days by any chance. In this application we explicitly do not check to reset the alarm
+                            // if the lpg expiry days has been changed. We use inherent behaviour of alarm manager to replace alarms if we use the same pending
+                            // intent, which in this case would be identified with pending intent request
+                            // Additionally, we will identify alarms used for mid-term expiry reminder with trailing numeral one to int request
+                            // This is evident in pendingIntentRequestCode variable initialization below
+                            int pendingIntentRequestCode = Integer.parseInt(finalIDCount) * 10 + 1;
+                            PendingIntent notificationPendingIntent = PendingIntent.getBroadcast(getApplicationContext(),pendingIntentRequestCode,notificationIntent,0);
 
                             midwayExpiryDate.set(Calendar.HOUR_OF_DAY,12);
                             midwayExpiryDate.set(Calendar.MINUTE,1);
@@ -490,14 +505,14 @@ public class AddLPGConnection extends AppCompatActivity {
             // Check if the date is in future
             // else, create an alarm to notify user mid way through booking expiry and one day before expiry
 
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
+        //    SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
             Date date = setDateG.getTime();
 
 //                Get system date
             Calendar calendar = Calendar.getInstance();
 
-            if ((date.compareTo(calendar.getTime())) <= 0 ) {
-                LPG_secAlertBox lpg_secAlertBox = new LPG_secAlertBox();
+            if ((date.compareTo(calendar.getTime())) >= 0 ) {
+                LPG_AlertBoxClass lpg_secAlertBox = new LPG_AlertBoxClass();
                 lpg_secAlertBox.showDialogHelper("Invalid Last Booking Date","Ok",null, new DialogInterface.OnClickListener(){
 
                     @Override
@@ -520,43 +535,5 @@ public class AddLPGConnection extends AppCompatActivity {
         }
     }
 
-    public static class LPG_secAlertBox extends DialogFragment {
-        //create members to support Dialog options;
-        public String ALERTDIALOGTITLE;
-        public String SETPOSITIVETEXT;
-        public String SETNEGATIVETEXT;
-        public DialogInterface.OnClickListener SETPOSITIVECLICKLISTENER;
-        public DialogInterface.OnClickListener SETNEGATIVECLICKLISTENER;
-
-        public Dialog onCreateDialog(Bundle SavedInstance){
-            //Create the dialog box
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-            //set dialog Title, positive and negative strings;
-            if (SETNEGATIVECLICKLISTENER != null) {
-                builder.setTitle(ALERTDIALOGTITLE).setPositiveButton(SETPOSITIVETEXT, SETPOSITIVECLICKLISTENER).setNegativeButton(SETNEGATIVETEXT, SETNEGATIVECLICKLISTENER);
-            }
-            else {
-                builder.setTitle(ALERTDIALOGTITLE).setNeutralButton(SETPOSITIVETEXT,SETPOSITIVECLICKLISTENER);
-            }
-            //return the Dialog box;
-            return builder.create();
-        }
-
-        public void showDialogHelper(String Title, String PositiveText, String NegativeText, DialogInterface.OnClickListener PositiveClickListener,DialogInterface.OnClickListener NegativeClickListener){
-            //Set the positive and negative texts
-            ALERTDIALOGTITLE = Title;
-            SETPOSITIVETEXT = PositiveText;
-            SETNEGATIVETEXT = NegativeText;
-            SETPOSITIVECLICKLISTENER = PositiveClickListener;
-            SETNEGATIVECLICKLISTENER = NegativeClickListener;
-
-            //Show the dialog;
-            // super.show(getFragmentManager(),"Dialog");
-
-
-        }
-
-    }
 
 }

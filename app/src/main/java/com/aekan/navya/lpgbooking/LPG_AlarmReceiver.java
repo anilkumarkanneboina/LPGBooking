@@ -44,7 +44,7 @@ class LPG_AlarmReceiver extends BroadcastReceiver {
         lpgExpiryNotificationBuilder.addAction(R.drawable.ic_date_range_black_36dp,"Book",pendingIntentStartActivity);
 
         NotificationManager lpgNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        lpgNotificationManager.notify(Integer.getInteger(intent.getStringExtra("NotificationID")),lpgExpiryNotificationBuilder.build());
+        lpgNotificationManager.notify(Integer.parseInt(intent.getStringExtra("NotificationID")),lpgExpiryNotificationBuilder.build());
 
 
     }

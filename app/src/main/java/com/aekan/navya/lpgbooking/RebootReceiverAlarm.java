@@ -37,14 +37,14 @@ public class RebootReceiverAlarm extends BroadcastReceiver {
             int cursorRecordSetCount = cursor.getCount();
             for ( int i = 0;i<cursorRecordSetCount;++i){
                 String[] cursorDateFields = cursor.getString(cursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.LAST_BOOKED_DATE)).split("/");
-                int cylinderExpiryDays = Integer.getInteger( cursor.getString(cursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS)));
+                int cylinderExpiryDays = Integer.parseInt( cursor.getString(cursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS)));
                 String cursorConnectionName = cursor.getString(cursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME));
-                int lastBookedDateField = Integer.getInteger( cursorDateFields[1]);
-                int lastBookedYearField = Integer.getInteger(  cursorDateFields[2]);
-                int   lastBookedMonthField = Integer.getInteger( cursorDateFields[0]);
+                int lastBookedDateField = Integer.parseInt( cursorDateFields[1]);
+                int lastBookedYearField = Integer.parseInt(  cursorDateFields[2]);
+                int   lastBookedMonthField = Integer.parseInt( cursorDateFields[0]);
                 GregorianCalendar lastBookedDateInCursor = new GregorianCalendar(lastBookedYearField,lastBookedMonthField - 1,lastBookedDateField,0,0,0);
                 Calendar systemDate = Calendar.getInstance();
-              //  int cylinderExpiryDays = Integer.getInteger( cursor.getString(cursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS)));
+              //  int cylinderExpiryDays = Integer.parseInt( cursor.getString(cursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS)));
                 GregorianCalendar midExpiryDate = lastBookedDateInCursor;
                 midExpiryDate.add(Calendar.DAY_OF_MONTH,Math.round( cylinderExpiryDays/2) );
 
@@ -67,7 +67,8 @@ public class RebootReceiverAlarm extends BroadcastReceiver {
 
         }
 
-    // Close the DB
+    // Close the DB and cursor
         sqLiteDatabase.close();
+        cursor.close();
     }
 }

@@ -1,16 +1,23 @@
 package com.aekan.navya.lpgbooking;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteCursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.BoolRes;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -46,6 +53,7 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
         protected TextView marLPGCompanyName;
         protected TextView marLPGExpiry;
         protected ImageButton marEditConnection;
+        protected ImageButton mARDeleteConnection;
 
         public LPGViewHolder(View v){
             super(v);
@@ -54,6 +62,7 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
             marLPGCompanyName = (TextView) v.findViewById(R.id.lpg_cylinder_company);
             marLPGExpiry = (TextView) v.findViewById(R.id.lpg_expiry);
             marEditConnection = (ImageButton) v.findViewById(R.id.edit_connection_btn);
+            mARDeleteConnection = (ImageButton) v.findViewById(R.id.delete_connection_btn);
         }
 
     }
@@ -156,6 +165,68 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
                 Bundle checkb = intent.getExtras();
                 Log.v("Edit Click","Bundle Value " +checkb.toString());
                 v.getContext().startActivity(intent);
+
+            }
+        });
+
+        //Assign a onClickListener to delete the connection
+        // Also, when the connection is deleted, the associated alarms needs to be deleted as well
+        LVH.mARDeleteConnection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Instruct the user to confirm if the connection needs to be deleted
+                // If the user confirms as yes, cancel the connection
+                // and delete the associated alarms with the connection
+                final SQLiteDatabase sqLiteDatabase = new LPG_SQLOpenHelperClass(v.getContext()).getWritableDatabase();
+                final Context context = v.getContext();
+                final LPG_AlertBoxClass lpgDeleteConnection = new LPG_AlertBoxClass();
+                final Toast toast = new Toast(v.getContext());
+                final AlarmManager alarmManager = (AlarmManager) v.getContext().getSystemService(Context.ALARM_SERVICE);
+                toast.setGravity(Gravity.CENTER_HORIZONTAL,0,0);
+                toast.makeText(v.getContext(),"DUMMY",Toast.LENGTH_SHORT);
+                lpgDeleteConnection.showDialogHelper("Do you want to delete this connection?"
+                        , "Ok"
+                        , "Cancel"
+                        , new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // If the user says to delete the connection,
+                                // delete the information from database
+                                // delete the alarm
+                                // give a toast to the user that the data has been deleted
+                                String deleteCondition = LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID + " = ";
+                                String[] deleteParameter = { CurrentRow.LPG_ROW_ID };
+                                //delete the record
+                                int deleteCount = sqLiteDatabase.delete(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,deleteCondition,deleteParameter);
+                                // check no of deleted record
+                                if ( deleteCount > 0 ) {
+                                    //Delete the alarm set for this connection
+                                    int pendingintentRequestCodeForAlarm = Integer.parseInt(CurrentRow.LPG_ROW_ID) * 10 + 1 ;
+                                    Intent alarmCancellationIntent = new Intent(context,LPG_AlarmReceiver.class);
+                                    PendingIntent alarmCancellationPendingIntent = PendingIntent.getBroadcast(context,pendingintentRequestCodeForAlarm,alarmCancellationIntent,0);
+                                    alarmManager.cancel(alarmCancellationPendingIntent);
+                                    // set a toast that the record has been deleted
+                                    toast.setText(R.string.toast_delete_successful);
+                                    toast.show();
+                                } else {
+                                    // set a toast that the record could not be deleted
+                                    toast.setText(R.string.toast_delete_failure);
+                                }
+
+                                //close the connection for database
+                                sqLiteDatabase.close();
+
+
+
+                            }
+                        }
+                        , new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // just dismiss the dialog
+                                lpgDeleteConnection.dismiss();
+                            }
+                        });
 
             }
         });

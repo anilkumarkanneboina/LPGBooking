@@ -29,4 +29,8 @@
     <string name="btn_Submit">Submit</string>
     <string name="btn_Cancel">Cancel</string>
 
+    <!--String values for Main Activity -->
+    <string name="toast_delete_successful">LPG connection deleted successfully</string>
+    <string name="toast_delete_failure">Deletion Failure:Please try later</string>
+
 </resources>

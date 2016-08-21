@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         };
         //Create Alert Box
         ((LPGApplication) this.getApplication()).LPG_Alert.showDialogHelper("Setting up","Ok",null, setOKButton,null);
-        ((LPGApplication) this.getApplication()).LPG_Alert.show(getFragmentManager(),"Dialog");
+        ((LPGApplication) this.getApplication()).LPG_Alert.show(getSupportFragmentManager(),"Dialog");
 
 
 
