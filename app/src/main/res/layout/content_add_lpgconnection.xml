@@ -130,7 +130,6 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/add_lastbookeddatelabel"
                     android:textSize="@dimen/add_text_size_lable"
-
                     app:hintAnimationEnabled="true"
                     app:errorEnabled = "true"
                     app:counterEnabled="true">
