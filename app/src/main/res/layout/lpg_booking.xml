@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android.support.v7.appCompat="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/tools">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/lpgbooking_appbarlayout" >
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:navigationIcon="@drawable/ic_arrow_back_black_24dp"
+        app:popupTheme="@style/AppTheme.PopupOverlay"
+        android:title="Book Cylinder">
+
+    </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lpgbooking_appbarlayout"
+        android:id="@+id/lpgbooking_description"
+        android:textSize="@dimen/lpgbooking_description_fontsize"
+        android:textColor="@color/colorPrimary"
+        android:layout_marginLeft="@dimen/lpgbooking_margin_left"
+        android:layout_marginBottom="@dimen/lpgbooking_margin_botton"
+        android:layout_marginRight="@dimen/lpgbookin_margin_right"
+        android:layout_marginEnd="@dimen/lpgbookin_margin_right"
+        android:layout_marginTop="@dimen/lpgbooking_margin_top"
+        android:text="@string/lpgbooking_activity_description"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lpgbooking_description" >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/lpgbooking_connectionname"
+            android:text="@string/lpgbooking_connection_name"
+            android:textSize="@dimen/lpgbooking_connectionname_fontsize"
+            android:textColor="@color/colorPrimary" />
+
+
+    </RelativeLayout>
+
+    <!--Display connnection name and agency name-->
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/lpgbooking_textinputlayout_height"
+        android.support.v7.appCompat:hintAnimationEnabled="true" >
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/lpgbooking_connection_name"
+            android:inputType="none"
+             />
+
+    </android.support.design.widget.TextInputLayout>
+
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_call_black_36dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"/>
+
+    </RelativeLayout>
+
+

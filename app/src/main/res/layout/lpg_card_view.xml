@@ -16,49 +16,66 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp">
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="72dp"
         android:id="@+id/lpg_cylinder_name"
         android:background="@color/lpg_name_bkgrnd"
         android:drawablePadding="16dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:paddingTop="8dp"
         android:paddingLeft="8dp"
+        android:paddingRight="8dp"
         android:paddingBottom="8dp"
         android:text="Test"
         android:gravity="center_vertical"
         android:textColor="@android:color/white"
-        android:textSize="18sp"
+        android:textSize="24sp"
         />
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="25dp"
+        android:layout_below="@id/lpg_cylinder_name"
         android:id="@+id/lpg_cylinder_company"
+        android:layout_height="44dp"
         android:textColor="@android:color/black"
         android:text="Text"
-        android:layout_below="@id/lpg_cylinder_name"
+
         android:layout_marginTop="16dp"
+        android:paddingTop="8dp"
         android:paddingLeft="8dp"
+        android:paddingStart="8dp"
+        android:paddingRight="8dp"
         android:paddingBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:gravity="center_vertical"
         android:textSize="@dimen/lpg_cylinder_company_text_height"/>
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="25dp"
+        android:layout_height="36dp"
         android:id="@+id/lpg_expiry"
         android:layout_gravity="center_vertical"
+        android:text="Text"
+        android:textColor="@color/lpg_expiry_textcolor"
+        android:layout_below="@id/lpg_cylinder_company"
+        android:layout_marginTop="16dp"
+        android:paddingTop="8dp"
         android:paddingLeft="8dp"
         android:paddingBottom="8dp"
-        android:textColor="@color/lpg_expiry_textcolor"
-        android:text="Text"
-        android:layout_below="@id/lpg_cylinder_company"
-        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:textSize="@dimen/lpg_expiry_textheight"
         />
         <LinearLayout
@@ -69,31 +86,32 @@
             android:orientation="horizontal"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
+            android:gravity="right"
             >
             <ImageButton
                 android:id="@+id/edit_connection_btn"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_marginTop="8dp"
+                android:scaleType="centerCrop"
                 android:layout_marginLeft="@dimen/buttonpadleft"
                 android:layout_marginRight="@dimen/buttonrightmargin"
-                android:src="@drawable/ic_edit_black_24dp" />
+                android:background="@drawable/ic_edit_black_24dp_1" />
             <ImageButton
                 android:id="@+id/call_refill_btn"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_marginLeft="@dimen/buttonleftmargin"
-                android:scaleType="centerCrop"
+                android:scaleType="centerInside"
                 android:layout_marginRight="@dimen/buttonrightmargin"
-                android:src="@drawable/ic_call_black_36dp" />
+                android:background="@drawable/ic_call_black_36dp_2" />
             <ImageButton
                 android:id="@+id/delete_connection_btn"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_marginLeft="@dimen/buttonleftmargin"
                 android:scaleType="centerCrop"
                 android:layout_marginRight="@dimen/buttonrightmargin"
-                android:src="@drawable/ic_delete_black_36dp" />
+                android:background="@drawable/ic_delete_black_36dp_1" />
 
 
         </LinearLayout>

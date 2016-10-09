@@ -33,4 +33,9 @@
     <string name="toast_delete_successful">LPG connection deleted successfully</string>
     <string name="toast_delete_failure">Deletion Failure:Please try later</string>
 
+    <!--lpg booking activity-->
+    <string name="lpgbooking_activity_description">You can book for your lpg cylinder refill</string>
+    <string name="lpgbooking_connection_name">Connection Name</string>
+    <string name="lpgbooking_connection_provider">Connection Provider</string>
+
 </resources>
