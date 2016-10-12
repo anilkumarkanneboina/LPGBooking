@@ -8,11 +8,14 @@
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
         android:id="@+id/lpgbooking_appbarlayout" >
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:theme="@style/AppTheme.NoActionBar"
         android:navigationIcon="@drawable/ic_arrow_back_black_24dp"
+
         app:popupTheme="@style/AppTheme.PopupOverlay"
         android:title="Book Cylinder">
 
@@ -27,39 +30,28 @@
         android:id="@+id/lpgbooking_description"
         android:textSize="@dimen/lpgbooking_description_fontsize"
         android:textColor="@color/colorPrimary"
-        android:layout_marginLeft="@dimen/lpgbooking_margin_left"
-        android:layout_marginBottom="@dimen/lpgbooking_margin_botton"
-        android:layout_marginRight="@dimen/lpgbookin_margin_right"
-        android:layout_marginEnd="@dimen/lpgbookin_margin_right"
-        android:layout_marginTop="@dimen/lpgbooking_margin_top"
-        android:text="@string/lpgbooking_activity_description"/>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/lpgbooking_description" >
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/lpgbooking_connectionname"
-            android:text="@string/lpgbooking_connection_name"
-            android:textSize="@dimen/lpgbooking_connectionname_fontsize"
-            android:textColor="@color/colorPrimary" />
-
-
-    </RelativeLayout>
+        android:text="@string/lpgbooking_activity_description"
+        android:layout_margin="@dimen/lpgbooking_margin"
+        android:paddingLeft="@dimen/lpgbooking_padding_left"
+        android:paddingStart="@dimen/lpgbooking_padding_left"
+        android:paddingTop="@dimen/lpgbooking_padding_top"
+        android:paddingBottom="@dimen/lpgbooking_padding_bottom"
+        />
 
     <!--Display connnection name and agency name-->
     <android.support.design.widget.TextInputLayout
         android:layout_width="wrap_content"
         android:layout_height="@dimen/lpgbooking_textinputlayout_height"
-        android.support.v7.appCompat:hintAnimationEnabled="true" >
+        android:layout_below="@id/lpgbooking_description"
+        android:layout_margin="@dimen/lpgbooking_margin"
+        android.support.v7.appCompat:hintAnimationEnabled="true">
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="@string/lpgbooking_connection_name"
-            android:inputType="none"
+            android:text="This is a sample connection name"
+
              />
 
     </android.support.design.widget.TextInputLayout>

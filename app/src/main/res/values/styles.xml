@@ -10,10 +10,16 @@
     </style>
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+        <item name="windowNoTitle">false</item>
         <item name="android:windowSoftInputMode">adjustPan</item>
     </style>
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <!--style for text input layout-->
+    <style name="Appearance.TextInput" parent="TextAppearance.AppCompat">
+
+
+    </style>
 
 </resources>

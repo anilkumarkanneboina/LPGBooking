@@ -28,11 +28,12 @@
     <dimen name="buttonpadright">16dp</dimen>
     
     <!--dimensions for lpg booking-->
-    <dimen name="lpgbooking_margin_left">16dp</dimen>
-    <dimen name="lpgbookin_margin_right">16dp</dimen>
-    <dimen name="lpgbooking_margin_top">24dp</dimen>
-    <dimen name="lpgbooking_margin_botton">16dp</dimen>
+    <dimen name="lpgbooking_padding_left">16dp</dimen>
+    <dimen name="lpgbookin_padding_right">16dp</dimen>
+    <dimen name="lpgbooking_padding_top">24dp</dimen>
+    <dimen name="lpgbooking_padding_bottom">16dp</dimen>
     <dimen name="lpgbooking_description_fontsize">20sp</dimen>
     <dimen name="lpgbooking_textinputlayout_height">56dp</dimen>
     <dimen name="lpgbooking_connectionname_fontsize">16sp</dimen>
+    <dimen name="lpgbooking_margin">8dp</dimen>
 </resources>
