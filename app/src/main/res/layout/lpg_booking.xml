@@ -41,29 +41,110 @@
     <!--Display connnection name and agency name-->
     <android.support.design.widget.TextInputLayout
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/lpgbooking_textinputlayout_height"
+        android:layout_height="wrap_content"
+        android:id="@+id/lpgbooking_connectionname"
         android:layout_below="@id/lpgbooking_description"
         android:layout_margin="@dimen/lpgbooking_margin"
+        android:paddingTop="@dimen/lpgbooking_padding_top"
+        android:paddingLeft="@dimen/lpgbooking_padding_left"
+        android:paddingStart="@dimen/lpgbooking_padding_left"
         android.support.v7.appCompat:hintAnimationEnabled="true">
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="@string/lpgbooking_connection_name"
+            android:id="@+id/lpgbooking_connectionname_edittext"
             android:text="This is a sample connection name"
 
              />
 
     </android.support.design.widget.TextInputLayout>
 
+    <!--Connection provider textinputlayout-->
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lpgbooking_connectionname"
+        android:id="@+id/lpgbooking_connection_provider"
+        android:layout_margin="@dimen/lpgbooking_margin"
+        android:paddingTop="@dimen/lpgbooking_padding_top"
+        android:paddingLeft="@dimen/lpgbooking_padding_left"
+        android:paddingStart="@dimen/lpgbooking_padding_left"
+        android.support.v7.appCompat:hintAnimationEnabled="true">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/lpgbooking_connection_provider"
+            android:id="@+id/lpgbooking_provider_edittext"
+            android:text="This is a sample connection name"
+
+            />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <!--Expected expiry date-->
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lpgbooking_connection_provider"
+        android:id="@+id/lpgbooking_expected_expiry_date"
+        android:layout_margin="@dimen/lpgbooking_margin"
+        android:paddingTop="@dimen/lpgbooking_padding_top"
+        android:paddingLeft="@dimen/lpgbooking_padding_left"
+        android:paddingStart="@dimen/lpgbooking_padding_left"
+        android.support.v7.appCompat:hintAnimationEnabled="true">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/lpgbooking_expected_expiry_Dte"
+            android:id="@+id/lpgbooking_expected_expiry_date_edittext"
+            android:text="This is a sample connection name"
+
+            />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <!--Relative layout for image icons-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lpgbooking_expected_expiry_date"
+        android:layout_margin="@dimen/lpgbooking_margin_imagelayout"
+        android:gravity="right"
+        android:orientation="horizontal" >
+    <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:id="@+id/lpgbooking_call_img"
+            android:paddingTop="@dimen/lpgbooking_padding_top"
+
+            android:background="@drawable/ic_call_black_36dp_2"
+            android:layout_marginLeft="@dimen/lpgbooking_margin_start_image"
+            android:layout_marginTop="16dp"
+
+            android:layout_marginEnd="@dimen/lpgbooking_margin_right_image"
+            android:layout_marginRight="@dimen/lpgbooking_margin_right_image"
+            android:layout_marginBottom="@dimen/lpgbooking_margin_bottom_image"
+             />
 
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/ic_call_black_36dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"/>
+            android:id="@+id/lpgbooking_sms_img"
+            android:paddingTop="@dimen/lpgbooking_padding_top"
+            android:background="@drawable/ic_message_green"
+            android:layout_marginLeft="@dimen/lpgbooking_margin_left_image"
+            android:layout_marginStart="@dimen/lpgbooking_margin_left_image"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="@dimen/lpgbooking_margin_right_image"
+            android:layout_marginRight="@dimen/lpgbooking_margin_right_image"
+            android:layout_marginBottom="@dimen/lpgbooking_margin_bottom_image"
+            />
+    </LinearLayout>
 
     </RelativeLayout>
-
+    <!--android:layout_margin="@dimen/lpgbooking_margin_imagelayout"-->
 

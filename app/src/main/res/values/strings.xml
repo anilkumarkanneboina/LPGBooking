@@ -37,5 +37,6 @@
     <string name="lpgbooking_activity_description">You can book for your lpg cylinder refill</string>
     <string name="lpgbooking_connection_name">Connection Name</string>
     <string name="lpgbooking_connection_provider">Connection Provider</string>
+    <string name="lpgbooking_expected_expiry_Dte">Expected Expiry Date</string>
 
 </resources>
