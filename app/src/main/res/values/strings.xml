@@ -1,4 +1,9 @@
 <resources>
+    <!--General strings-->
+    <string name="DIALOG_OK">Ok</string>
+    <string name="DIALOG_CANCEL">Cancel</string>
+
+
     <string name="app_name">LPGBooking</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_add_lpgconnection">AddLPGConnection</string>
@@ -12,6 +17,8 @@
     <string name="NoConnection_Cylinder_name">No Connections Found</string>
     <string name="NoConnetion_Cylider_Company">You can add your LPG connection now!!</string>
     <string name="NoConnection_CylinderExpiry">Just click on Add button below</string>
+
+
 
     <!--String values for form in Add Connection page-->
     <string name="Add_Connection_Name">Connection Name</string>
@@ -38,5 +45,6 @@
     <string name="lpgbooking_connection_name">Connection Name</string>
     <string name="lpgbooking_connection_provider">Connection Provider</string>
     <string name="lpgbooking_expected_expiry_Dte">Expected Expiry Date</string>
+    <string name="lpgbooking_callpermissiondialog_title">Permission Requested</string>
 
 </resources>
