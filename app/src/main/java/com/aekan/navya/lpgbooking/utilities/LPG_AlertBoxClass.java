@@ -1,4 +1,4 @@
-package com.aekan.navya.lpgbooking;
+package com.aekan.navya.lpgbooking.utilities;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

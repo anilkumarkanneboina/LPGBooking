@@ -1,8 +1,10 @@
-package com.aekan.navya.lpgbooking;
+package com.aekan.navya.lpgbooking.utilities;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import com.aekan.navya.lpgbooking.utilities.lpgconnectionparcel;
 
 /**
  * Created by arunramamurthy on 16/04/16.

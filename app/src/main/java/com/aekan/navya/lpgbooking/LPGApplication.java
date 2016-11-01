@@ -1,10 +1,10 @@
 package com.aekan.navya.lpgbooking;
 
-import android.app.AlertDialog;
 import android.app.Application;
-import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
+
+import com.aekan.navya.lpgbooking.utilities.LPG_AlertBoxClass;
+import com.aekan.navya.lpgbooking.utilities.LPG_SQLOpenHelperClass;
 
 /**
  * Created by arunramamurthy on 17/04/16.

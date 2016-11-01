@@ -3,7 +3,6 @@ package com.aekan.navya.lpgbooking;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteCursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -12,11 +11,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
+import com.aekan.navya.lpgbooking.utilities.lpgconnectionparcel;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
       //  recyclerView.setAdapter(new LPGCylinderListViewAdapter());
 
         //Columns for database ;
-        String[] sqLiteColumns = {LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME, LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER, LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY,LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID};
+        String[] sqLiteColumns = {LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME, LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER, LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY, LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID};
         SQLiteCursor sqLiteCursor;
 
         sqLiteCursor = (SQLiteCursor) ((LPGApplication) getApplication()).LPGDB.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,
