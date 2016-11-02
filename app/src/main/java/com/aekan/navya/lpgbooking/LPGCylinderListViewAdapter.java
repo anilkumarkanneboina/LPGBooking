@@ -1,14 +1,16 @@
 package com.aekan.navya.lpgbooking;
 
 import android.app.AlarmManager;
+import android.app.Dialog;
+import android.support.v4.app.DialogFragment;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.annotation.BoolRes;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
@@ -19,7 +21,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
+import com.aekan.navya.lpgbooking.utilities.LPG_AlertBoxClass;
+import com.aekan.navya.lpgbooking.utilities.LPG_SQLOpenHelperClass;
+import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
 
 import java.util.ArrayList;
 
@@ -54,6 +58,7 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
         protected TextView marLPGExpiry;
         protected ImageButton marEditConnection;
         protected ImageButton mARDeleteConnection;
+        protected ImageButton mARLPGBookingCall;
 
         public LPGViewHolder(View v){
             super(v);
@@ -63,6 +68,7 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
             marLPGExpiry = (TextView) v.findViewById(R.id.lpg_expiry);
             marEditConnection = (ImageButton) v.findViewById(R.id.edit_connection_btn);
             mARDeleteConnection = (ImageButton) v.findViewById(R.id.delete_connection_btn);
+
         }
 
     }
@@ -227,6 +233,60 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
                                 lpgDeleteConnection.dismiss();
                             }
                         });
+                //Assign a on click listener to do LPG booking
+
+
+            }
+        });
+
+        //Assign on click listener to do LPG Booking
+        LVH.mARLPGBookingCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*Start LPG booking activity with passing on the parcel
+                with information about the LPG*/
+                Cursor c;
+                try {
+                    SQLiteDatabase dbLPG = ((LPGApplication) v.getContext()).LPGDB;
+                     /*Define projection for the database, ie the query parameters for the database*/
+                    String[] lpgConnectionRow ={
+                            LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID,
+                            LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME,
+                            LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER,
+                            LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY,
+                            LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_PHONE_NUMBER,
+                            LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_ID,
+                            LPG_SQL_ContractClass.LPG_CONNECTION_ROW.LAST_BOOKED_DATE,
+                            LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS
+
+                    };
+                    //Define the selection arguments and the value for selection arguments
+                    String arSelectionArgument = LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID + " = ?";
+                    String[] arSelectionArgumentValue = {LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID};
+
+                    //Query and get the curson
+                    c = dbLPG.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,
+                            lpgConnectionRow,
+                            arSelectionArgument,
+                            arSelectionArgumentValue,
+                            null,
+                            null,
+                            null
+                    );
+                }
+                catch (Exception e){
+                    LPG_AlertBoxClass alertDialog = new LPG_AlertBoxClass();
+                    alertDialog.showDialogHelper("Error in retrieving DB",
+                            "Ok",
+                            null,
+                            null,
+                                null
+                             );
+                }
+
+
+
+
 
             }
         });

@@ -2,6 +2,7 @@ package com.aekan.navya.lpgbooking.utilities;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.provider.BaseColumns;
 
 /**
  * Created by arunramamurthy on 16/10/16.
@@ -113,4 +114,9 @@ public class lpgconnectionparcel implements Parcelable {
     public String getConnectionid(){return this.connectionid;}
     public String getLastbookeddate(){return this.lastbookeddate;}
     public Parcel getLpgConnectionrecordParcel(){return this.recordParcel;}
+
+    /**
+     * Created by arunramamurthy on 14/04/16.
+     */
+
 }
