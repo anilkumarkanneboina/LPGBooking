@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.aekan.navya.lpgbooking.utilities.LPG_AlertBoxClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQLOpenHelperClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
+import com.aekan.navya.lpgbooking.utilities.lpgconnectionparcel;
 
 import java.util.ArrayList;
 
@@ -185,6 +186,7 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
                 // Instruct the user to confirm if the connection needs to be deleted
                 // If the user confirms as yes, cancel the connection
                 // and delete the associated alarms with the connection
+
                 final SQLiteDatabase sqLiteDatabase = new LPG_SQLOpenHelperClass(v.getContext()).getWritableDatabase();
                 final Context context = v.getContext();
                 final LPG_AlertBoxClass lpgDeleteConnection = new LPG_AlertBoxClass();
@@ -248,10 +250,13 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
                 /*Start LPG booking activity with passing on the parcel
                 with information about the LPG*/
                 Cursor c;
+                Log.v("ClickLPGBooking","Inside On Click LIstener");
                 try {
-                    SQLiteDatabase dbLPG = ((LPGApplication) v.getContext()).LPGDB;
+                    Log.v("ClickLPGBooking","Inside try catch block");
+                    //SQLiteDatabase dbLPG = ((LPGApplication) v.getContext()).LPGDB;
+                    //SQLiteDatabase dbLPG = ;
                      /*Define projection for the database, ie the query parameters for the database*/
-                    String[] lpgConnectionRow ={
+                    /*String[] lpgConnectionRow ={
                             LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID,
                             LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME,
                             LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER,
@@ -264,7 +269,7 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
                     };
                     //Define the selection arguments and the value for selection arguments
                     String arSelectionArgument = LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID + " = ?";
-                    String[] arSelectionArgumentValue = {LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID};
+                    String[] arSelectionArgumentValue = {CurrentRow.LPG_ROW_ID};
 
                     //Query and get the curson
                     c = dbLPG.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,
@@ -275,9 +280,23 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
                             null,
                             null
                     );
-                    /*Parcel parcelBookCylinder = new */
+
+                    //Assign the values into a parcel and pass to intent
+                    //that will create LPGBooking Activity
+                    Log.v("ClickLPGBooking",String.valueOf(c.moveToFirst()) );
+                    if (c.moveToFirst())*/
+                    {
+
+                        Intent intentLPGBooking = new Intent(v.getContext(), LPGBooking.class);
+
+                        intentLPGBooking.putExtra(lpgconnectionparcel.LPG_CONNECTIONRECORD_PARCEL, new lpgconnectionparcel(
+                                CurrentRow.LPG_ROW_ID
+                        ));
+                        v.getContext().startActivity(intentLPGBooking);
+                    }
                 }
                 catch (Exception e){
+                    Log.v("ClickLPGBooking",e.getMessage());
                     LPG_AlertBoxClass alertDialog = new LPG_AlertBoxClass();
                     alertDialog.showDialogHelper("Error in retrieving DB",
                             "Ok",
@@ -285,6 +304,7 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
                             null,
                                 null
                              );
+                    //alertDialog.show();
                 }
 
 

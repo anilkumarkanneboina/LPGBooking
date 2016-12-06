@@ -35,7 +35,7 @@ public class LPG_AlertBoxClass extends DialogFragment {
         return builder.create();
     }
 
-    public void showDialogHelper(String Title, String PositiveText, String NegativeText, DialogInterface.OnClickListener PositiveClickListener,DialogInterface.OnClickListener NegativeClickListener){
+    public LPG_AlertBoxClass showDialogHelper(String Title, String PositiveText, String NegativeText, DialogInterface.OnClickListener PositiveClickListener,DialogInterface.OnClickListener NegativeClickListener){
         //Set the positive and negative texts
         ALERTDIALOGTITLE = Title;
         SETPOSITIVETEXT = PositiveText;
@@ -45,6 +45,7 @@ public class LPG_AlertBoxClass extends DialogFragment {
 
         //Show the dialog;
        // super.show(getFragmentManager(),"Dialog");
+        return this;
 
 
     }

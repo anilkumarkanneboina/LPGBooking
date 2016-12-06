@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -20,6 +22,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.aekan.navya.lpgbooking.utilities.LPG_AlertBoxClass;
+import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
 import com.aekan.navya.lpgbooking.utilities.lpgconnectionparcel;
 
 /**
@@ -59,44 +63,74 @@ public class LPGBooking extends AppCompatActivity {
         String lpgparcelConnectionId;
         String lpgparcelConnectionName;
         String lpgparcelConnectionProvider;
-        String lpgparcelConnectionAgency;
         String lpgparcelConnectionPhoneNumber;
-        String lpgparcelConnectionIdentifier;
         String lpgparcelLastBookedDate;
+        String lpgparcelExpectedExpiryDays;
+        String lpgExpectedExpiryDate;
 
-        //get the parcealable content from the intent
-        // Connection details could have been put in the Parcealable object in two way
-        // either in the Parcel type field, or in individual fields
-        // We will get connection details by checking if the Parcel field is null
+        //get the connection id from the parcel, which has been added to the intent
         lpgconnectionparcel lpgconnectioninfo = getIntent().getParcelableExtra(lpgconnectionparcel.LPG_CONNECTIONRECORD_PARCEL);
-        Parcel lpgConnectionParcel = lpgconnectioninfo.getLpgConnectionrecordParcel();
-        if (lpgconnectioninfo.getLpgConnectionrecordParcel() != null) {
-            //get the connection details from Parcel field of the Parcealable object
-            lpgparcelConnectionId = lpgConnectionParcel.readString();
-            lpgparcelConnectionName = lpgConnectionParcel.readString();
-            lpgparcelConnectionProvider = lpgConnectionParcel.readString();
-            lpgparcelConnectionAgency = lpgConnectionParcel.readString();
-            lpgparcelConnectionPhoneNumber = lpgConnectionParcel.readString();
-            //initialise LPG Connection phone no
-            LPG_CONNECTION_PHONE_NO = lpgparcelConnectionPhoneNumber;
-            lpgparcelConnectionIdentifier = lpgConnectionParcel.readString();
-            lpgparcelLastBookedDate = lpgConnectionParcel.readString();
+        lpgparcelConnectionId = lpgconnectioninfo.getId();
 
-        } else {
-            //get the data from the individual fields using getter methods in the parcel
-            lpgparcelConnectionName = lpgconnectioninfo.getConnectionname();
-            lpgparcelConnectionProvider = lpgconnectioninfo.getProvider();
-            lpgparcelConnectionPhoneNumber = lpgconnectioninfo.getPhonenumber();
+//            GEt the database and create a cursor variable for traversing
+//                the database
+            SQLiteDatabase dbLPG = ((LPGApplication) getApplication()).LPGDB;
+
+
+            //create the necessary column list and query condition
+            String[] dbQueryParameters = {LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME,
+                    LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER,
+                    LPG_SQL_ContractClass.LPG_CONNECTION_ROW.LAST_BOOKED_DATE,
+                    LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS,
+                    LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_PHONE_NUMBER
+            };
+            String dbQueryCondition = LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID + " = ?";
+            String[] dbQueryArgument = { lpgparcelConnectionId };
+
+            //query the database and get the results in cursor
+            Cursor c = dbLPG.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,
+                    dbQueryParameters,
+                    dbQueryCondition,
+                    dbQueryArgument,
+                    null,
+                    null,
+                    null);
+
+            if (!(c.moveToFirst())){
+
+                ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper(getResources().getString( R.string.dialogDBQueryFailed), "Ok" ,null, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                    }
+                },null).show(getSupportFragmentManager(),"NA");
+
+
+
+
+
+            }
+
+
             //initialise LPG connetion phone no
-            LPG_CONNECTION_PHONE_NO = lpgparcelConnectionPhoneNumber;
-            lpgparcelConnectionIdentifier = lpgconnectioninfo.getConnectionid();
-            lpgparcelLastBookedDate = lpgconnectioninfo.getLastbookeddate();
-        }
+        lpgparcelConnectionName = c.getString(0);
+        lpgparcelConnectionProvider = c.getString(1);
+        lpgparcelLastBookedDate = c.getString(2);
+        lpgparcelExpectedExpiryDays = c.getString(3);
+        lpgparcelConnectionPhoneNumber=c.getString(4);
 
-        //set the edit text accordingly
         lpgConnectionName.setText(lpgparcelConnectionName);
         lpgProvider.setText(lpgparcelConnectionProvider);
         lpgExpiryDate.setText(lpgparcelLastBookedDate);
+        LPG_CONNECTION_PHONE_NO = lpgparcelConnectionPhoneNumber;
+
+
+            lpgparcelLastBookedDate = lpgconnectioninfo.getLastbookeddate();
+
+
+        //set the edit text accordingly
+
 
         //Set telephone call intent for call image
         final Intent lpgBookingCallIntent = new Intent(Intent.ACTION_CALL);

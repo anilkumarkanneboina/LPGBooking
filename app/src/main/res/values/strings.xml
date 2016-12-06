@@ -46,5 +46,6 @@
     <string name="lpgbooking_connection_provider">Connection Provider</string>
     <string name="lpgbooking_expected_expiry_Dte">Expected Expiry Date</string>
     <string name="lpgbooking_callpermissiondialog_title">Permission Requested</string>
+    <string name="dialogDBQueryFailed">There seems to be an issue with your connection details. Please try again later or create a new connection</string>
 
 </resources>

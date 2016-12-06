@@ -48,6 +48,10 @@ public class lpgconnectionparcel implements Parcelable {
 
     }
 
+    public lpgconnectionparcel(String id){
+        this.id = id;
+    }
+
     //constructor to set the parcel for the Parcelable object
     public lpgconnectionparcel(Parcel parcel){
         this.recordParcel = parcel;
