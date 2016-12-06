@@ -36,6 +36,7 @@ public class LPGBooking extends AppCompatActivity {
     private String LPG_CONNECTION_PHONE_NO;
 
     @Override
+    @RequiresPermission(Manifest.permission.CALL_PHONE)
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
 

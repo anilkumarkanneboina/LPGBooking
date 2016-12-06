@@ -2,6 +2,7 @@ package com.aekan.navya.lpgbooking;
 
 import android.app.AlarmManager;
 import android.app.Dialog;
+import android.os.Parcel;
 import android.support.v4.app.DialogFragment;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -68,6 +69,7 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
             marLPGExpiry = (TextView) v.findViewById(R.id.lpg_expiry);
             marEditConnection = (ImageButton) v.findViewById(R.id.edit_connection_btn);
             mARDeleteConnection = (ImageButton) v.findViewById(R.id.delete_connection_btn);
+            mARLPGBookingCall = (ImageButton) v.findViewById(R.id.call_refill_btn);
 
         }
 
@@ -273,6 +275,7 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
                             null,
                             null
                     );
+                    /*Parcel parcelBookCylinder = new */
                 }
                 catch (Exception e){
                     LPG_AlertBoxClass alertDialog = new LPG_AlertBoxClass();
