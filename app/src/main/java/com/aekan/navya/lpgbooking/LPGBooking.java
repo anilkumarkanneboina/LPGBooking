@@ -18,6 +18,7 @@ import android.support.annotation.RequiresPermission;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -25,6 +26,9 @@ import android.widget.ImageView;
 import com.aekan.navya.lpgbooking.utilities.LPG_AlertBoxClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
 import com.aekan.navya.lpgbooking.utilities.lpgconnectionparcel;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 /**
  * Created by arunramamurthy on 16/10/16.
@@ -71,6 +75,7 @@ public class LPGBooking extends AppCompatActivity {
         //get the connection id from the parcel, which has been added to the intent
         lpgconnectionparcel lpgconnectioninfo = getIntent().getParcelableExtra(lpgconnectionparcel.LPG_CONNECTIONRECORD_PARCEL);
         lpgparcelConnectionId = lpgconnectioninfo.getId();
+        Log.v("ClickLPGBooking", lpgparcelConnectionId);
 
 //            GEt the database and create a cursor variable for traversing
 //                the database
@@ -112,25 +117,40 @@ public class LPGBooking extends AppCompatActivity {
 
             }
 
-
-            //initialise LPG connetion phone no
+        //get booking details from cursor
         lpgparcelConnectionName = c.getString(0);
         lpgparcelConnectionProvider = c.getString(1);
         lpgparcelLastBookedDate = c.getString(2);
         lpgparcelExpectedExpiryDays = c.getString(3);
         lpgparcelConnectionPhoneNumber=c.getString(4);
 
+        //Populate the values from cursor in the
+        // appropriate text fields
         lpgConnectionName.setText(lpgparcelConnectionName);
         lpgProvider.setText(lpgparcelConnectionProvider);
         lpgExpiryDate.setText(lpgparcelLastBookedDate);
         LPG_CONNECTION_PHONE_NO = lpgparcelConnectionPhoneNumber;
+        //get the expected expiry date from last booking date and
+        // expected days to expiry
+        String[] lpgStringArrayForLastBookedDate = lpgparcelLastBookedDate.split("/");
+        int lpgLastExpiryDateDay = Integer.valueOf(lpgStringArrayForLastBookedDate[0]);
+        int lpgLastExpiryDateMonth = Integer.valueOf(lpgStringArrayForLastBookedDate[1]);
+        int lpgLastExpiryDateYear = Integer.valueOf(lpgStringArrayForLastBookedDate[2]);
 
+        GregorianCalendar lpgCalendarLastBookedDate = new GregorianCalendar();
+        lpgCalendarLastBookedDate.set(Calendar.DATE,lpgLastExpiryDateDay);
+        lpgCalendarLastBookedDate.set(Calendar.MONTH,lpgLastExpiryDateMonth - 1);
+        lpgCalendarLastBookedDate.set(Calendar.YEAR,lpgLastExpiryDateYear);
+        lpgCalendarLastBookedDate.add(Calendar.DATE, Integer.valueOf(lpgparcelExpectedExpiryDays));
+        //set this value to expected expiry date field
+        // Get the String value of the Date
+        String lpgStringExpiryDate = Integer.toString(lpgCalendarLastBookedDate.get(Calendar.DATE)) + "/" +
+                Integer.toString(lpgCalendarLastBookedDate.get(Calendar.MONTH) + 1) + "/" +
+                Integer.toString(lpgCalendarLastBookedDate.get(Calendar.YEAR));
+        lpgExpiryDate.setText(lpgStringExpiryDate);
 
-            lpgparcelLastBookedDate = lpgconnectioninfo.getLastbookeddate();
-
-
-        //set the edit text accordingly
-
+        //close the cursor
+        c.close();
 
         //Set telephone call intent for call image
         final Intent lpgBookingCallIntent = new Intent(Intent.ACTION_CALL);
@@ -139,15 +159,17 @@ public class LPGBooking extends AppCompatActivity {
         lpgBookingCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Log.v("LPGBooking","Inside On Click of Call Booking");
                 //startActivity(lpgBookingCallIntent);
                 //check if the app has been given permissions to make a call
                 if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                     //get permission from user to use the phone again
                     //before we inform the user, we need to check if we need user permission
-
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(getParent(), Manifest.permission.CALL_PHONE)) {
+                    Log.v("LPGBooking","Inside No permission available");
+                    if ((android.support.v4.app.ActivityCompat.shouldShowRequestPermissionRationale(LPGBooking.this, Manifest.permission.CALL_PHONE)) == false ){
+                        Log.v("LPGBooking","Inside Show request permission");
                         // if user permission is needed, inform a message to user through a dialogbox
+                        //android.support.v4.app.ActivityCompat.shouldShowRequestPermissionRationale(getParent(), Manifest.permission.CALL_PHONE)
                         // show the dialog box in a seperate thread so as not to stop the current execution
                         new AsyncTask<Void, Void, Boolean>() {
                             // DialogBox is being shown in worker thread of AsyncTask, through the doInBackground function
@@ -169,10 +191,10 @@ public class LPGBooking extends AppCompatActivity {
                                                     }
                                                 },
                                                 null
-                                        );
-                                ((LPGApplication) getApplication())
+                                        ).show(getSupportFragmentManager(), "Request Call Permission");;
+                              /*  ((LPGApplication) getApplication())
                                         .LPG_Alert.show(getSupportFragmentManager(), "Request Call Permission");
-
+*/
                                 return true;
 
                             }
@@ -181,7 +203,7 @@ public class LPGBooking extends AppCompatActivity {
                             protected void onPostExecute(Boolean result) {
                                 //show the user the permission dialog box to request for his permission.
 
-                                ActivityCompat.requestPermissions(getParent(), new String[]{Manifest.permission.CALL_PHONE}, LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE);
+                                ActivityCompat.requestPermissions(LPGBooking.this, new String[]{Manifest.permission.CALL_PHONE}, LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE);
                             }
 
                         }.execute();
@@ -189,6 +211,7 @@ public class LPGBooking extends AppCompatActivity {
 
                 } else {
                     // call the phone application
+                    Log.v("LPGBooking"," About to call Booking Call Intent");
                     startActivity(lpgBookingCallIntent);
                 }
 

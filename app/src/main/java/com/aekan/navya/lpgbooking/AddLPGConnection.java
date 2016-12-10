@@ -512,7 +512,7 @@ public class AddLPGConnection extends AppCompatActivity {
 
 
                 EditText lastBookedDateView = (EditText) getActivity().findViewById(R.id.add_lastbookeddate);
-                String selectedDate = Integer.toString(setMonth + 1) + "/" + Integer.toString(setDay) + "/" + Integer.toString(setYear);
+                String selectedDate = Integer.toString(setDay) +  "/" + Integer.toString(setMonth + 1) + "/" + Integer.toString(setYear);
                 Log.v("DateSelected", selectedDate);
                 lastBookedDateView.setText(selectedDate);
 
