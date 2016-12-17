@@ -6,13 +6,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
 import android.support.v4.app.ActivityCompat;
@@ -23,7 +19,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.aekan.navya.lpgbooking.utilities.LPG_AlertBoxClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
 import com.aekan.navya.lpgbooking.utilities.lpgconnectionparcel;
 
@@ -62,6 +57,9 @@ public class LPGBooking extends AppCompatActivity {
         lpgConnectionName.setClickable(false);
         lpgExpiryDate.setClickable(false);
         lpgProvider.setClickable(false);
+
+        //set background color for status bar
+        // for some reason colorPrimaryDark is not applied for status bar
 
         //Local variables to get connection details from parcel;
         String lpgparcelConnectionId;
@@ -191,7 +189,7 @@ public class LPGBooking extends AppCompatActivity {
                                                     }
                                                 },
                                                 null
-                                        ).show(getSupportFragmentManager(), "Request Call Permission");;
+                                        ).show(getSupportFragmentManager(), "Request Call Permission");
                               /*  ((LPGApplication) getApplication())
                                         .LPG_Alert.show(getSupportFragmentManager(), "Request Call Permission");
 */
