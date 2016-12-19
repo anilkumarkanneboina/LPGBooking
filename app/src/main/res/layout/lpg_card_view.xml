@@ -9,35 +9,31 @@
     android:layout_marginRight="16dp"
     android:layout_marginEnd="16dp"
     android:layout_width="wrap_content"
-    card_view:cardCornerRadius="6dp"
+    card_view:cardCornerRadius="2dp"
     android:layout_height="wrap_content">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp">
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginStart="0dp">
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="72dp"
         android:id="@+id/lpg_cylinder_name"
         android:background="@color/lpg_name_bkgrnd"
-        android:drawablePadding="16dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:paddingTop="8dp"
-        android:paddingLeft="8dp"
+        android:drawablePadding="0dp"
+        android:paddingTop="0dp"
         android:paddingRight="8dp"
-        android:paddingBottom="8dp"
         android:text="Test"
         android:gravity="center_vertical"
         android:textColor="@android:color/white"
         android:textSize="24sp"
-        />
+        android:paddingLeft="8dp"
+        android:layout_height="56dp" />
 
     <TextView
         android:layout_width="match_parent"
@@ -48,11 +44,11 @@
         android:text="Text"
 
         android:layout_marginTop="16dp"
-        android:paddingTop="8dp"
+        android:paddingTop="0dp"
         android:paddingLeft="8dp"
         android:paddingStart="8dp"
         android:paddingRight="8dp"
-        android:paddingBottom="8dp"
+        android:paddingBottom="0dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginEnd="8dp"

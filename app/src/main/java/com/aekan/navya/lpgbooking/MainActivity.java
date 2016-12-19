@@ -35,24 +35,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //Create or open the database ;
-       /* LPG_SQLOpenHelperClass lPG_DB = new LPG_SQLOpenHelperClass(getApplicationContext());
-        SQLiteDatabase DB_LPG_CONNECTION = lPG_DB.getWritableDatabase();*/
-        //Instantiate DB and Alert Box;
-        ((LPGApplication) this.getApplication()).LPG_AlertBoxInstantiate();
-
-        DialogInterface.OnClickListener setOKButton = new DialogInterface.OnClickListener(){
-            public void onClick(DialogInterface dialogInterface, int id){
-                dialogInterface.cancel();
-            }
-
-
-        };
-        //Create Alert Box
-        ((LPGApplication) this.getApplication()).LPG_Alert.showDialogHelper("Setting up","Ok",null, setOKButton,null);
-        ((LPGApplication) this.getApplication()).LPG_Alert.show(getSupportFragmentManager(),"Dialog");
-
-
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -103,21 +85,7 @@ public class MainActivity extends AppCompatActivity {
                 null
                 );
 
-      /*  //print data set count for the cursor
-        String[] iDCountArray = {"MAX("+LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID+") AS MAXID" };
 
-        SQLiteCursor sqLiteCursor1 = (SQLiteCursor) ((LPGApplication) getApplication()).LPGDB.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,iDCountArray,null,null,null,null,null) ;
-        String strIDConcat = new String() ;
-        sqLiteCursor1.moveToFirst();
-        for (int i=0;i<sqLiteCursor1.getCount();++i){
-            Log.v("ID value ","Counter"+ i);
-            strIDConcat = strIDConcat + sqLiteCursor1.getString(0) + " ";
-            sqLiteCursor1.moveToNext();
-
-        }
-        sqLiteCursor1.moveToFirst();
-        ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper("ID count " + sqLiteCursor1.getString(sqLiteCursor1.getColumnIndex("MAXID")),"Ok",null,setOKButton,null);
-*/
         recyclerView.setAdapter(new LPGCylinderListViewAdapter(sqLiteCursor));
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
