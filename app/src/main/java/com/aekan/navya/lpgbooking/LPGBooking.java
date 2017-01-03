@@ -14,6 +14,7 @@ import android.support.annotation.RequiresPermission;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -57,6 +58,20 @@ public class LPGBooking extends AppCompatActivity {
         lpgConnectionName.setClickable(false);
         lpgExpiryDate.setClickable(false);
         lpgProvider.setClickable(false);
+
+        //set back stack for the activity
+        Toolbar toolbar = (Toolbar) findViewById(R.id.lpgbooking_toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent homeIntent = new Intent(getApplicationContext(),MainActivity.class);
+                if (homeIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(homeIntent);
+                }
+            }
+        });
+
 
         //set background color for status bar
         // for some reason colorPrimaryDark is not applied for status bar
