@@ -11,6 +11,7 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import com.aekan.navya.lpgbooking.MainActivity;
 import com.aekan.navya.lpgbooking.R;
+import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
 
 /**
  * Created by aruramam on 8/6/2016.
@@ -28,8 +29,8 @@ class LPG_AlarmReceiver extends BroadcastReceiver {
         //Build the notification
         NotificationCompat.Builder lpgExpiryNotificationBuilder = new NotificationCompat.Builder(context);
         lpgExpiryNotificationBuilder.setSmallIcon(R.drawable.ic_feedback_black_24dp);
-        lpgExpiryNotificationBuilder.setContentTitle(intent.getStringExtra("NotificationTitle"));
-        lpgExpiryNotificationBuilder.setContentText(intent.getStringExtra("NotificationContent"));
+        lpgExpiryNotificationBuilder.setContentTitle(intent.getStringExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONTITLE));
+        lpgExpiryNotificationBuilder.setContentText(intent.getStringExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONCONTENT));
 
         //Create an event to start booking activity
         Intent intentStartActivity = new Intent(context, MainActivity.class);
@@ -44,7 +45,7 @@ class LPG_AlarmReceiver extends BroadcastReceiver {
         lpgExpiryNotificationBuilder.addAction(R.drawable.ic_date_range_black_36dp,"Book",pendingIntentStartActivity);
 
         NotificationManager lpgNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        lpgNotificationManager.notify(Integer.parseInt(intent.getStringExtra("NotificationID")),lpgExpiryNotificationBuilder.build());
+        lpgNotificationManager.notify(Integer.parseInt(intent.getStringExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONID)),lpgExpiryNotificationBuilder.build());
 
 
     }

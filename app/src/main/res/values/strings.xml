@@ -35,6 +35,7 @@
     <string name="Calendar_Accessibility_message">Click on this image to select latest booked date for your LPG connection</string>
     <string name="btn_Submit">Submit</string>
     <string name="btn_Cancel">Cancel</string>
+    <string name="Notification_MidWayAlarm">is half done. Click to book your cylinder</string>
 
     <!--String values for Main Activity -->
     <string name="toast_delete_successful">LPG connection deleted successfully</string>
@@ -47,5 +48,14 @@
     <string name="lpgbooking_expected_expiry_Dte">Expected Expiry Date</string>
     <string name="lpgbooking_callpermissiondialog_title">Permission Requested</string>
     <string name="dialogDBQueryFailed">There seems to be an issue with your connection details. Please try again later or create a new connection</string>
+
+
+    <!--string values for confirm LPG Booking-->
+    <string name="confirmlpgbooking_description">Hope you had booked your cylinder. Shall we start tracking it then? Click on No if you have not booked, and you can try again later.</string>
+    <string name="confirmbooking_button_yes">YES</string>
+    <string name="confirmbooking_button_no">NO</string>
+    <string name="confirmbooking_updatefailure">Unable to update, please edit last booking date in Edit Connection Page</string>
+    <string name="confirmbooking_cursorfetchfailure">Unable to retrieve DB, please edit last booking date in Edit Connection Page</string>
+    <string name="confirmbooking_alarm_notificationtitle_yes">Time to book your cylinder!!</string>
 
 </resources>

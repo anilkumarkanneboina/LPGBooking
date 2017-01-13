@@ -6,4 +6,5 @@
     <color name="lpg_name_bkgrnd">#6AB344</color>
     <color name="colorWhite">#ffffff</color>
     <color name="lpg_expiry_textcolor">#ED819A</color>
+    <color name="confirmbooking_button_no">#FF4571</color>
 </resources>

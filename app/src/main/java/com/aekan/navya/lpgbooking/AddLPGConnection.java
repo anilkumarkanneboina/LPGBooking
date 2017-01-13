@@ -31,6 +31,7 @@ import android.widget.ScrollView;
 
 import com.aekan.navya.lpgbooking.utilities.LPG_AlertBoxClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
+import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -314,6 +315,9 @@ public class AddLPGConnection extends AppCompatActivity {
                         }
 
                     }
+
+                    //close DB
+                    sqLiteDatabase.close();
                     // set alarms based on last confirmed date and expiry time
                     // get the last booked date and get the date which would be mid-way till expiry
                     // if the mid-way date is not in the past, then set an alarm on that day
@@ -328,7 +332,6 @@ public class AddLPGConnection extends AppCompatActivity {
                     String strLPGConnectionDays = lpgconnnectionexpiry.getText().toString();
 
                     int lpgExpiryDays = Integer.parseInt(strLPGConnectionDays);
-
 
                     if (strDateFields.length != 0 ){
 
@@ -355,8 +358,9 @@ public class AddLPGConnection extends AppCompatActivity {
                             // Create an intent and use that to create the pending intent for alarm manager
                             Intent notificationIntent = new Intent(getApplicationContext(),LPG_AlarmReceiver.class);
                             // Add notification informatino to the intent
-                            notificationIntent.putExtra("NotificationTitle","Cylinder is half done");
-                            notificationIntent.putExtra("NotificationContent", lpgConnection.getText().toString() + " is half empty now. Please click on Book icon to book the cylinder now!!");
+                            notificationIntent.putExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONTITLE,"Cylinder is half done");
+                            notificationIntent.putExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONID,finalIDCount);
+                            notificationIntent.putExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONCONTENT, lpgConnection.getText().toString() + " is half empty now. Please click on Book icon to book the cylinder now!!");
                             // Create a pending intent request code, which will refer to the alarm being set for this lpg connnection id
                             // Utilising the same pending intent request code will help to replace the existing alarm, if there is a change in
                             // lpg expiry days by any chance. In this application we explicitly do not check to reset the alarm
@@ -365,7 +369,7 @@ public class AddLPGConnection extends AppCompatActivity {
                             // Additionally, we will identify alarms used for mid-term expiry reminder with trailing numeral one to int request
                             // This is evident in pendingIntentRequestCode variable initialization below
                             int pendingIntentRequestCode = Integer.parseInt(finalIDCount) * 10 + 1;
-                            PendingIntent notificationPendingIntent = PendingIntent.getBroadcast(getApplicationContext(),pendingIntentRequestCode,notificationIntent,0);
+                            PendingIntent notificationPendingIntent = PendingIntent.getBroadcast(getApplicationContext(),pendingIntentRequestCode,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 
                             midwayExpiryDate.set(Calendar.HOUR_OF_DAY,12);
                             midwayExpiryDate.set(Calendar.MINUTE,1);
