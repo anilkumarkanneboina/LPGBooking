@@ -57,5 +57,7 @@
     <string name="confirmbooking_updatefailure">Unable to update, please edit last booking date in Edit Connection Page</string>
     <string name="confirmbooking_cursorfetchfailure">Unable to retrieve DB, please edit last booking date in Edit Connection Page</string>
     <string name="confirmbooking_alarm_notificationtitle_yes">Time to book your cylinder!!</string>
+    <string name="confirmbooking_success">Great!! We have successfully started tracking your new booking. We will keep you updated about time to book refill for this cylinder!!</string>
+    <string name="confirmbooking_failure">Never mind!! We will inform you to book this cylinder again in a day\'s time</string>
 
 </resources>

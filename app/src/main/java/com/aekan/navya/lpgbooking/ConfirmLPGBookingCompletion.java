@@ -27,6 +27,8 @@ import java.util.GregorianCalendar;
 
 public class ConfirmLPGBookingCompletion extends AppCompatActivity {
 
+    public final String LPGCONNECTIONEXPIRYDAYS = "FAILURE TO FETCH CONNECTION EXPIRY DAYS FROM DB";
+
     /*Create the activity which would request confirmation from
     user about LPG Booking attempt - the activity will reset the corresponding
     LPG Cylinder's last booked date to current date, and create alarma.
@@ -41,9 +43,8 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
         // Define the local variables for onCreate method
         //get connection id for the cylinder
         final String LPG_CONNECTION_ID = getIntent().getStringExtra(LPG_Utility.LPG_CONNECTION_ID) ;
-        final String LPGCONNECTIONEXPIRYDAYS = "FAILURE TO FETCH CONNECTION EXPIRY DAYS FROM DB";
         final AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-
+        final String LPGConnectionExpiryDays = getLPGCONNECTIONEXPIRYDAYS(LPG_CONNECTION_ID);
         //set content for the activity
         setContentView(R.layout.confirm_lpg_submission);
 
@@ -51,6 +52,7 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
         //get the button controls
         Button buttonConfirmLPGBookingYes = (Button) findViewById(R.id.confirmbooking_yes);
         Button buttonConfirmLPGBookingNo = (Button) findViewById(R.id.confirmbooking_no);
+
 
         /*set on-click listener for the yes buttonConfirmLPGBookingYes
         Now this has many parts to it.
@@ -100,39 +102,7 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
 
                 //get expected expiry days for the connection
 
-                String[] fieldListExpectedExpiryDate = {LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS};
-                String ConnectionExpiryDays = new String();
-                try {
 
-                    Cursor c = db.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,
-                            fieldListExpectedExpiryDate,
-                            whereClause,
-                            whereClauseFilter,
-                            null,
-                            null,
-                            LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS + "DESC");
-
-                    if (c.moveToFirst()){
-                        ConnectionExpiryDays = c.getString(0);
-                    }
-                    c.close();
-
-
-                } catch (Exception e){
-                    ConnectionExpiryDays = LPGCONNECTIONEXPIRYDAYS;
-
-                    ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper(getResources().getString(R.string.confirmbooking_cursorfetchfailure),
-                            "Ok",
-                            null,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            },
-                            null
-                    ).show(getSupportFragmentManager(),"Failure to get Connection Expiry Days");
-                }
 
                 //Create an Alarm with updated Connection Expiry String
                 //create the intent
@@ -142,7 +112,7 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
                 intentAlarmForSuccessfulBooking.putExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONCONTENT, LPG_CONNECTION_ID + getResources().getString(R.string.Notification_MidWayAlarm) );
 
                 Calendar midWayAlarm = Calendar.getInstance();
-                int intConnectionExpiryDays = Integer.parseInt(ConnectionExpiryDays);
+                int intConnectionExpiryDays = Integer.parseInt(LPGConnectionExpiryDays);
                 int pendingIntentRequestCode = Integer.parseInt(LPG_CONNECTION_ID) * 10 + 1;
 
                 midWayAlarm.add(Calendar.DAY_OF_MONTH,Math.round(intConnectionExpiryDays));
@@ -152,11 +122,96 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
                 PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(getApplicationContext(),pendingIntentRequestCode,intentAlarmForSuccessfulBooking,PendingIntent.FLAG_UPDATE_CURRENT);
                 alarmManager.set(AlarmManager.RTC,midWayAlarm.getTimeInMillis(),alarmPendingIntent);
 
+                //Set a success message to user
+                ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper(getResources().getString(R.string.confirmbooking_success),
+                        "Ok",
+                        null,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        },null).show(getSupportFragmentManager(),"Successful Booking");
+
                 //close db
                 db.close();
             }
         });
 
+
+        //set onclick listener for No button
+        buttonConfirmLPGBookingNo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //set an alarm to notify user in a day's time
+                Calendar nextNotification = Calendar.getInstance();
+                nextNotification.add(Calendar.DATE,1);
+                nextNotification.set(Calendar.HOUR_OF_DAY,12);
+                nextNotification.set(Calendar.MINUTE,1);
+
+                //Set a toast message that user can try booking
+                //after some time
+                ((LPGApplication)  getApplication()).LPG_Alert.showDialogHelper(getResources().getString(R.string.confirmbooking_failure),
+                        "Ok",
+                        null,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        },null
+                ).show(getSupportFragmentManager(),"Failure to update");
+
+
+            }
+        });
+    }
+
+    public String getLPGCONNECTIONEXPIRYDAYS (String LPGCONNECTIONID){
+        SQLiteDatabase db = ((LPGApplication) getApplication()).LPGDB ;
+        ContentValues updateFieldsList = new ContentValues();
+        String[] fieldListExpectedExpiryDate = {LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS};
+        String whereClause = LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_ID + " LIKE ?";
+        String[] whereClauseFilter = { LPGCONNECTIONID };
+
+        String ConnectionExpiryDays = new String();
+        try {
+
+            Cursor c = db.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,
+                    fieldListExpectedExpiryDate,
+                    whereClause,
+                    whereClauseFilter,
+                    null,
+                    null,
+                    LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS + "DESC");
+
+            if (c.moveToFirst()){
+                ConnectionExpiryDays = c.getString(0);
+            }
+            c.close();
+
+
+        } catch (Exception e){
+            ConnectionExpiryDays = LPGCONNECTIONEXPIRYDAYS;
+
+            ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper(getResources().getString(R.string.confirmbooking_cursorfetchfailure),
+                    "Ok",
+                    null,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    },
+                    null
+            ).show(getSupportFragmentManager(),"Failure to get Connection Expiry Days");
+        }
+
+        //close DB
+        db.close();
+
+        //return connection expiry days
+        return ConnectionExpiryDays ;
     }
 
 
