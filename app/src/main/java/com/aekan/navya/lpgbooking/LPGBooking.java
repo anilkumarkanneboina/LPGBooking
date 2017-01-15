@@ -15,11 +15,14 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.aekan.navya.lpgbooking.utilities.LPG_PhoneListener;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
 import com.aekan.navya.lpgbooking.utilities.lpgconnectionparcel;
 
@@ -38,6 +41,8 @@ public class LPGBooking extends AppCompatActivity {
     // this field would be initialised during onCreate and would
     // be used subsequently during permission response handling
     private String LPG_CONNECTION_PHONE_NO;
+    private TelephonyManager telephonyManager;
+    private LPG_PhoneListener phoneStateListener;
 
     @Override
     @RequiresPermission(Manifest.permission.CALL_PHONE)
@@ -85,10 +90,18 @@ public class LPGBooking extends AppCompatActivity {
         String lpgparcelExpectedExpiryDays;
         String lpgExpectedExpiryDate;
 
+
         //get the connection id from the parcel, which has been added to the intent
         lpgconnectionparcel lpgconnectioninfo = getIntent().getParcelableExtra(lpgconnectionparcel.LPG_CONNECTIONRECORD_PARCEL);
         lpgparcelConnectionId = lpgconnectioninfo.getId();
         Log.v("ClickLPGBooking", lpgparcelConnectionId);
+
+        //register phone listener
+        telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+        phoneStateListener = new LPG_PhoneListener(getApplication(), lpgparcelConnectionId);
+        telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+
+
 
 //            GEt the database and create a cursor variable for traversing
 //                the database
@@ -164,6 +177,9 @@ public class LPGBooking extends AppCompatActivity {
 
         //close the cursor
         c.close();
+        //close DB
+        dbLPG.close();
+
 
         //Set telephone call intent for call image
         final Intent lpgBookingCallIntent = new Intent(Intent.ACTION_CALL);
@@ -270,6 +286,14 @@ public class LPGBooking extends AppCompatActivity {
 
             }
         }
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //unregister phone state listener
+        telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
 
     }
 }

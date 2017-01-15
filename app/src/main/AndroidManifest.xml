@@ -3,7 +3,7 @@
     package="com.aekan.navya.lpgbooking" >
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.CALL_PHONE"    />
-
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <application
         android:name=".LPGApplication"
         android:allowBackup="true"

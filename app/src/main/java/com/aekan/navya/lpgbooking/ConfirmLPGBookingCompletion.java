@@ -9,8 +9,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ButtonBarLayout;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -52,7 +52,15 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
         //get the button controls
         Button buttonConfirmLPGBookingYes = (Button) findViewById(R.id.confirmbooking_yes);
         Button buttonConfirmLPGBookingNo = (Button) findViewById(R.id.confirmbooking_no);
+        FloatingActionButton floatingActionButtonBack = (FloatingActionButton) findViewById(R.id.fabBack);
 
+        floatingActionButtonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentMainActivity = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intentMainActivity);
+            }
+        });
 
         /*set on-click listener for the yes buttonConfirmLPGBookingYes
         Now this has many parts to it.
@@ -122,6 +130,10 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
                 PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(getApplicationContext(),pendingIntentRequestCode,intentAlarmForSuccessfulBooking,PendingIntent.FLAG_UPDATE_CURRENT);
                 alarmManager.set(AlarmManager.RTC,midWayAlarm.getTimeInMillis(),alarmPendingIntent);
 
+
+                //close db
+                db.close();
+
                 //Set a success message to user
                 ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper(getResources().getString(R.string.confirmbooking_success),
                         "Ok",
@@ -133,8 +145,6 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
                             }
                         },null).show(getSupportFragmentManager(),"Successful Booking");
 
-                //close db
-                db.close();
             }
         });
 
@@ -148,6 +158,22 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
                 nextNotification.add(Calendar.DATE,1);
                 nextNotification.set(Calendar.HOUR_OF_DAY,12);
                 nextNotification.set(Calendar.MINUTE,1);
+
+                //set a notification for next day
+                Intent intentAlarmForFailureBooking = new Intent(getApplicationContext(), LPGBooking.class);
+                intentAlarmForFailureBooking.putExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONTITLE, getResources().getString(R.string.confirmbooking_alarm_notificationtitle_yes));
+                intentAlarmForFailureBooking.putExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONID, LPG_CONNECTION_ID);
+                intentAlarmForFailureBooking.putExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONCONTENT, LPG_CONNECTION_ID + getResources().getString(R.string.confirmbooking_failure_notificationmessage));
+
+                int pendingIntentRequestCodeFailure = Integer.parseInt(LPG_CONNECTION_ID) * 10 + 1;
+
+                PendingIntent pendingIntentFailureIntent = PendingIntent.getBroadcast(getApplicationContext(),
+                        pendingIntentRequestCodeFailure,
+                        intentAlarmForFailureBooking,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+
+                // int pendingIntentRequestCodeFailure = Integer.parseInt(LPG_CONNECTION_ID ) * 10 + 1;
+                alarmManager.set(AlarmManager.RTC, nextNotification.getTimeInMillis(), pendingIntentFailureIntent);
 
                 //Set a toast message that user can try booking
                 //after some time
@@ -212,6 +238,12 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
 
         //return connection expiry days
         return ConnectionExpiryDays ;
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
     }
 
 

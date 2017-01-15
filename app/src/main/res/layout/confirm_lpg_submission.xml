@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/tools"
-    xmlns:app2="http://schemas.android.com/apk/res-auto"
-    android:fitsSystemWindows="true"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|start"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@android:drawable/ic_dialog_email" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -16,50 +21,50 @@
             android:id="@+id/confirmbooking_description_textview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/confirmbooking_description_leftpadding"
-            android:paddingStart="@dimen/confirmbooking_description_leftpadding"
-            android:paddingRight="@dimen/confirmbooking_description_leftpadding"
-            android:paddingEnd="@dimen/confirmbooking_description_leftpadding"
             android:gravity="center_horizontal"
-            android:textSize="@dimen/confirmbooking_description_fontsize"
-
+            android:paddingEnd="@dimen/confirmbooking_description_leftpadding"
+            android:paddingLeft="@dimen/confirmbooking_description_leftpadding"
+            android:paddingRight="@dimen/confirmbooking_description_leftpadding"
+            android:paddingStart="@dimen/confirmbooking_description_leftpadding"
             android:text="@string/confirmlpgbooking_description"
+
+            android:textSize="@dimen/confirmbooking_description_fontsize"
             />
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_height="wrap_content"
             android:layout_below="@id/confirmbooking_description_textview"
-            android:orientation="horizontal"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="16dp"
             android:gravity="center_horizontal"
-            android:layout_height="wrap_content">
+            android:orientation="horizontal">
              <Button
                 android:id="@+id/confirmbooking_yes"
                 android:layout_width="@dimen/confirmbooking_button_width"
                 android:layout_height="@dimen/confirmbooking_button_height"
+                 android:layout_marginEnd="@dimen/confirmbooking_button_margin"
+                 android:layout_marginRight="@dimen/confirmbooking_button_margin"
+                 android:background="@color/colorPrimary"
                 android:minHeight="48dp"
+                 android:paddingEnd="@dimen/confirmbooking_button_internalpadding"
                 android:paddingLeft="@dimen/confirmbooking_button_internalpadding"
                 android:paddingRight="@dimen/confirmbooking_button_internalpadding"
                 android:paddingStart="@dimen/confirmbooking_button_internalpadding"
-                android:paddingEnd="@dimen/confirmbooking_button_internalpadding"
                 android:text="@string/confirmbooking_button_yes"
-                android:background="@color/colorPrimary"
-                android:layout_marginEnd="@dimen/confirmbooking_button_margin"
-                android:layout_marginRight="@dimen/confirmbooking_button_margin"
                  />
             <Button
                 android:id="@+id/confirmbooking_no"
                 android:layout_width="@dimen/confirmbooking_button_width"
                 android:layout_height="@dimen/confirmbooking_button_height"
+                android:layout_marginEnd="@dimen/confirmbooking_button_margin"
+                android:layout_marginRight="@dimen/confirmbooking_button_margin"
+                android:background="@color/confirmbooking_button_no"
                 android:minHeight="48dp"
+                android:paddingEnd="@dimen/confirmbooking_button_internalpadding"
                 android:paddingLeft="@dimen/confirmbooking_button_internalpadding"
                 android:paddingRight="@dimen/confirmbooking_button_internalpadding"
                 android:paddingStart="@dimen/confirmbooking_button_internalpadding"
-                android:paddingEnd="@dimen/confirmbooking_button_internalpadding"
                 android:text="@string/confirmbooking_button_no"
-                android:background="@color/confirmbooking_button_no"
-                android:layout_marginEnd="@dimen/confirmbooking_button_margin"
-                android:layout_marginRight="@dimen/confirmbooking_button_margin"
                 />
         </LinearLayout>
 
