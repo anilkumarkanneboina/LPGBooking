@@ -6,18 +6,21 @@ import android.content.Intent;
 import android.support.annotation.RequiresPermission;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
 import com.aekan.navya.lpgbooking.ConfirmLPGBookingCompletion;
 
 /**
  * Created by arunramamurthy on 15/01/17.
+ * Phone Listener - will start activity to request booking confirmation from user
+ * when the phone connection is disconnnected.
  */
 
 public class LPG_PhoneListener extends PhoneStateListener {
     //class to create phone listener override
     //Set flag string for Phone state listener
-    public static final String PHONELISTENERFLAGOFFHOOK = "PHONE OFF HOOK";
-    public static final String PHONELISTENERFLAGONHOOK = "PHONE ON HOOK";
+    private static final String PHONELISTENERFLAGOFFHOOK = "PHONE OFF HOOK";
+    private static final String PHONELISTENERFLAGONHOOK = "PHONE ON HOOK";
 
     //field for tracking phone listener
     private String setPhoneFlag;
@@ -31,6 +34,7 @@ public class LPG_PhoneListener extends PhoneStateListener {
         super();
         applicationContext = context;
         LPGConnectionId = connectionid;
+        Log.v("In PhoneListerenr", LPGConnectionId);
 
     }
 
@@ -43,19 +47,21 @@ public class LPG_PhoneListener extends PhoneStateListener {
             case (TelephonyManager.CALL_STATE_IDLE):
                 //start the next activity if the user had initiated the call
                 //well, we safely believe that the call was to book the phone
-                if (setPhoneFlag == LPG_PhoneListener.PHONELISTENERFLAGOFFHOOK) {
+                if (setPhoneFlag.equals(LPG_PhoneListener.PHONELISTENERFLAGOFFHOOK)) {
                     // change the flag;
                     setPhoneFlag = PHONELISTENERFLAGONHOOK;
 
                     //start the intent
                     Intent intentConfirmLPGBooking = new Intent(applicationContext, ConfirmLPGBookingCompletion.class);
                     intentConfirmLPGBooking.putExtra(LPG_Utility.LPG_CONNECTION_ID, LPGConnectionId);
+                    intentConfirmLPGBooking.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     applicationContext.startActivity(intentConfirmLPGBooking);
 
                 }
                 break;
 
             case (TelephonyManager.CALL_STATE_OFFHOOK):
+                Log.v("Inside Phone Listener", "Phone off hook");
                 //user has called the phone from within the application
                 // time to set the flag that the user has attempted to book his cylinder
                 setPhoneFlag = LPG_PhoneListener.PHONELISTENERFLAGOFFHOOK;

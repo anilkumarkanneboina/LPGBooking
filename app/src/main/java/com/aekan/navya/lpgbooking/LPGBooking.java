@@ -66,6 +66,8 @@ public class LPGBooking extends AppCompatActivity {
 
         //set back stack for the activity
         Toolbar toolbar = (Toolbar) findViewById(R.id.lpgbooking_toolbar);
+        //set support action bar
+        setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,7 +180,7 @@ public class LPGBooking extends AppCompatActivity {
         //close the cursor
         c.close();
         //close DB
-        dbLPG.close();
+        //dbLPG.close();
 
 
         //Set telephone call intent for call image
@@ -289,11 +291,19 @@ public class LPGBooking extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        //unregister phone state listener
-        telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
 
+  /*  @Override
+    protected void onResume() {
+        super.onResume();
+        telephonyManager.listen(phoneStateListener,PhoneStateListener.LISTEN_CALL_STATE);
     }
+*/
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
+    }
+
+
 }

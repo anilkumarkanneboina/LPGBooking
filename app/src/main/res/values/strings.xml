@@ -1,10 +1,10 @@
 <resources>
     <!--General strings-->
-    <string name="DIALOG_OK">Ok</string>
+    <string name="DIALOG_OK">OK</string>
     <string name="DIALOG_CANCEL">Cancel</string>
 
 
-    <string name="app_name">LPGBooking</string>
+    <string name="app_name">LPG Booking</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_add_lpgconnection">AddLPGConnection</string>
     <string name="add_agency">Agency</string>
@@ -36,6 +36,11 @@
     <string name="btn_Submit">Submit</string>
     <string name="btn_Cancel">Cancel</string>
     <string name="Notification_MidWayAlarm">is half done. Click to book your cylinder</string>
+    <string name="Add_Connection_User_Prompt_AddMode">You can add a new LPG connection details here. Make sure you give the right phone numbers for your LPG Dealer / Distributor, which will come in handy when you try to refill.</string>
+    <string name="Add_Connection_User_Prompt_EditMode">You can edit your LPG Booking details below.</string>
+    <string name="Add_LPGBooking_AddMode_Title">Add Connection</string>
+    <string name="Add_LPGBooking_EditMode_Title">Edit Connection</string>
+    <string name="Add_Connection_User_Prompt">Please add a new cylinder connection </string>
 
     <!--String values for Main Activity -->
     <string name="toast_delete_successful">LPG connection deleted successfully</string>
@@ -51,6 +56,7 @@
 
 
     <!--string values for confirm LPG Booking-->
+    <string name="confirmbooking_label">Confirm your booking</string>
     <string name="confirmlpgbooking_description">Hope you had booked your cylinder. Shall we start tracking it then? Click on No if you have not booked, and you can try again later.</string>
     <string name="confirmbooking_button_yes">YES</string>
     <string name="confirmbooking_button_no">NO</string>

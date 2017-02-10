@@ -13,7 +13,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -317,7 +316,7 @@ public class AddLPGConnection extends AppCompatActivity {
                     }
 
                     //close DB
-                    sqLiteDatabase.close();
+                    // sqLiteDatabase.close();
                     // set alarms based on last confirmed date and expiry time
                     // get the last booked date and get the date which would be mid-way till expiry
                     // if the mid-way date is not in the past, then set an alarm on that day
@@ -374,7 +373,7 @@ public class AddLPGConnection extends AppCompatActivity {
                             midwayExpiryDate.set(Calendar.HOUR_OF_DAY,12);
                             midwayExpiryDate.set(Calendar.MINUTE,1);
 
-                            AlarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,midwayExpiryDate.getTimeInMillis() ,notificationPendingIntent);
+                            AlarmManager.set(android.app.AlarmManager.ELAPSED_REALTIME_WAKEUP, midwayExpiryDate.getTimeInMillis(), notificationPendingIntent);
                             Log.v("Alarm", "Alarm Set for  " + midwayExpiryDate.toString());
 
 

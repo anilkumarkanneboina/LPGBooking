@@ -42,7 +42,8 @@
     <dimen name="lpgbooking_margin_start_image">32dp</dimen>
     <dimen name="lpgbooking_margin_right_image">16dp</dimen>
     <dimen name="lpgbooking_margin_bottom_image">16dp</dimen>
-
+    <dimen name="lpgbooking_userprompt_margintop">24dp</dimen>
+    <dimen name="lpgbooking_userprompt_marginBottom">8dp</dimen>
     <!--dimensions for confirm booking page-->
     <dimen name="confirmbooking_description_fontsize">24sp</dimen>
     <dimen name="confirmbooking_description_leftpadding">24dp</dimen>

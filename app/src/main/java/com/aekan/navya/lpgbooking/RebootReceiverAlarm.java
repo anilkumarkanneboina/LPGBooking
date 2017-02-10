@@ -10,14 +10,15 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.aekan.navya.lpgbooking.utilities.LPG_SQLOpenHelperClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
-import com.aekan.navya.lpgbooking.utilities.lpgconnectionparcel;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 /**
  * Created by arunramamurthy on 15/08/16.
+ * Reboot Alarm set up
  */
+
 public class RebootReceiverAlarm extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -71,7 +72,7 @@ public class RebootReceiverAlarm extends BroadcastReceiver {
         }
 
     // Close the DB and cursor
-        sqLiteDatabase.close();
+        // sqLiteDatabase.close();
         cursor.close();
     }
 }

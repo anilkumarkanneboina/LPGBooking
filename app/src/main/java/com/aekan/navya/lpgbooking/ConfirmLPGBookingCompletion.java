@@ -6,7 +6,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
+import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.aekan.navya.lpgbooking.utilities.LPG_SQLOpenHelperClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
 
@@ -43,6 +44,7 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
         // Define the local variables for onCreate method
         //get connection id for the cylinder
         final String LPG_CONNECTION_ID = getIntent().getStringExtra(LPG_Utility.LPG_CONNECTION_ID) ;
+        Log.v("In ConfirmBooking", " LPG Connection Id = " + LPG_CONNECTION_ID);
         final AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         final String LPGConnectionExpiryDays = getLPGCONNECTIONEXPIRYDAYS(LPG_CONNECTION_ID);
         //set content for the activity
@@ -78,14 +80,14 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
                 int currentDate = currentCalendar.get(Calendar.DAY_OF_MONTH);
                 int currentMonth = currentCalendar.get(Calendar.MONTH);
                 int currentYear = currentCalendar.get(Calendar.YEAR);
-                String currentDateString = Integer.toString(currentDate) + Integer.toString(currentMonth + 1) + Integer.toString(currentYear);
+                String currentDateString = Integer.toString(currentDate) + "/" + Integer.toString(currentMonth + 1) + "/" + Integer.toString(currentYear);
 
                 //Update the current date string in database as the last booked date
                 // for the cyliner in quesion
                 SQLiteDatabase db = ((LPGApplication) getApplication()).LPGDB ;
                 ContentValues updateFieldsList = new ContentValues();
                 updateFieldsList.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.LAST_BOOKED_DATE,currentDateString);
-                String whereClause = LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_ID + " LIKE ?";
+                String whereClause = LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID + " = ?";
                 String[] whereClauseFilter = { LPG_CONNECTION_ID };
                 try {
                     db.update(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,
@@ -120,10 +122,11 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
                 intentAlarmForSuccessfulBooking.putExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONCONTENT, LPG_CONNECTION_ID + getResources().getString(R.string.Notification_MidWayAlarm) );
 
                 Calendar midWayAlarm = Calendar.getInstance();
+                // Log.v("")
                 int intConnectionExpiryDays = Integer.parseInt(LPGConnectionExpiryDays);
                 int pendingIntentRequestCode = Integer.parseInt(LPG_CONNECTION_ID) * 10 + 1;
 
-                midWayAlarm.add(Calendar.DAY_OF_MONTH,Math.round(intConnectionExpiryDays));
+                midWayAlarm.add(Calendar.DAY_OF_MONTH, Math.round(intConnectionExpiryDays / 2));
                 midWayAlarm.set(Calendar.HOUR_OF_DAY,12);
                 midWayAlarm.set(Calendar.MINUTE,1);
 
@@ -132,7 +135,7 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
 
 
                 //close db
-                db.close();
+                //db.close();
 
                 //Set a success message to user
                 ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper(getResources().getString(R.string.confirmbooking_success),
@@ -194,31 +197,43 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
     }
 
     public String getLPGCONNECTIONEXPIRYDAYS (String LPGCONNECTIONID){
-        SQLiteDatabase db = ((LPGApplication) getApplication()).LPGDB ;
+        SQLiteDatabase db = (new LPG_SQLOpenHelperClass(getApplicationContext())).getReadableDatabase();
+        Log.v("In ConfirmBooking ", " getLPGConnectionExpiryDays LPG Connection Id = " + LPGCONNECTIONID);
+        if (db == null) {
+            Log.v("In ConfirmBooking ", "DB is null");
+
+        } else {
+            Log.v("In ConfirmBooking ", "DB is not null");
+        }
         ContentValues updateFieldsList = new ContentValues();
         String[] fieldListExpectedExpiryDate = {LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS};
-        String whereClause = LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_ID + " LIKE ?";
-        String[] whereClauseFilter = { LPGCONNECTIONID };
+        String whereClause = LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID + " =?";
+        String[] whereClauseFilter = {LPGCONNECTIONID};
 
         String ConnectionExpiryDays = new String();
         try {
-
-            Cursor c = db.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,
+            Log.v("In ConfirmBoooking", " Before DB Query");
+            SQLiteCursor c = (SQLiteCursor) db.query(
+                    LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,
                     fieldListExpectedExpiryDate,
                     whereClause,
                     whereClauseFilter,
                     null,
                     null,
-                    LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS + "DESC");
+                    null);
+            Log.v("In ConfirmBooking", "Count " + Integer.toString(c.getCount()));
+            Log.v("In ConfirmBooking ", "C.movetofirst " + Boolean.toString(c.moveToFirst()));
 
-            if (c.moveToFirst()){
-                ConnectionExpiryDays = c.getString(0);
-            }
+
+            ConnectionExpiryDays = c.getString(0);
+            Log.v("In Cursor ", ConnectionExpiryDays);
+
             c.close();
 
 
         } catch (Exception e){
             ConnectionExpiryDays = LPGCONNECTIONEXPIRYDAYS;
+            Log.v("Error in Confirm LPG", e.toString());
 
             ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper(getResources().getString(R.string.confirmbooking_cursorfetchfailure),
                     "Ok",
@@ -234,7 +249,7 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
         }
 
         //close DB
-        db.close();
+        //  db.close();
 
         //return connection expiry days
         return ConnectionExpiryDays ;

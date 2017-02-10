@@ -1,9 +1,6 @@
 package com.aekan.navya.lpgbooking;
 
 import android.app.AlarmManager;
-import android.app.Dialog;
-import android.os.Parcel;
-import android.support.v4.app.DialogFragment;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -36,51 +33,10 @@ import java.util.ArrayList;
  */
 public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinderListViewAdapter.LPGViewHolder> {
 
-    //create a static class for the list of lpg cylinder
-    private static class LPGCylinderListInfo {
-        protected String LPGCylinderName;
-        protected String LPGCylinderCompany;
-        protected String LPGCylinderExpiry;
-        protected String LPG_ROW_ID;
-
-        //Constructor for LPG Cylinder list
-        public LPGCylinderListInfo (String LPGCylinderNameInit, String LPGCylinderCompanyInit,String LPGCylinderExpiryInit, String LPGrowid) {
-            LPGCylinderName = LPGCylinderNameInit;
-            LPGCylinderCompany = LPGCylinderCompanyInit;
-            LPGCylinderExpiry = LPGCylinderExpiryInit;
-            LPG_ROW_ID = LPGrowid;
-        }
-    }
-
-    //Create view holder class
-    public static class LPGViewHolder extends RecyclerView.ViewHolder{
-        //Create the view holder test
-        protected TextView mARLPGName;
-        protected TextView marLPGCompanyName;
-        protected TextView marLPGExpiry;
-        protected ImageButton marEditConnection;
-        protected ImageButton mARDeleteConnection;
-        protected ImageButton mARLPGBookingCall;
-
-        public LPGViewHolder(View v){
-            super(v);
-            //assign the view holder elements in constructor
-            mARLPGName = (TextView) v.findViewById(R.id.lpg_cylinder_name);
-            marLPGCompanyName = (TextView) v.findViewById(R.id.lpg_cylinder_company);
-            marLPGExpiry = (TextView) v.findViewById(R.id.lpg_expiry);
-            marEditConnection = (ImageButton) v.findViewById(R.id.edit_connection_btn);
-            mARDeleteConnection = (ImageButton) v.findViewById(R.id.delete_connection_btn);
-            mARLPGBookingCall = (ImageButton) v.findViewById(R.id.call_refill_btn);
-
-        }
-
-    }
     //have a fixed list of cylinders for now
     private final int LPG_CYLINDER_LIST_LENGTH = 4;
-
     //create a private enumeration for lpg cylinder
     private ArrayList<LPGCylinderListInfo> LPGCylinderList;
-
     //Create constructor for the adapter to initialise with
     public LPGCylinderListViewAdapter(){
         LPGCylinderList = new ArrayList<LPGCylinderListInfo>();
@@ -193,7 +149,7 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
                 final Toast toast = new Toast(v.getContext());
                 final AlarmManager alarmManager = (AlarmManager) v.getContext().getSystemService(Context.ALARM_SERVICE);
                 toast.setGravity(Gravity.CENTER_HORIZONTAL,0,0);
-                toast.makeText(v.getContext(),"DUMMY",Toast.LENGTH_SHORT);
+                Toast.makeText(v.getContext(), "DUMMY", Toast.LENGTH_SHORT);
                 lpgDeleteConnection.showDialogHelper("Do you want to delete this connection?"
                         , "Ok"
                         , "Cancel"
@@ -224,7 +180,7 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
                                 }
 
                                 //close the connection for database
-                                sqLiteDatabase.close();
+                                // sqLiteDatabase.close();
 
 
 
@@ -319,5 +275,45 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
     @Override
     public int getItemCount(){
         return LPGCylinderList.size();
+    }
+
+    //create a static class for the list of lpg cylinder
+    private static class LPGCylinderListInfo {
+        protected String LPGCylinderName;
+        protected String LPGCylinderCompany;
+        protected String LPGCylinderExpiry;
+        protected String LPG_ROW_ID;
+
+        //Constructor for LPG Cylinder list
+        public LPGCylinderListInfo(String LPGCylinderNameInit, String LPGCylinderCompanyInit, String LPGCylinderExpiryInit, String LPGrowid) {
+            LPGCylinderName = LPGCylinderNameInit;
+            LPGCylinderCompany = LPGCylinderCompanyInit;
+            LPGCylinderExpiry = LPGCylinderExpiryInit;
+            LPG_ROW_ID = LPGrowid;
+        }
+    }
+
+    //Create view holder class
+    public static class LPGViewHolder extends RecyclerView.ViewHolder {
+        //Create the view holder test
+        protected TextView mARLPGName;
+        protected TextView marLPGCompanyName;
+        protected TextView marLPGExpiry;
+        protected ImageButton marEditConnection;
+        protected ImageButton mARDeleteConnection;
+        protected ImageButton mARLPGBookingCall;
+
+        public LPGViewHolder(View v) {
+            super(v);
+            //assign the view holder elements in constructor
+            mARLPGName = (TextView) v.findViewById(R.id.lpg_cylinder_name);
+            marLPGCompanyName = (TextView) v.findViewById(R.id.lpg_cylinder_company);
+            marLPGExpiry = (TextView) v.findViewById(R.id.lpg_expiry);
+            marEditConnection = (ImageButton) v.findViewById(R.id.edit_connection_btn);
+            mARDeleteConnection = (ImageButton) v.findViewById(R.id.delete_connection_btn);
+            mARLPGBookingCall = (ImageButton) v.findViewById(R.id.call_refill_btn);
+
+        }
+
     }
 }
