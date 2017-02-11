@@ -21,7 +21,7 @@
         android:layout_marginEnd="0dp"
         android:layout_marginStart="0dp">
 
-    <TextView
+    <com.aekan.navya.lpgbooking.utilities.ARCust_TextView
         android:layout_width="match_parent"
         android:id="@+id/lpg_cylinder_name"
         android:background="@color/lpg_name_bkgrnd"
@@ -29,6 +29,8 @@
         android:paddingTop="0dp"
         android:paddingRight="8dp"
         android:text="Test"
+        card_view:font="Junicode"
+        card_view:fonttypeFace="Bold"
         android:gravity="center_vertical"
         android:textColor="@android:color/white"
         android:textSize="24sp"
