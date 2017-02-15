@@ -34,6 +34,7 @@ public class LPG_PhoneListener extends PhoneStateListener {
         super();
         applicationContext = context;
         LPGConnectionId = connectionid;
+        setPhoneFlag = PHONELISTENERFLAGONHOOK;
         Log.v("In PhoneListerenr", LPGConnectionId);
 
     }
