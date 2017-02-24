@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
@@ -118,6 +119,8 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
         LVH.marLPGCompanyName.setText(CurrentRow.LPGCylinderCompany);
         LVH.marLPGExpiry.setText(CurrentRow.LPGCylinderExpiry);
 
+
+
         //Set onclick listeners only if user has added cylinder list
         if (!(CurrentRow.LPG_ROW_ID.equals(NOLPGCYLINDERSADDED))) {
         //Assign a onclick listener event for showing activity
@@ -147,14 +150,14 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
                 // Instruct the user to confirm if the connection needs to be deleted
                 // If the user confirms as yes, cancel the connection
                 // and delete the associated alarms with the connection
-
+                Log.v("Delete Connection","Entered Delete");
                 final SQLiteDatabase sqLiteDatabase = new LPG_SQLOpenHelperClass(v.getContext()).getWritableDatabase();
                 final Context context = v.getContext();
                 final LPG_AlertBoxClass lpgDeleteConnection = new LPG_AlertBoxClass();
-                final Toast toast = new Toast(v.getContext());
+                final Toast toast =  Toast.makeText(v.getContext(),"Dummy", Toast.LENGTH_SHORT);
                 final AlarmManager alarmManager = (AlarmManager) v.getContext().getSystemService(Context.ALARM_SERVICE);
-                toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
-                Toast.makeText(v.getContext(), "DUMMY", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.BOTTOM, 0, 0);
+                toast.show();
                 lpgDeleteConnection.showDialogHelper("Do you want to delete this connection?"
                         , "Ok"
                         , "Cancel"
@@ -165,8 +168,9 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
                                 // delete the information from database
                                 // delete the alarm
                                 // give a toast to the user that the data has been deleted
-                                String deleteCondition = LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID + " = ";
+                                String deleteCondition = LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID + " = ? ";
                                 String[] deleteParameter = {CurrentRow.LPG_ROW_ID};
+                                Log.v("Delete ",CurrentRow.LPG_ROW_ID);
                                 //delete the record
                                 int deleteCount = sqLiteDatabase.delete(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME, deleteCondition, deleteParameter);
                                 // check no of deleted record
@@ -179,9 +183,14 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
                                     // set a toast that the record has been deleted
                                     toast.setText(R.string.toast_delete_successful);
                                     toast.show();
+
+                                    //start main activity again
+                                    Intent intent = new Intent(context,MainActivity.class);
+                                    context.startActivity(intent);
                                 } else {
                                     // set a toast that the record could not be deleted
                                     toast.setText(R.string.toast_delete_failure);
+                                    toast.show();
                                 }
 
                                 //close the connection for database
@@ -198,7 +207,8 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
                             }
                         });
                 //Assign a on click listener to do LPG booking
-
+                FragmentActivity thisFragmentActivity = (FragmentActivity)v.getContext();
+                lpgDeleteConnection.show(thisFragmentActivity.getSupportFragmentManager(),"Delete");
 
             }
         });
@@ -213,38 +223,7 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
                 Log.v("ClickLPGBooking", "Inside On Click LIstener");
                 try {
                     Log.v("ClickLPGBooking", "Inside try catch block");
-                    //SQLiteDatabase dbLPG = ((LPGApplication) v.getContext()).LPGDB;
-                    //SQLiteDatabase dbLPG = ;
-                     /*Define projection for the database, ie the query parameters for the database*/
-                    /*String[] lpgConnectionRow ={
-                            LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID,
-                            LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME,
-                            LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER,
-                            LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY,
-                            LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_PHONE_NUMBER,
-                            LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_ID,
-                            LPG_SQL_ContractClass.LPG_CONNECTION_ROW.LAST_BOOKED_DATE,
-                            LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS
 
-                    };
-                    //Define the selection arguments and the value for selection arguments
-                    String arSelectionArgument = LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID + " = ?";
-                    String[] arSelectionArgumentValue = {CurrentRow.LPG_ROW_ID};
-
-                    //Query and get the curson
-                    c = dbLPG.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,
-                            lpgConnectionRow,
-                            arSelectionArgument,
-                            arSelectionArgumentValue,
-                            null,
-                            null,
-                            null
-                    );
-
-                    //Assign the values into a parcel and pass to intent
-                    //that will create LPGBooking Activity
-                    Log.v("ClickLPGBooking",String.valueOf(c.moveToFirst()) );
-                    if (c.moveToFirst())*/
                     {
 
                         Intent intentLPGBooking = new Intent(v.getContext(), LPGBooking.class);
@@ -269,6 +248,10 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
 
             }
         });
+        } else {
+            LVH.marEditConnection.setVisibility(View.INVISIBLE);
+            LVH.mARLPGBookingCall.setVisibility(View.INVISIBLE);
+            LVH.mARDeleteConnection.setVisibility(View.INVISIBLE);
         }
     }
 

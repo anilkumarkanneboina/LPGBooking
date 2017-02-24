@@ -424,7 +424,7 @@ public class AddLPGConnection extends AppCompatActivity {
         if (inputMethodManager.isActive()) {
             Log.v("Touch","Keypad is active");
             View view = this.getCurrentFocus();
-            //* if (view != null)*//* {
+            if (view != null)
             {  inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
         }
     }
