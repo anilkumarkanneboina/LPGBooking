@@ -67,4 +67,10 @@
     <string name="confirmbooking_failure">Never mind!! We will inform you to book this cylinder again in a day\'s time</string>
     <string name="confirmbooking_failure_notificationmessage">could not be booked in your last attempt. You can try booking it now!!!</string>
 
+    <!--String values for permission check activity-->
+    <string name="permission_intimation_user_for_sms">Well, you would need to provide permission to us to send and read text messages. Currently, this is not provided. Please let us know if you can provide the access now. </string>
+    <string name="permission_revocation_intimation">You can revoke the permission anytime from Settings</string>
+    <string name="permission_button_cancel">Cancel</string>
+    <string name="permission_button_ok">OK</string>
+
 </resources>

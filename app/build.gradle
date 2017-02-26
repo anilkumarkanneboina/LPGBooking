@@ -3,9 +3,9 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         config {
-            keyAlias 'LPGAR'
+            keyAlias 'MyKeys'
             keyPassword 'Navya280208'
-            storeFile file('C:/Users/aruramam/Documents/Arun/WIP/Tech/MyKey.jks')
+            storeFile file('/Users/arunramamurthy/MyKeys.jks')
             storePassword 'Navya280208'
         }
     }
@@ -17,6 +17,7 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+        signingConfig signingConfigs.config
     }
     buildTypes {
         release {
@@ -26,6 +27,8 @@ android {
         debug {
             signingConfig signingConfigs.config
         }
+    }
+    productFlavors {
     }
 }
 

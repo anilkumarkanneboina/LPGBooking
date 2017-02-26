@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.widget.TextView;
 
 import com.aekan.navya.lpgbooking.R;
@@ -66,7 +67,7 @@ public class ARCust_TextView extends TextView {
         //Get the file name to retrieve
         String filename = "fonts/" + fontFamily + fontTypeFace ;
         Log.v("Custom ", filename);
-        Typeface selectedTypeFace = Typeface.createFromAsset(context.getAssets(), "fonts/Junicode.ttf");;
+        Typeface selectedTypeFace = Typeface.createFromAsset(context.getAssets(), "fonts/Junicode.ttf");
         Log.v("Custom ", "Before Typeface set");
         try {
              selectedTypeFace = Typeface.createFromAsset(context.getAssets(), filename);
@@ -79,9 +80,11 @@ public class ARCust_TextView extends TextView {
         //recycle typed array without fail
         attrsArray.recycle();
 
+//        this.setGravity(Gravity.CENTER_VERTICAL);
 
 
     }
+
 
     public ARCust_TextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context,attrs,defStyleAttr);
@@ -124,7 +127,7 @@ public class ARCust_TextView extends TextView {
         }
         //Get the file name to retrieve
         String filename = fontFamily + fontTypeFace ;
-        Typeface selectedTypeFace = Typeface.createFromAsset(context.getAssets(), "Juniper.ttf");;
+        Typeface selectedTypeFace = Typeface.createFromAsset(context.getAssets(), "Juniper.ttf");
         try {
             selectedTypeFace = Typeface.createFromAsset(context.getAssets(), filename);
         } catch (Exception e){
@@ -136,6 +139,8 @@ public class ARCust_TextView extends TextView {
         //recycle typed array without fail
         attrsArray.recycle();
 
+        //set gravity
+        this.setGravity(Gravity.CENTER_VERTICAL);
 
 
 

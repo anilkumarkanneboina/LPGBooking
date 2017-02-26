@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <TextView
+        android:id="@+id/permission_user_intimation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingEnd="@dimen/permission_intimation_padding"
+        android:paddingLeft="@dimen/permission_intimation_padding"
+        android:paddingRight="@dimen/permission_intimation_padding"
+        android:paddingStart="@dimen/permission_intimation_padding"
+        android:paddingTop="@dimen/permission_padding_vertical_center"
+        android:text="@string/permission_intimation_user_for_sms"
+        android:textSize="@dimen/permission_intimation" />
+
+    <TextView
+        android:id="@+id/permission_user_revocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/permission_user_intimation"
+        android:paddingEnd="@dimen/permission_revocation_padding"
+        android:paddingLeft="@dimen/permission_revocation_padding"
+        android:paddingRight="@dimen/permission_revocation_padding"
+        android:paddingStart="@dimen/permission_revocation_padding"
+        android:paddingTop="@dimen/permission_padding_revocation_top"
+        android:text="@string/permission_revocation_intimation"
+        android:textSize="@dimen/permission_revocation" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/permission_user_revocation"
+        android:gravity="center"
+        android:paddingTop="@dimen/permission_padding_button_top">
+
+        <Button
+            android:id="@+id/button_permission_cancel"
+            android:layout_width="@dimen/permission_button_width"
+            android:layout_height="@dimen/permission_button_height"
+            android:text="@string/permission_button_cancel"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/button_permission_ok"
+            android:layout_width="@dimen/permission_button_width"
+            android:layout_height="@dimen/permission_button_height"
+            android:layout_marginLeft="@dimen/permission_button_distance"
+            android:layout_toRightOf="@id/button_permission_cancel"
+            android:background="@color/colorPrimary"
+            android:text="@string/permission_button_ok"
+            android:textSize="14sp" />
+
+
+    </RelativeLayout>
+</RelativeLayout>

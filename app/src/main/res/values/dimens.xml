@@ -52,4 +52,16 @@
     <dimen name="confirmbooking_button_internalpadding">8dp</dimen>
     <dimen name="confirmbooking_button_externalpadding">8dp</dimen>
     <dimen name="confirmbooking_button_margin">32dp</dimen>
+
+    <!--dimensions for permission check page-->
+    <dimen name="permission_intimation">24sp</dimen>
+    <dimen name="permission_revocation">18sp</dimen>
+    <dimen name="permission_intimation_padding">16dp</dimen>
+    <dimen name="permission_revocation_padding">24dp</dimen>
+    <dimen name="permission_padding_revocation_top">16dp</dimen>
+    <dimen name="permission_padding_button_top">24dp</dimen>
+    <dimen name="permission_padding_vertical_center">72dp</dimen>
+    <dimen name="permission_button_width">88dp</dimen>
+    <dimen name="permission_button_height">36dp</dimen>
+    <dimen name="permission_button_distance">48dp</dimen>
 </resources>
