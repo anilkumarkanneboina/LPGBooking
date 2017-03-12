@@ -1,6 +1,7 @@
 package com.aekan.navya.lpgbooking;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -24,6 +25,7 @@ import android.widget.ImageView;
 
 import com.aekan.navya.lpgbooking.utilities.LPG_PhoneListener;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
+import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
 import com.aekan.navya.lpgbooking.utilities.lpgconnectionparcel;
 
 import java.util.Calendar;
@@ -37,6 +39,7 @@ public class LPGBooking extends AppCompatActivity {
 
     //constants to identify permission requests
     private final static int LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE = 1;
+    private final static int LPG_BOOKING_REQUEST_PERMISSION_SMS = 2;
     // use a field within this class to store phone no
     // this field would be initialised during onCreate and would
     // be used subsequently during permission response handling
@@ -202,7 +205,7 @@ public class LPGBooking extends AppCompatActivity {
                         // if user permission is needed, inform a message to user through a dialogbox
                         //android.support.v4.app.ActivityCompat.shouldShowRequestPermissionRationale(getParent(), Manifest.permission.CALL_PHONE)
                         // show the dialog box in a seperate thread so as not to stop the current execution
-                        new AsyncTask<Void, Void, Boolean>() {
+                        /*new AsyncTask<Void, Void, Boolean>() {
                             // DialogBox is being shown in worker thread of AsyncTask, through the doInBackground function
                             @Override
                             protected Boolean doInBackground(Void... voids) {
@@ -223,9 +226,9 @@ public class LPGBooking extends AppCompatActivity {
                                                 },
                                                 null
                                         ).show(getSupportFragmentManager(), "Request Call Permission");
-                              /*  ((LPGApplication) getApplication())
+                              *//*  ((LPGApplication) getApplication())
                                         .LPG_Alert.show(getSupportFragmentManager(), "Request Call Permission");
-*/
+*//*
                                 return true;
 
                             }
@@ -237,7 +240,17 @@ public class LPGBooking extends AppCompatActivity {
                                 ActivityCompat.requestPermissions(LPGBooking.this, new String[]{Manifest.permission.CALL_PHONE}, LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE);
                             }
 
-                        }.execute();
+                        }.execute();*/
+
+                        Intent permissionRequestor = new Intent(getApplicationContext(),PermissionCheckForFeature.class);
+                        permissionRequestor.putExtra(LPG_Utility.PERMISSION_INTIMATION_MESSAGE,LPG_Utility.PERMISSION_CALL_INTIMATION);
+                        startActivityForResult(permissionRequestor,LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE);
+
+
+                    }
+                    else{
+                        //need not show intimation to user
+                        ActivityCompat.requestPermissions(getParent(),new String[]{Manifest.permission.CALL_PHONE},LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE);
                     }
 
                 } else {
@@ -305,5 +318,31 @@ public class LPGBooking extends AppCompatActivity {
         telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
     }
 
+    protected void onActivityResult(int requestCode, int resultCode , Intent resultIntent){
+        // check if the result is for Call or SMS
+        switch (requestCode) {
+            case LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE:
+                //check if access was granted :
+                switch (requestCode){
+                    case Activity.RESULT_CANCELED:
+                        //User has not given permission to use call feature of the phone
+                        // Present a dialog box and go back to Home screen
+                        ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper(getResources().getString(R.string.lpgbooking_permissioncancellation_request), "OK", null, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                Intent homeIntent = new Intent(getApplicationContext(),MainActivity.class);
+                                startActivity(homeIntent);
+                            }
+                        },null).show(getSupportFragmentManager(),"Permission not granted");
+                        break;
+                    case Activity.RESULT_OK:
+                        //Request for permissions
+                }
 
+
+        }
+
+
+    }
 }

@@ -52,6 +52,7 @@
     <string name="lpgbooking_connection_provider">Connection Provider</string>
     <string name="lpgbooking_expected_expiry_Dte">Expected Expiry Date</string>
     <string name="lpgbooking_callpermissiondialog_title">Permission Requested</string>
+    <string name="lpgbooking_permissioncancellation_request">Sure!! You can book re-fill offline by your choice, and provide last booked date in Edit Connections screen from Home page </string>
     <string name="dialogDBQueryFailed">There seems to be an issue with your connection details. Please try again later or create a new connection</string>
 
 
@@ -69,6 +70,7 @@
 
     <!--String values for permission check activity-->
     <string name="permission_intimation_user_for_sms">Well, you would need to provide permission to us to send and read text messages. Currently, this is not provided. Please let us know if you can provide the access now. </string>
+    <string name="permission_intimation_user_for_call">Well, you would need to provide permission to us to call your cooking gas agency. Currently, this is not provided. Please let us know if you can provide the access now. </string>
     <string name="permission_revocation_intimation">You can revoke the permission anytime from Settings</string>
     <string name="permission_button_cancel">Cancel</string>
     <string name="permission_button_ok">OK</string>
