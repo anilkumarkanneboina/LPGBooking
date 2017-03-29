@@ -1,11 +1,15 @@
 package com.aekan.navya.lpgbooking;
 
 import android.app.Application;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.aekan.navya.lpgbooking.utilities.LPG_AlertBoxClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQLOpenHelperClass;
+import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
+
+import java.util.HashMap;
 
 /**
  * Created by arunramamurthy on 17/04/16.
@@ -16,6 +20,7 @@ public class LPGApplication extends Application {
     //Initialize global state objects and properties
     public SQLiteDatabase LPGDB;
     public LPG_AlertBoxClass LPG_Alert ;
+    public HashMap<String,Cursor> cacheLocalData;
 
     public void LPG_AlertBoxInstantiate(){
 
@@ -28,6 +33,8 @@ public class LPGApplication extends Application {
         }
         LPG_Alert = new LPG_AlertBoxClass();
 
+        //instantiate Hashmap
+        cacheLocalData = new HashMap<String, Cursor>(LPG_Utility.HASH_CAPACITY,LPG_Utility.HASH_LOAD_FACTOR);
     }
 
 }

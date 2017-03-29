@@ -59,6 +59,8 @@
                 android:value="com.aekan.navya.lpgbooking.MainActivity" />
 
         </activity>
+        <activity android:name=".PermissionCheckForFeature"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
     </application>
 
 </manifest>
