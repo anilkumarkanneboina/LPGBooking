@@ -75,4 +75,7 @@
     <string name="permission_button_cancel">Cancel</string>
     <string name="permission_button_ok">OK</string>
 
+    <!--Error messages-->
+    <string name="connection.detail.missing">Connection not found</string>
+
 </resources>

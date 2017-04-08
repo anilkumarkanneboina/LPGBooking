@@ -22,4 +22,9 @@ public class LPG_Utility {
     public final static String PERMISSION_STATUS = "This string defines permission status";
     public final static String PERMISSION_DENIED = "PERMISSION DENIED";
     public final static String PERMISSION_ACCEPTED = "PERMISSION PROVIDED";
+
+    public final static int HASH_CAPACITY = 4;
+    public final static float HASH_LOAD_FACTOR = 0.8f;
+
+    public final static int MSG_GETALLCYLINDERS = 0;
 }
