@@ -14,7 +14,7 @@ import android.os.Handler;
  * Created by aruramam on 3/28/2017.
  */
 
-class LPGDataAPIThread extends HandlerThread implements ServiceClientAPIInterface {
+class LPGDataAPI extends HandlerThread implements ServiceClientAPIInterface {
 
     //Instance variable to hold application context
     private LPGApplication mApplication;
@@ -22,10 +22,14 @@ class LPGDataAPIThread extends HandlerThread implements ServiceClientAPIInterfac
     private Handler mServiceClientHandler;
 
     //constructor to instantiate application
-    public LPGDataAPIThread(LPGApplication application,String name){
+    public LPGDataAPI(LPGApplication application,String name){
         super(name);
         mApplication = application;
+        //start the handler thread
+        this.start();
     }
+
+
 
     //service call to get cursor for a specific row id
     public Cursor getCylinderRecordForID(String rowID){
