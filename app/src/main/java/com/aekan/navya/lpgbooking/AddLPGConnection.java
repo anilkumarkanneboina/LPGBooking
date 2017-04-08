@@ -9,9 +9,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.Messenger;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
@@ -27,7 +31,12 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
+import com.aekan.navya.lpgbooking.utilities.LPGServiceAPI;
+import com.aekan.navya.lpgbooking.utilities.LPGDataAPI;
+import com.aekan.navya.lpgbooking.utilities.LPGServiceCallBackHandler;
+import com.aekan.navya.lpgbooking.utilities.LPGServiceResponseCallBack;
 import com.aekan.navya.lpgbooking.utilities.LPG_AlertBoxClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
@@ -39,7 +48,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-public class AddLPGConnection extends AppCompatActivity {
+public class AddLPGConnection extends AppCompatActivity implements LPGServiceResponseCallBack {
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -159,7 +168,26 @@ public class AddLPGConnection extends AppCompatActivity {
             //get the connection id associated with the bundle
             //display the contents of the retrieved connection record in the fields
 
-            //CharSequence connectionId = connectionBundle.getCharSequence(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.FIELD_CONNECTION_ID_EDIT, LPG_SQL_ContractClass.LPG_CONNECTION_ROW.VALUE_CONNECTION_ID_NULL);
+            //Check if we have cached details for the connection id
+            if ( ((LPGApplication)getApplication()).cacheLocalData.containsKey(connectionIdString)){
+                //logic to bind connection details with activity
+                updateActivityWithLPGDetailsCursor(((LPGApplication)getApplication()).cacheLocalData.get(connectionIdString));
+            } else {
+                //get connection details and bind with Activity elements
+                //create call back messenger
+                Messenger callBackMessenger = new Messenger(new Handler(new LPGServiceCallBackHandler(this)));
+
+
+                //Instantiate service handler
+                LPGServiceAPI serviceAPI = new LPGDataAPI((LPGApplication) getApplication(),"Service Call from Add LPG Connection to cache " + connectionIdString);
+
+                //send message to API
+                serviceAPI.populateCylinderInfoThroughCursorWithRowID(connectionIdString,callBackMessenger);
+
+            }
+            connectionPrimaryKey = connectionIdString;
+
+          /*  //CharSequence connectionId = connectionBundle.getCharSequence(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.FIELD_CONNECTION_ID_EDIT, LPG_SQL_ContractClass.LPG_CONNECTION_ROW.VALUE_CONNECTION_ID_NULL);
             //prepare to query the database
             String[] columnList = {LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME,
                     LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER,
@@ -190,9 +218,9 @@ public class AddLPGConnection extends AppCompatActivity {
             //create DB query to get counter value
             connectionPrimaryKey = connectionIdString;
             //close the cursor
-            cursor.close();
+            cursor.close();*/
         } else {
-            // set primary key vallue for connection id
+            // set primary key value for connection id
             String[] connectionID = {LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID};
             Cursor cursorID = db.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,connectionID,null,null,null,null,null);
             Log.v("AddConnnection ", "Cursor count before records creation " + Integer.toString(cursorID.getCount()));
@@ -436,6 +464,7 @@ public class AddLPGConnection extends AppCompatActivity {
     public void onStart() {
         super.onStart();
 
+
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.connect();
@@ -470,6 +499,44 @@ public class AddLPGConnection extends AppCompatActivity {
         );
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();
+    }
+
+    @Override
+    public void updateActivityWithLPGDetailsCursor(Cursor c) {
+        SQLiteCursor dataCursor = (SQLiteCursor) c;
+
+        //Get text boxes which would need to be updated
+        /*lpgConnection.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME)));
+        lpgProvider.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER)));
+        lpgAgency.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY)));
+        lpgAgencyPhoneNo.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_PHONE_NUMBER)));
+        lpgConnectionId.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_ID)));
+        lpglastdatelabel.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.LAST_BOOKED_DATE)));
+        lpgconnnectionexpiry.setText(dataCursor.getString(cursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS)));*/
+
+        final EditText lpgConnection = (EditText) findViewById(R.id.add_lpgconnectionnameedittext);
+        final EditText lpgProvider = (EditText) findViewById(R.id.add_provideredittext);
+        final EditText lpgAgency = (EditText) findViewById(R.id.add_agencyedittext);
+        final EditText lpgAgencyPhoneNo = (EditText) findViewById(R.id.add_agencyphoneedittext);
+        final EditText lpgConnectionId = (EditText) findViewById(R.id.add_connectionid);
+        final EditText lpglastdatelabel = (EditText) findViewById(R.id.add_lastbookeddate);
+        final EditText lpgconnnectionexpiry = (EditText) findViewById(R.id.add_connectionexpiry);
+
+        //update the text boxes, if cursor is not null
+        if (dataCursor.moveToFirst()){
+            //Update the text boxes
+            lpgConnection.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME)));
+            lpgProvider.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER)));
+            lpgAgency.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY)));
+            lpgAgencyPhoneNo.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_PHONE_NUMBER)));
+            lpgConnectionId.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_ID)));
+            lpglastdatelabel.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.LAST_BOOKED_DATE)));
+            lpgconnnectionexpiry.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS)));
+        } else {
+            Toast.makeText(getApplicationContext(),getResources().getText(R.string.connection_detail_missing),Toast.LENGTH_LONG).show();
+        }
+        //close the cursor
+        c.close();
     }
 
     public static class BookedDateFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {

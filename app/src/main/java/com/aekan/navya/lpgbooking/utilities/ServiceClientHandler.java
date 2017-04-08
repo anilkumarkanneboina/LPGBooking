@@ -10,6 +10,9 @@ import android.util.Log;
 
 /**
  * Created by aruramam on 3/29/2017.
+ * Handler, which handles messages with appropriate calls
+ * to a ServiceClientAPIInterface instance.
+ *
  */
 
 public class ServiceClientHandler extends Handler {

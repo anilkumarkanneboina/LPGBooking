@@ -9,12 +9,31 @@ import com.aekan.navya.lpgbooking.LPGApplication;
 
 import java.util.HashMap;
 import android.os.Handler;
+import android.os.Message;
+import android.os.Messenger;
 
 /**
  * Created by aruramam on 3/28/2017.
+ * This is an implementation for LPGServiceAPI interface,
+ * which hides the handler thread mechanism within itself.
+ *
+ * This class makes  the implementation logic and wrapper interfaces connect,
+ * and holds majority of functionality of service calls.
+ *
+ * This class  implements ServiceClientAPRInterface,
+ * so that the handler can use an instance of this class, to call API
+ * methods needed to service client requests.
+ *
+ * This class implements LPGServiceAPI, so that clients can make a simple
+ * API method call for getting a specific service. The implementation logic for how
+ * client  service calls  will be processed, is provided in method definitions.
+ *
+ *
+ *
+ *
  */
 
-class LPGDataAPI extends HandlerThread implements ServiceClientAPIInterface {
+public class LPGDataAPI extends HandlerThread implements ServiceClientAPIInterface,LPGServiceAPI {
 
     //Instance variable to hold application context
     private LPGApplication mApplication;
@@ -67,5 +86,20 @@ class LPGDataAPI extends HandlerThread implements ServiceClientAPIInterface {
     protected void onLooperPrepared(){
         //initiate handler
         mServiceClientHandler = new ServiceClientHandler(getLooper(),this);
+    }
+
+    @Override
+    public void populateCylinderInfoThroughCursorWithRowID(String rowID, Messenger messenger) {
+        //Create a message with row id and Messenger objects
+        Message populateCylinderInfo = Message.obtain(null,LPG_Utility.MSG_GETALLCYLINDERS,rowID);
+        populateCylinderInfo.replyTo = messenger;
+        //ensure that Looper has been started before sending messages to ServiceClientHandler
+        if (mServiceClientHandler == null){
+            mServiceClientHandler = new ServiceClientHandler(getLooper(),this);
+        }
+        //send message to Handler
+        mServiceClientHandler.sendMessage(populateCylinderInfo);
+
+
     }
 }
