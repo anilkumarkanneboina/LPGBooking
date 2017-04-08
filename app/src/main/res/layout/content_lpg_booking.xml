@@ -27,7 +27,9 @@
         android:paddingLeft="@dimen/lpgbooking_padding_left"
         android:paddingStart="@dimen/lpgbooking_padding_left"
         android:paddingTop="@dimen/lpgbooking_padding_top"
-        android.support.v7.appCompat:hintAnimationEnabled="true">
+        android.support.v7.appCompat:hintAnimationEnabled="true"
+
+    >
 
         <EditText
             android:id="@+id/lpgbooking_connectionname_edittext"
