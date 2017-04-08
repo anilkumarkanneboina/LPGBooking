@@ -11,5 +11,6 @@ import android.os.Messenger;
 public interface LPGServiceAPI {
 
     public void populateCylinderInfoThroughCursorWithRowID(String rowID, Messenger messenger);
+    public void updateCylinderIDCursor(Messenger messenger);
 
 }

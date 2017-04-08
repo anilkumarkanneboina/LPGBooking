@@ -12,4 +12,5 @@ import android.database.Cursor;
 
 public interface ServiceClientAPIInterface {
     public Cursor getCylinderRecordForID(String rowID);
+    public String getIncrementedPrimaryKey();
 }

@@ -11,6 +11,7 @@ import java.util.HashMap;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Messenger;
+import android.util.Log;
 
 /**
  * Created by aruramam on 3/28/2017.
@@ -83,6 +84,48 @@ public class LPGDataAPI extends HandlerThread implements ServiceClientAPIInterfa
     }
 
     @Override
+    public String getIncrementedPrimaryKey() {
+        String connectionPrimaryKey;
+
+        // set primary key value for connection id
+        String[] connectionID = {LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID};
+        Cursor cursorID = mApplication.LPGDB.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,connectionID,null,null,null,null,null);
+        Log.v("AddConnnection ", "Cursor count before records creation " + Integer.toString(cursorID.getCount()));
+        // Log.v("AddConnection Cursor "," getColumnIndex " + Integer.toString(cursorID.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID)));
+        //Log.v("AddConnection Cursor "," getString " + cursorID.getString(0));
+
+        if (cursorID.getCount() == 0){
+            Log.v("AddConnection ", "Initial cursor count");
+            connectionPrimaryKey = "1";
+
+        }else {
+            //get max value for connection primary key
+            try {
+                int counterPrimaryKey = 1;
+                cursorID.moveToFirst();
+                Log.v("AddConnection ",Integer.toString(cursorID.getCount()));
+                for (int i = 0; i < cursorID.getCount(); ++i) {
+                    Log.v("AddConnection ","Inside cursor max iteration - counter value " + Integer.toString(i) + " Cursor length " + Integer.toString(cursorID.getCount())+ " Row id value " + cursorID.getString(cursorID.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID)) );
+                    int valueOfPrimaryKeyFromCounter = Integer.parseInt(cursorID.getString(cursorID.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID)));
+                    if (valueOfPrimaryKeyFromCounter > counterPrimaryKey) {
+                        counterPrimaryKey = valueOfPrimaryKeyFromCounter;
+                    }
+                    cursorID.moveToNext();
+                }
+                connectionPrimaryKey = Integer.toString(counterPrimaryKey+1);
+            }
+            catch (android.database.CursorIndexOutOfBoundsException cursorIndex ){
+                Log.v("AddConnection ", "Inside cursor bounds exception");
+                connectionPrimaryKey = "1";
+            }
+        }
+        //close and release the cursor
+        cursorID.close();
+
+        return connectionPrimaryKey;
+    }
+
+    @Override
     protected void onLooperPrepared(){
         //initiate handler
         mServiceClientHandler = new ServiceClientHandler(getLooper(),this);
@@ -99,6 +142,20 @@ public class LPGDataAPI extends HandlerThread implements ServiceClientAPIInterfa
         }
         //send message to Handler
         mServiceClientHandler.sendMessage(populateCylinderInfo);
+
+
+    }
+
+    @Override
+    public void updateCylinderIDCursor(Messenger messenger) {
+        //send message to handler to update primary key value
+        Message requestPrimaryKey = Message.obtain(null,LPG_Utility.MSG_INCREMENTPRIMARYKEY);
+        requestPrimaryKey.replyTo = messenger;
+        //ensure that Looper has been started before sending messages to ServiceClientHandler
+        if (mServiceClientHandler == null){
+            mServiceClientHandler = new ServiceClientHandler(getLooper(),this);
+        }
+        mServiceClientHandler.sendMessage(requestPrimaryKey);
 
 
     }

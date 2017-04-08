@@ -56,6 +56,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
      */
     private GoogleApiClient client;
 
+    private String finalIDCount ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //Activity creation using the saved bundle
@@ -77,7 +78,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         final String regexMandatory = "[]+";
         //Instantiate the tool bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.addlpg_toolbar);
-        //setSupportActionBar(toolbar);
+
         //Set Navigation icon for the toolbar
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -108,6 +109,8 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         final EditText lpgconnnectionexpiry = (EditText) findViewById(R.id.add_connectionexpiry);
         lpglastdatelabel.setEnabled(false);
         final ScrollView scrollView = (ScrollView) findViewById(R.id.form_scroll_view);
+        FloatingActionButton buttonSave = (FloatingActionButton) findViewById(R.id.fab_save_connection);
+        buttonSave.setEnabled(false);
         //Set listener events for Save button and Cancel button.
         // To set listener events, initialize counter value for primary key ID;
 
@@ -186,6 +189,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
 
             }
             connectionPrimaryKey = connectionIdString;
+            buttonSave.setEnabled(true);
 
           /*  //CharSequence connectionId = connectionBundle.getCharSequence(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.FIELD_CONNECTION_ID_EDIT, LPG_SQL_ContractClass.LPG_CONNECTION_ROW.VALUE_CONNECTION_ID_NULL);
             //prepare to query the database
@@ -220,7 +224,8 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
             //close the cursor
             cursor.close();*/
         } else {
-            // set primary key value for connection id
+             (new LPGDataAPI((LPGApplication) getApplication(),"Incremented Primary Key")).updateCylinderIDCursor(new Messenger(new Handler((new LPGServiceCallBackHandler(this)))));
+           /* // set primary key value for connection id
             String[] connectionID = {LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID};
             Cursor cursorID = db.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,connectionID,null,null,null,null,null);
             Log.v("AddConnnection ", "Cursor count before records creation " + Integer.toString(cursorID.getCount()));
@@ -253,17 +258,17 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
                     }
             }
             //close and release the cursor
-            cursorID.close();
+            cursorID.close();*/
     }
 
 
-        final String finalIDCount = connectionPrimaryKey; // Integer.toString(iDCount);
+       //final String finalIDCount = connectionPrimaryKey; // Integer.toString(iDCount);
         //Get the database
         final SQLiteDatabase sqLiteDatabase = ((LPGApplication) getApplication()).LPGDB;
 
         //Set onclick listener for Save button ;
 
-        FloatingActionButton buttonSave = (FloatingActionButton) findViewById(R.id.fab_save_connection);
+
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -537,6 +542,13 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         }
         //close the cursor
         c.close();
+    }
+
+    @Override
+    public void updatePrimaryKeyIncrement(String incrementedPrimaryKey) {
+        finalIDCount = incrementedPrimaryKey;
+        FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.fab_save_connection);
+        floatingActionButton.setEnabled(true);
     }
 
     public static class BookedDateFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {

@@ -27,4 +27,5 @@ public class LPG_Utility {
     public final static float HASH_LOAD_FACTOR = 0.8f;
 
     public final static int MSG_GETALLCYLINDERS = 0;
+    public final static int MSG_INCREMENTPRIMARYKEY = 1243;
 }

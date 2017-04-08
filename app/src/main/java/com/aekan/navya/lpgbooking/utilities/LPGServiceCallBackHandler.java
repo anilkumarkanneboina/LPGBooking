@@ -24,6 +24,9 @@ public class LPGServiceCallBackHandler implements Handler.Callback {
                 //call appropriate call back method
                 mServiceResponseCallBack.updateActivityWithLPGDetailsCursor((Cursor) msg.obj);
                 break;
+            case LPG_Utility.MSG_INCREMENTPRIMARYKEY:
+                //call appropriate call back method
+                mServiceResponseCallBack.updatePrimaryKeyIncrement((String) msg.obj);
             default:
                 break;
         }

@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.RemoteException;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * Created by aruramam on 3/29/2017.
@@ -49,7 +50,24 @@ public class ServiceClientHandler extends Handler {
 
             //close the looper
             this.getLooper().quit();
+            break;
+        case (LPG_Utility.MSG_INCREMENTPRIMARYKEY):
+            //get incremented primary key value
+            String incrementedPrimaryKey = mServiceClient.getIncrementedPrimaryKey();
 
+            //Create an appropriate message
+            Message response = Message.obtain(null,LPG_Utility.MSG_INCREMENTPRIMARYKEY,incrementedPrimaryKey);
+            try {
+                message.replyTo.send(response);
+            } catch (RemoteException re){
+                Log.v("Exception ", "Messenger offline");
+            }
+            //close the looper thread
+            this.getLooper().quit();
+            break;
+        default:
+            this.getLooper().quit();
+            break;
     }
 
     }

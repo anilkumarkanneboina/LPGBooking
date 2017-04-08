@@ -12,4 +12,5 @@ import android.database.Cursor;
 
 public interface LPGServiceResponseCallBack {
     public void updateActivityWithLPGDetailsCursor(Cursor c);
+    public void updatePrimaryKeyIncrement(String incrementedPrimaryKey);
 }
