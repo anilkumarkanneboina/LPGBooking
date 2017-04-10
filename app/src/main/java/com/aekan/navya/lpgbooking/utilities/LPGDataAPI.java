@@ -1,17 +1,16 @@
 package com.aekan.navya.lpgbooking.utilities;
 
-import android.app.Application;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Message;
+import android.os.Messenger;
+import android.util.Log;
 
 import com.aekan.navya.lpgbooking.LPGApplication;
 
 import java.util.HashMap;
-import android.os.Handler;
-import android.os.Message;
-import android.os.Messenger;
-import android.util.Log;
 
 /**
  * Created by aruramam on 3/28/2017.
@@ -73,11 +72,11 @@ public class LPGDataAPI extends HandlerThread implements ServiceClientAPIInterfa
                     null,
                     null);
             //update the value in HashMap - this acts as a local caching mechanism
-            hashCursor.put(rowID,c);
-            c.close();
+            mApplication.cacheLocalData.put(rowID, c);
+//            c.close();
 
         }
-
+        //mApplication.cacheLocalData.put(rowID,c);
         return hashCursor.get(rowID);
 
 

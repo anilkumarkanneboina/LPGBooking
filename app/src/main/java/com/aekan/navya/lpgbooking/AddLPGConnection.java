@@ -14,9 +14,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.os.Messenger;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -33,8 +33,8 @@ import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
-import com.aekan.navya.lpgbooking.utilities.LPGServiceAPI;
 import com.aekan.navya.lpgbooking.utilities.LPGDataAPI;
+import com.aekan.navya.lpgbooking.utilities.LPGServiceAPI;
 import com.aekan.navya.lpgbooking.utilities.LPGServiceCallBackHandler;
 import com.aekan.navya.lpgbooking.utilities.LPGServiceResponseCallBack;
 import com.aekan.navya.lpgbooking.utilities.LPG_AlertBoxClass;
@@ -107,13 +107,59 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         final EditText lpgConnectionId = (EditText) findViewById(R.id.add_connectionid);
         final EditText lpglastdatelabel = (EditText) findViewById(R.id.add_lastbookeddate);
         final EditText lpgconnnectionexpiry = (EditText) findViewById(R.id.add_connectionexpiry);
+
+        //set hint to true in TextInputLayout - there is a jarring effect due to update from a different thread
+        TextInputLayout connectionTextInput = (TextInputLayout) findViewById(R.id.add_lpgconnectionnamelabel);
+        connectionTextInput.setHintAnimationEnabled(false);
+
         lpglastdatelabel.setEnabled(false);
         final ScrollView scrollView = (ScrollView) findViewById(R.id.form_scroll_view);
         FloatingActionButton buttonSave = (FloatingActionButton) findViewById(R.id.fab_save_connection);
         buttonSave.setEnabled(false);
+
+
+        //Load the page with data, and initialise id counters based on
+        // intent filter being passed to the activity
+        final Bundle connectionBundle = getIntent().getExtras();
+        final String connectionIdString = getIntent().getStringExtra(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.FIELD_CONNECTION_ID_EDIT);
+        Log.v("String Value ", connectionIdString);
+
+        if (connectionIdString != null) {
+            //get the connection id associated with the bundle
+            //display the contents of the retrieved connection record in the fields
+
+            //Check if we have cached details for the connection id
+            if (((LPGApplication) getApplication()).cacheLocalData.containsKey(connectionIdString)) {
+                //logic to bind connection details with activity
+                Log.v("EditConnection", "Not Calling Service");
+                updateActivityWithLPGDetailsCursor(((LPGApplication) getApplication()).cacheLocalData.get(connectionIdString));
+            } else {
+                //get connection details and bind with Activity elements
+                //create call back messenger
+                Log.v("EditConnection", "Calling Service");
+                Messenger callBackMessenger = new Messenger(new Handler(new LPGServiceCallBackHandler(this)));
+
+
+                //Instantiate service handler
+                LPGServiceAPI serviceAPI = new LPGDataAPI((LPGApplication) getApplication(), "Service Call from Add LPG Connection to cache " + connectionIdString);
+
+                //send message to API
+                serviceAPI.populateCylinderInfoThroughCursorWithRowID(connectionIdString, callBackMessenger);
+
+            }
+
+            finalIDCount = connectionIdString; // Integer.toString(iDCount);
+            buttonSave.setEnabled(true);
+
+
+        } else {
+            //this is a new connection, so increment primary key
+            (new LPGDataAPI((LPGApplication) getApplication(), "Incremented Primary Key")).updateCylinderIDCursor(new Messenger(new Handler((new LPGServiceCallBackHandler(this)))));
+
+        }
+
         //Set listener events for Save button and Cancel button.
         // To set listener events, initialize counter value for primary key ID;
-
         //Set validators for phone no and expiry dates
         lpgAgencyPhoneNo.addTextChangedListener(new TextWatcher() {
             @Override
@@ -160,109 +206,13 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
 
 
 
-        //Load the page with data, and initialise id counters based on
-        // intent filter being passed to the activity
-        final Bundle connectionBundle = getIntent().getExtras();
-        final String connectionIdString =  getIntent().getStringExtra(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.FIELD_CONNECTION_ID_EDIT);
-//        Log.v("String Value ", connectionIdString);
 
 
-        if (connectionIdString != null) {
-            //get the connection id associated with the bundle
-            //display the contents of the retrieved connection record in the fields
-
-            //Check if we have cached details for the connection id
-            if ( ((LPGApplication)getApplication()).cacheLocalData.containsKey(connectionIdString)){
-                //logic to bind connection details with activity
-                updateActivityWithLPGDetailsCursor(((LPGApplication)getApplication()).cacheLocalData.get(connectionIdString));
-            } else {
-                //get connection details and bind with Activity elements
-                //create call back messenger
-                Messenger callBackMessenger = new Messenger(new Handler(new LPGServiceCallBackHandler(this)));
 
 
-                //Instantiate service handler
-                LPGServiceAPI serviceAPI = new LPGDataAPI((LPGApplication) getApplication(),"Service Call from Add LPG Connection to cache " + connectionIdString);
-
-                //send message to API
-                serviceAPI.populateCylinderInfoThroughCursorWithRowID(connectionIdString,callBackMessenger);
-
-            }
-            connectionPrimaryKey = connectionIdString;
-            buttonSave.setEnabled(true);
-
-          /*  //CharSequence connectionId = connectionBundle.getCharSequence(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.FIELD_CONNECTION_ID_EDIT, LPG_SQL_ContractClass.LPG_CONNECTION_ROW.VALUE_CONNECTION_ID_NULL);
-            //prepare to query the database
-            String[] columnList = {LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME,
-                    LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER,
-                    LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY,
-                    LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_PHONE_NUMBER,
-                    LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_ID,
-                    LPG_SQL_ContractClass.LPG_CONNECTION_ROW.LAST_BOOKED_DATE,
-                    LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS};
-
-            // String[] selectionArgs = {connectionId.toString()};
-            //query the database
-            assert db != null;
-            Cursor cursor = db.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME, columnList, LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID + " = " + connectionIdString, null, null, null, null, null);
-
-            if (cursor.getCount() > 1) {
-                Log.v("EditConnection", "More than one connection id");
-            }
-            //Set Values for edit text fields
-            cursor.moveToFirst();
-            Log.v("EditConnnection",Integer.toString(cursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME)));
-            lpgConnection.setText(cursor.getString(cursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME)));
-            lpgProvider.setText(cursor.getString(cursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER)));
-            lpgAgency.setText(cursor.getString(cursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY)));
-            lpgAgencyPhoneNo.setText(cursor.getString(cursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_PHONE_NUMBER)));
-            lpgConnectionId.setText(cursor.getString(cursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_ID)));
-            lpglastdatelabel.setText(cursor.getString(cursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.LAST_BOOKED_DATE)));
-            lpgconnnectionexpiry.setText(cursor.getString(cursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS)));
-            //create DB query to get counter value
-            connectionPrimaryKey = connectionIdString;
-            //close the cursor
-            cursor.close();*/
-        } else {
-             (new LPGDataAPI((LPGApplication) getApplication(),"Incremented Primary Key")).updateCylinderIDCursor(new Messenger(new Handler((new LPGServiceCallBackHandler(this)))));
-           /* // set primary key value for connection id
-            String[] connectionID = {LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID};
-            Cursor cursorID = db.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,connectionID,null,null,null,null,null);
-            Log.v("AddConnnection ", "Cursor count before records creation " + Integer.toString(cursorID.getCount()));
-           // Log.v("AddConnection Cursor "," getColumnIndex " + Integer.toString(cursorID.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID)));
-            //Log.v("AddConnection Cursor "," getString " + cursorID.getString(0));
-
-            if (cursorID.getCount() == 0){
-                Log.v("AddConnection ", "Initial cursor count");
-                connectionPrimaryKey = "1";
-
-            }else {
-                //get max value for connection primary key
-                try {
-                    int counterPrimaryKey = 1;
-                    cursorID.moveToFirst();
-                    Log.v("AddConnection ",Integer.toString(cursorID.getCount()));
-                    for (int i = 0; i < cursorID.getCount(); ++i) {
-                        Log.v("AddConnection ","Inside cursor max iteration - counter value " + Integer.toString(i) + " Cursor length " + Integer.toString(cursorID.getCount())+ " Row id value " + cursorID.getString(cursorID.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID)) );
-                        int valueOfPrimaryKeyFromCounter = Integer.parseInt(cursorID.getString(cursorID.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID)));
-                        if (valueOfPrimaryKeyFromCounter > counterPrimaryKey) {
-                            counterPrimaryKey = valueOfPrimaryKeyFromCounter;
-                        }
-                        cursorID.moveToNext();
-                    }
-                    connectionPrimaryKey = Integer.toString(counterPrimaryKey+1);
-                }
-                    catch (android.database.CursorIndexOutOfBoundsException cursorIndex ){
-                        Log.v("AddConnection ", "Inside cursor bounds exception");
-                        connectionPrimaryKey = "1";
-                    }
-            }
-            //close and release the cursor
-            cursorID.close();*/
-    }
 
 
-       //final String finalIDCount = connectionPrimaryKey; // Integer.toString(iDCount);
+
         //Get the database
         final SQLiteDatabase sqLiteDatabase = ((LPGApplication) getApplication()).LPGDB;
 
@@ -540,8 +490,10 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         } else {
             Toast.makeText(getApplicationContext(),getResources().getText(R.string.connection_detail_missing),Toast.LENGTH_LONG).show();
         }
-        //close the cursor
-        c.close();
+
+        TextInputLayout connectionTextInput = (TextInputLayout) findViewById(R.id.add_lpgconnectionnamelabel);
+        connectionTextInput.setHintAnimationEnabled(true);
+
     }
 
     @Override
