@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
+import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 //create an intent for add lpg connection activity
                                 Intent intentLPGAdd = new Intent(getApplicationContext(), AddLPGConnection.class);
-
+                                intentLPGAdd.putExtra(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.FIELD_CONNECTION_ID_EDIT, LPG_Utility.LPG_CONNECTION_ID);
                                 startActivity(intentLPGAdd);
                             }
 
@@ -71,8 +72,10 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(LPGLinearLayoutMgr);
         //Set view holder adapter
       //  recyclerView.setAdapter(new LPGCylinderListViewAdapter());
-        ((LPGApplication) getApplication()).LPG_AlertBoxInstantiate();
 
+        if (!(((LPGApplication) getApplication()).isSingletonRun )) {
+            ((LPGApplication) getApplication()).LPG_AlertBoxInstantiate();
+        }
         //Columns for database ;
         String[] sqLiteColumns = {LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME, LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER, LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY, LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID};
         SQLiteCursor sqLiteCursor;

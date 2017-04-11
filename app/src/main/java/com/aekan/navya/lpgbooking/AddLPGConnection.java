@@ -124,7 +124,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         final String connectionIdString = getIntent().getStringExtra(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.FIELD_CONNECTION_ID_EDIT);
         Log.v("String Value ", connectionIdString);
 
-        if (connectionIdString != null) {
+        if (!(connectionIdString.equals(LPG_Utility.LPG_CONNECTION_ID))) {
             //get the connection id associated with the bundle
             //display the contents of the retrieved connection record in the fields
 
@@ -270,10 +270,11 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
                     contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.LAST_BOOKED_DATE, lpglastdatelabel.getText().toString());
                     contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS, lpgconnnectionexpiry.getText().toString());
                     //Insert to database if it is a new database
-                    if (connectionIdString == null) {
+                    if (connectionIdString.equals(LPG_Utility.LPG_CONNECTION_ID) ) {
 
                         long insertRow = sqLiteDatabase.insert(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME, null, contentValuesDB);
                         if (insertRow != -1) {
+
                             ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper("LPG Connection Created ", "OK", null, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -294,6 +295,9 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
                                 }
                             }, null);
                             ((LPGApplication)getApplication()).LPG_Alert.show(getSupportFragmentManager(),"DB");
+
+                            //clear local cache
+                            ((LPGApplication)getApplication()).cacheLocalData.remove(finalIDCount);
                         }
 
                     }
@@ -490,7 +494,14 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         } else {
             Toast.makeText(getApplicationContext(),getResources().getText(R.string.connection_detail_missing),Toast.LENGTH_LONG).show();
         }
+        //update cursor value in Hashmap
+        //get connection id value
+        String connectionID = dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID));
+        //update hash map
+        ((LPGApplication)getApplication()).cacheLocalData.put(connectionID,dataCursor);
 
+        //set animation enabled for the text input layout, enabling the animation after binding with activity
+        //prevents jarring effect
         TextInputLayout connectionTextInput = (TextInputLayout) findViewById(R.id.add_lpgconnectionnamelabel);
         connectionTextInput.setHintAnimationEnabled(true);
 
