@@ -55,8 +55,8 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
-
     private String finalIDCount ;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //Activity creation using the saved bundle
@@ -129,6 +129,9 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
             //display the contents of the retrieved connection record in the fields
 
             //Check if we have cached details for the connection id
+            Boolean containsKey = ((LPGApplication) getApplication()).cacheLocalData.containsKey(connectionIdString);
+            Log.v("EditConnection ", " contains Key " + Boolean.toString(containsKey));
+
             if (((LPGApplication) getApplication()).cacheLocalData.containsKey(connectionIdString)) {
                 //logic to bind connection details with activity
                 Log.v("EditConnection", "Not Calling Service");
@@ -490,7 +493,14 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         } else {
             Toast.makeText(getApplicationContext(),getResources().getText(R.string.connection_detail_missing),Toast.LENGTH_LONG).show();
         }
+        //Update cursor values
+        String connectionID = dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID));
+        ((LPGApplication) getApplication()).cacheLocalData.put(connectionID,dataCursor);
+        Boolean hasKey = ((LPGApplication) getApplication()).cacheLocalData.containsKey(connectionID);
+        Log.v("ServiceResponse", " contains key " + Boolean.toString(hasKey));
 
+
+        //
         TextInputLayout connectionTextInput = (TextInputLayout) findViewById(R.id.add_lpgconnectionnamelabel);
         connectionTextInput.setHintAnimationEnabled(true);
 

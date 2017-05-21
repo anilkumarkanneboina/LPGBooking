@@ -11,6 +11,7 @@ import android.util.Log;
 import com.aekan.navya.lpgbooking.LPGApplication;
 
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by aruramam on 3/28/2017.
@@ -53,7 +54,7 @@ public class LPGDataAPI extends HandlerThread implements ServiceClientAPIInterfa
     //service call to get cursor for a specific row id
     public Cursor getCylinderRecordForID(String rowID){
 
-        HashMap<String,Cursor> hashCursor = mApplication.cacheLocalData;
+        ConcurrentHashMap<String,Cursor> hashCursor = mApplication.cacheLocalData;
         SQLiteDatabase lpgDB = mApplication.LPGDB;
         Cursor c;
 
