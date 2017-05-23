@@ -129,6 +129,9 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
             //display the contents of the retrieved connection record in the fields
 
             //Check if we have cached details for the connection id
+            Boolean containsKey = ((LPGApplication) getApplication()).cacheLocalData.containsKey(connectionIdString);
+            Log.v("EditConnection ", " contains Key " + Boolean.toString(containsKey));
+
             if (((LPGApplication) getApplication()).cacheLocalData.containsKey(connectionIdString)) {
                 //logic to bind connection details with activity
                 Log.v("EditConnection", "Not Calling Service");
@@ -494,11 +497,11 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         } else {
             Toast.makeText(getApplicationContext(),getResources().getText(R.string.connection_detail_missing),Toast.LENGTH_LONG).show();
         }
-        //update cursor value in Hashmap
-        //get connection id value
+        //Update cursor values
         String connectionID = dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID));
-        //update hash map
-        ((LPGApplication)getApplication()).cacheLocalData.put(connectionID,dataCursor);
+        ((LPGApplication) getApplication()).cacheLocalData.put(connectionID,dataCursor);
+        Boolean hasKey = ((LPGApplication) getApplication()).cacheLocalData.containsKey(connectionID);
+        Log.v("ServiceResponse", " contains key " + Boolean.toString(hasKey));
 
         //set animation enabled for the text input layout, enabling the animation after binding with activity
         //prevents jarring effect
