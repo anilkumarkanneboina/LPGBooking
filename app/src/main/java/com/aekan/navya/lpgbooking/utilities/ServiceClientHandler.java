@@ -13,6 +13,13 @@ import android.widget.Toast;
  * Created by aruramam on 3/29/2017.
  * Handler, which handles messages with appropriate calls
  * to a ServiceClientAPIInterface instance.
+ * This Handler object is the actual worker which does the work of getting Cylinder record for a row id , or
+ * getting the incremented Primary key.
+ * Thus, this worker basically needs a helper object which would basically have two methods - get cylinder, get next incremented primary key.
+ * The helper class is actually designed using a interface - ServiceClientAPIInterface.
+ *
+ * This worker thread will provide two reply messsages, each corresponding to the activity it performs. Hence the handler which handles this
+ * response should be equipped with two methods which would handle the messages appropriately.
  *
  */
 

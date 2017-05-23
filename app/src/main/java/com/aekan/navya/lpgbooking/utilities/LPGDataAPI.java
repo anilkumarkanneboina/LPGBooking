@@ -14,22 +14,27 @@ import java.util.HashMap;
 
 /**
  * Created by aruramam on 3/28/2017.
- * This is an implementation for LPGServiceAPI interface,
- * which hides the handler thread mechanism within itself.
+ *
+ * This class is THE  API interface that the user needs to know.
+ * In other words, this is the only class the developer needs to know or implement
+ * to expose APIs to the Android project.
+ *
+ * This particular class provided two APIs - populate cylider details, increment primary key .
+ * These are the methods in the interface LPGServiceAPI.java - this class is just a implementation for this interface.
+ * The cool part is , this class hides the underlying HandlerThread framework. The method execution is done by seperate thread
+ * and results would be given to specified messenger object, which the method calls take as an argument.
+ * And the user need not even know these details.
  *
  * This class makes  the implementation logic and wrapper interfaces connect,
  * and holds majority of functionality of service calls.
+ * This class implements two interfaces:
  *
- * This class  implements ServiceClientAPRInterface,
- * so that the handler can use an instance of this class, to call API
- * methods needed to service client requests.
+ * 1.This class  implements ServiceClientAPIInterface, which acts as "helper" interface for "worker" handler.
  *
- * This class implements LPGServiceAPI, so that clients can make a simple
+ * 2. This class implements LPGServiceAPI, the interface which defines
+ *  API methods clients can use. So that clients can make a simple
  * API method call for getting a specific service. The implementation logic for how
  * client  service calls  will be processed, is provided in method definitions.
- *
- *
- *
  *
  */
 
