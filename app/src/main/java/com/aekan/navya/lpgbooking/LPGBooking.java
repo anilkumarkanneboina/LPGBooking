@@ -323,7 +323,7 @@ public class LPGBooking extends AppCompatActivity {
         switch (requestCode) {
             case LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE:
                 //check if access was granted :
-                switch (requestCode){
+                switch (resultCode){
                     case Activity.RESULT_CANCELED:
                         //User has not given permission to use call feature of the phone
                         // Present a dialog box and go back to Home screen
@@ -338,6 +338,7 @@ public class LPGBooking extends AppCompatActivity {
                         break;
                     case Activity.RESULT_OK:
                         //Request for permissions
+                        ActivityCompat.requestPermissions(LPGBooking.this, new String[]{Manifest.permission.CALL_PHONE}, LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE);
                 }
 
 

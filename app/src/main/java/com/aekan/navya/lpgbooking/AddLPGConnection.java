@@ -104,6 +104,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         final EditText lpgProvider = (EditText) findViewById(R.id.add_provideredittext);
         final EditText lpgAgency = (EditText) findViewById(R.id.add_agencyedittext);
         final EditText lpgAgencyPhoneNo = (EditText) findViewById(R.id.add_agencyphoneedittext);
+        final EditText lpgAgencySMSNo = (EditText) findViewById(R.id.add_connectionsmsnumber);
         final EditText lpgConnectionId = (EditText) findViewById(R.id.add_connectionid);
         final EditText lpglastdatelabel = (EditText) findViewById(R.id.add_lastbookeddate);
         final EditText lpgconnnectionexpiry = (EditText) findViewById(R.id.add_connectionexpiry);
@@ -114,6 +115,12 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
 
         lpglastdatelabel.setEnabled(false);
         final ScrollView scrollView = (ScrollView) findViewById(R.id.form_scroll_view);
+        scrollView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ;
+            }
+        });
         FloatingActionButton buttonSave = (FloatingActionButton) findViewById(R.id.fab_save_connection);
         buttonSave.setEnabled(false);
 
@@ -269,6 +276,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
                     contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER, lpgProvider.getText().toString());
                     contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY, lpgAgency.getText().toString());
                     contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_PHONE_NUMBER, lpgAgencyPhoneNo.getText().toString());
+                    contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_PHONE_NUMBER, lpgAgencySMSNo.getText().toString());
                     contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_ID, lpgConnectionId.getText().toString());
                     contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.LAST_BOOKED_DATE, lpglastdatelabel.getText().toString());
                     contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS, lpgconnnectionexpiry.getText().toString());
@@ -480,6 +488,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         final EditText lpgProvider = (EditText) findViewById(R.id.add_provideredittext);
         final EditText lpgAgency = (EditText) findViewById(R.id.add_agencyedittext);
         final EditText lpgAgencyPhoneNo = (EditText) findViewById(R.id.add_agencyphoneedittext);
+        final EditText lpgAgencySMSNo = (EditText) findViewById(R.id.add_connectionsmsnumber);
         final EditText lpgConnectionId = (EditText) findViewById(R.id.add_connectionid);
         final EditText lpglastdatelabel = (EditText) findViewById(R.id.add_lastbookeddate);
         final EditText lpgconnnectionexpiry = (EditText) findViewById(R.id.add_connectionexpiry);
@@ -491,6 +500,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
             lpgProvider.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER)));
             lpgAgency.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY)));
             lpgAgencyPhoneNo.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_PHONE_NUMBER)));
+            lpgAgencySMSNo.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_SMS_NUMBER)));
             lpgConnectionId.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_ID)));
             lpglastdatelabel.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.LAST_BOOKED_DATE)));
             lpgconnnectionexpiry.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS)));
