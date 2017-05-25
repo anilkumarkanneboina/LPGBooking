@@ -118,7 +118,13 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         scrollView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ;
+                Log.v("ScrollTouch","Inside Click event");
+                InputMethodManager inputMethodManager = (InputMethodManager) getApplicationContext().getSystemService(INPUT_METHOD_SERVICE);
+                View focusView = getCurrentFocus();
+                if (focusView != null ){
+                    Log.v("ScrollTouch","View not null");
+                    inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+                }
             }
         });
         FloatingActionButton buttonSave = (FloatingActionButton) findViewById(R.id.fab_save_connection);
@@ -234,20 +240,20 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
             public void onClick(View v) {
                 //Get validations for all fields done before submission;
                 boolean dataEnteredRight = true;
-                int yScrollPosition = 0;
+                EditText scrollToError = lpgConnection;
 
                 //Validations for connection expiry to be mandatory field
                 String connectionExpiry = lpgconnnectionexpiry.getText().toString();
                 if ( connectionExpiry.length() == 0 ){
                     lpgconnnectionexpiry.setError(" Expiry Days is mandatory ");
                     dataEnteredRight = false;
-                    yScrollPosition = 350;
+                    scrollToError = lpgconnnectionexpiry;
                 } else {
 
                     if ( !(connectionExpiry.matches(regexExpiryDays)) ){
                         lpgconnnectionexpiry.setError(" Please enter a numeral ");
                         dataEnteredRight = false;
-                        yScrollPosition = 350;
+                        scrollToError = lpgconnnectionexpiry;
                     }
                 }
                 //Validations for last booked date to be entered
@@ -255,7 +261,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
                 if(lastBookedDate.length() == 0){
                     lpglastdatelabel.setError(" Please select a date by clicking on the calendar icon ");
                     dataEnteredRight = false;
-                    yScrollPosition = 280;
+                    scrollToError = lpglastdatelabel ;
                 }
                 //Validation for Date to be entered in future
 
@@ -265,7 +271,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
                 if (connectionName.length() == 0 ){
                     lpgConnection.setError("Connection Name is Mandatory");
                     dataEnteredRight = false;
-                    yScrollPosition = 0;
+                    scrollToError = lpgConnection;
                 }
 
                 if (dataEnteredRight)
@@ -290,6 +296,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
+
                                 }
                             }, null);
                         }
@@ -302,13 +309,26 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
                             ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper("LPG Connection updated", "Ok", null, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    //clear local cache
+                                    ((LPGApplication)getApplication()).cacheLocalData.remove(finalIDCount);
                                     dialog.dismiss();
+
+
                                 }
                             }, null);
                             ((LPGApplication)getApplication()).LPG_Alert.show(getSupportFragmentManager(),"DB");
 
-                            //clear local cache
-                            ((LPGApplication)getApplication()).cacheLocalData.remove(finalIDCount);
+
+
+                        } else {
+                            ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper("LPG Connection update failed. Please try later", "Ok", null, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+
+                                }
+                            }, null);
+                            ((LPGApplication)getApplication()).LPG_Alert.show(getSupportFragmentManager(),"DB");
                         }
 
                     }
@@ -385,7 +405,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
 
                 }
                 else {
-                   scrollView.scrollTo(0,yScrollPosition);
+                   scrollView.scrollTo(0,scrollToError.getBottom());
                 }
             }
         });
