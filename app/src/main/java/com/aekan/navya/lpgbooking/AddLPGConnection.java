@@ -282,7 +282,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
                     contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER, lpgProvider.getText().toString());
                     contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY, lpgAgency.getText().toString());
                     contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_PHONE_NUMBER, lpgAgencyPhoneNo.getText().toString());
-                    contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_PHONE_NUMBER, lpgAgencySMSNo.getText().toString());
+                    contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_SMS_NUMBER, lpgAgencySMSNo.getText().toString());
                     contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_ID, lpgConnectionId.getText().toString());
                     contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.LAST_BOOKED_DATE, lpglastdatelabel.getText().toString());
                     contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS, lpgconnnectionexpiry.getText().toString());
@@ -299,8 +299,18 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
 
                                 }
                             }, null);
+                            ((LPGApplication) getApplication()).LPG_Alert.show(getSupportFragmentManager(), "DB");
+                        } else {
+                            ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper("LPG Connection update failed. Please try later", "Ok", null, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+
+                                }
+                            }, null);
+                            ((LPGApplication)getApplication()).LPG_Alert.show(getSupportFragmentManager(),"DB");
                         }
-                        ((LPGApplication) getApplication()).LPG_Alert.show(getSupportFragmentManager(), "DB");
+
                     } else {
                         int updateDBCount = sqLiteDatabase.update(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME, contentValuesDB, LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID + " = " + finalIDCount, null);
                         Log.v("EditConnection "," Update DB Count " + Integer.toString(updateDBCount));
@@ -333,8 +343,8 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
 
                     }
 
-                    //close DB
-                    // sqLiteDatabase.close();
+
+                    // This is the place where we set the alarms
                     // set alarms based on last confirmed date and expiry time
                     // get the last booked date and get the date which would be mid-way till expiry
                     // if the mid-way date is not in the past, then set an alarm on that day
@@ -391,7 +401,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
                             midwayExpiryDate.set(Calendar.HOUR_OF_DAY,12);
                             midwayExpiryDate.set(Calendar.MINUTE,1);
 
-                            AlarmManager.set(android.app.AlarmManager.ELAPSED_REALTIME_WAKEUP, midwayExpiryDate.getTimeInMillis(), notificationPendingIntent);
+                            AlarmManager.set(android.app.AlarmManager.RTC_WAKEUP, midwayExpiryDate.getTimeInMillis(), notificationPendingIntent);
                             Log.v("Alarm", "Alarm Set for  " + midwayExpiryDate.toString());
 
 
