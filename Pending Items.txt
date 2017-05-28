@@ -1,0 +1,7 @@
+Pending Items for project ; 
+a. Icons 
+   	Flash Screen
+	Home screen icon(app icon)
+	Home page -  Add Floating Action Buttion, Navigation Drawer, Add Cylinder button
+	Cylinder Add page - Top navigation back button, Save Floating Action Button
+	

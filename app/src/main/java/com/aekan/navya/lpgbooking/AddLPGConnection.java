@@ -299,8 +299,18 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
 
                                 }
                             }, null);
+                            ((LPGApplication) getApplication()).LPG_Alert.show(getSupportFragmentManager(), "DB");
+                        } else {
+                            ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper("LPG Connection update failed. Please try later", "Ok", null, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+
+                                }
+                            }, null);
+                            ((LPGApplication)getApplication()).LPG_Alert.show(getSupportFragmentManager(),"DB");
                         }
-                        ((LPGApplication) getApplication()).LPG_Alert.show(getSupportFragmentManager(), "DB");
+
                     } else {
                         int updateDBCount = sqLiteDatabase.update(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME, contentValuesDB, LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID + " = " + finalIDCount, null);
                         Log.v("EditConnection "," Update DB Count " + Integer.toString(updateDBCount));
@@ -333,80 +343,40 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
 
                     }
 
-                    //close DB
-                    // sqLiteDatabase.close();
+
+                    // This is the place where we set the alarms
                     // set alarms based on last confirmed date and expiry time
                     // get the last booked date and get the date which would be mid-way till expiry
                     // if the mid-way date is not in the past, then set an alarm on that day
 
-                    //Get the date object from the lastdatelabel text field, by splitting the string and creating a date
-                    String[] strDateFields = lpglastdatelabel.getText().toString().split("/");
-                    int lpglastbookeddate, lpglastbookedmonth, lpglastbookedyear;
-                    Calendar sysDate = Calendar.getInstance();
-                    Date lpgLastBooked;
-                    GregorianCalendar lpgLastBookedGregCalendar;
-                    Log.v("Error ", "LPG Connectioni Expiry Days " + lpgconnnectionexpiry.getText().toString() );
-                    String strLPGConnectionDays = lpgconnnectionexpiry.getText().toString();
 
-                    int lpgExpiryDays = Integer.parseInt(strLPGConnectionDays);
+                            LPG_Utility.RefillAlarmNotification[] alarmNotificationTimers = LPG_Utility.getRefillRemainder(getApplicationContext(),
+                                    lpglastdatelabel.getText().toString() ,// Last booked date entered by user
+                                    lpgconnnectionexpiry.getText().toString()  , //Connection expiry time
+                                    finalIDCount,
+                                    lpgConnection.getText().toString() // connection name
+                            );
+                            //  Set alarms based on alarms returned by getRefillRemainder method
+                            AlarmManager alarmManager = (android.app.AlarmManager)getSystemService(Context.ALARM_SERVICE);
+                            for ( int i = 0 ; i <2 ; i++) {
 
-                    if (strDateFields.length != 0 ){
+                                alarmManager.set(android.app.AlarmManager.RTC_WAKEUP, alarmNotificationTimers[i].getGregorialCalendar().getTimeInMillis(), alarmNotificationTimers[i].getRefillCylinder());
+                                Log.v("Alarm", "Alarm Set for  " + alarmNotificationTimers[i].getGregorialCalendar().toString());
 
-                        // From the split string, get the integer values for date, month and year fields
-                        // and create a date object with these values Integer.getInteger
-                        lpglastbookeddate= Integer.parseInt(strDateFields[1]);
-                        lpglastbookedmonth = Integer.parseInt(strDateFields[0]);
-                        lpglastbookedyear = Integer.parseInt(strDateFields[2]);
-                        //Create the AlarmManager object to set alarms
-                        AlarmManager AlarmManager = (android.app.AlarmManager)getSystemService(Context.ALARM_SERVICE);
-//                        String selectedDate = Integer.toString(setMonth + 1) + "/" + Integer.toString(setDay) + "/" + Integer.toString(setYear);
-                        // Create the gregorian calendar based on the last booked date
-                        // add half of expected expiry time to this date, to arrive at mid-way expiry date
-                        lpgLastBookedGregCalendar = new GregorianCalendar(lpglastbookedyear,lpglastbookedmonth - 1, lpglastbookeddate);
-                        GregorianCalendar midwayExpiryDate = lpgLastBookedGregCalendar;
-                        midwayExpiryDate.add(Calendar.DATE, Math.round( lpgExpiryDays/2));
-                        Date lpgMidWayExpiryDate = midwayExpiryDate.getTime();
-
-                        //compare this midway expiry time with sys date and
-//                        create an alarm only if this date is in future
-
-                        if ( sysDate.compareTo(midwayExpiryDate) <= 0  ) {
-                            //set the alarm for this date with the notification class
-                            // Create an intent and use that to create the pending intent for alarm manager
-                            Intent notificationIntent = new Intent(getApplicationContext(),LPG_AlarmReceiver.class);
-                            // Add notification informatino to the intent
-                            notificationIntent.putExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONTITLE,"Cylinder is half done");
-                            notificationIntent.putExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONID,finalIDCount);
-                            notificationIntent.putExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONCONTENT, lpgConnection.getText().toString() + " is half empty now. Please click on Book icon to book the cylinder now!!");
-                            // Create a pending intent request code, which will refer to the alarm being set for this lpg connnection id
-                            // Utilising the same pending intent request code will help to replace the existing alarm, if there is a change in
-                            // lpg expiry days by any chance. In this application we explicitly do not check to reset the alarm
-                            // if the lpg expiry days has been changed. We use inherent behaviour of alarm manager to replace alarms if we use the same pending
-                            // intent, which in this case would be identified with pending intent request
-                            // Additionally, we will identify alarms used for mid-term expiry reminder with trailing numeral one to int request
-                            // This is evident in pendingIntentRequestCode variable initialization below
-                            int pendingIntentRequestCode = Integer.parseInt(finalIDCount) * 10 + 1;
-                            PendingIntent notificationPendingIntent = PendingIntent.getBroadcast(getApplicationContext(),pendingIntentRequestCode,notificationIntent,PendingIntent.FLAG_UPDATE_CURRENT);
-
-                            midwayExpiryDate.set(Calendar.HOUR_OF_DAY,12);
-                            midwayExpiryDate.set(Calendar.MINUTE,1);
-
-                            AlarmManager.set(android.app.AlarmManager.ELAPSED_REALTIME_WAKEUP, midwayExpiryDate.getTimeInMillis(), notificationPendingIntent);
-                            Log.v("Alarm", "Alarm Set for  " + midwayExpiryDate.toString());
-
-
+                            }
 
 
 
                         }
-
-                    }
-
-
-                }
                 else {
-                   scrollView.scrollTo(0,scrollToError.getBottom());
+                    scrollView.scrollTo(0,scrollToError.getBottom());
                 }
+
+
+
+
+
+
             }
         });
       /*  FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
