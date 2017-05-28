@@ -16,7 +16,7 @@ import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
 /**
  * Created by aruramam on 8/6/2016.
  */
-class LPG_AlarmReceiver extends BroadcastReceiver {
+public class LPG_AlarmReceiver extends BroadcastReceiver {
 
     public LPG_AlarmReceiver(){
         super();
