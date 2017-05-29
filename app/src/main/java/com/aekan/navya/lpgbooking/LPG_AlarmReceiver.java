@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import com.aekan.navya.lpgbooking.MainActivity;
 import com.aekan.navya.lpgbooking.R;
@@ -25,7 +26,7 @@ public class LPG_AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         // Set a notification on receiving the broadcast
-
+        Log.v("Alarm","On Receive");
         //Build the notification
         NotificationCompat.Builder lpgExpiryNotificationBuilder = new NotificationCompat.Builder(context);
         lpgExpiryNotificationBuilder.setSmallIcon(R.drawable.ic_feedback_black_24dp);

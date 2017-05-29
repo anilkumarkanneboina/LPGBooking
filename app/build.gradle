@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'MyKeys'
             keyPassword 'Navya280208'
-            storeFile file('C:/Users/aruramam/Documents/Arun/WIP/Tech/Android/LPGBooking/MyKeys.jks')
+            storeFile file('/Users/arunramamurthy/Documents/Technical/Android/LPGBooking/MyKeys.jks')
             storePassword 'Navya280208'
         }
     }

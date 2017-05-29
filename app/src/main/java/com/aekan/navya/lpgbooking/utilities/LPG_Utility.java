@@ -51,7 +51,7 @@ public class LPG_Utility {
         Calendar sysDate = Calendar.getInstance();
         Date lpgLastBooked;
         GregorianCalendar lpgLastBookedGregCalendar;
-        int expiryDays = Integer.getInteger(expiryDaysStr);
+        int expiryDays = Integer.parseInt(expiryDaysStr);
 
 
         if (strDateFields.length != 0 ) {
@@ -87,6 +87,13 @@ public class LPG_Utility {
             midwayExpiryDate.set(Calendar.HOUR_OF_DAY, 12);
             midwayExpiryDate.set(Calendar.MINUTE, 1);
 
+            //Test notification creation
+            GregorianCalendar newNotification =  ((GregorianCalendar) Calendar.getInstance());
+            newNotification.set(Calendar.MINUTE,55);
+            newNotification.set(Calendar.HOUR_OF_DAY,19);
+
+            Log.v("Notification1",newNotification.toString() );
+
             // Create a pending intent request code, which will refer to the alarm being set for this lpg connnection id
             // Utilising the same pending intent request code will help to replace the existing alarm, if there is a change in
             // lpg expiry days by any chance. In this application we explicitly do not check to reset the alarm
@@ -102,10 +109,12 @@ public class LPG_Utility {
                 notificationIntent.putExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONCONTENT, connectionName + " is half empty now. Please click on Book icon for refill booking!!");
 
 
-                PendingIntent notificationPendingIntent = PendingIntent.getBroadcast(applicationContext, pendingIntentRequestCode, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent notificationPendingIntent = PendingIntent.getBroadcast(applicationContext, pendingIntentRequestCode, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
                 //Midway alarm notification record - will be put in first index of Alarm Notification
-                alarmTimes[0] = new RefillAlarmNotification(notificationPendingIntent,midwayExpiryDate);
+                //test notification banner for now
+                alarmTimes[0] = new RefillAlarmNotification(notificationPendingIntent,newNotification);
+                //alarmTimes[0] = new RefillAlarmNotification(notificationPendingIntent,midwayExpiryDate);
 
                 // Set another alarm before final expiry
                 Intent notificationExpiryUltmate = new Intent(applicationContext,LPG_AlarmReceiver.class);
@@ -113,7 +122,7 @@ public class LPG_Utility {
                 notificationExpiryUltmate.putExtra(LPG_ALARMINTENT_NOTIFICATIONTITLE,"You need to refill now");
                 notificationExpiryUltmate.putExtra(LPG_ALARMINTENT_NOTIFICATIONID,rowID);
                 notificationExpiryUltmate.putExtra(LPG_ALARMINTENT_NOTIFICATIONCONTENT,connectionName + " is about to expire. Please click on Book to refill now!!");
-                PendingIntent notificationFinal = PendingIntent.getBroadcast(applicationContext,requestCodeNotificationUltimate, notificationExpiryUltmate,PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent notificationFinal = PendingIntent.getBroadcast(applicationContext,requestCodeNotificationUltimate, notificationExpiryUltmate,PendingIntent.FLAG_CANCEL_CURRENT);
                 // This notification would be set 8 days before final expiry date
                 // this expiry
                 GregorianCalendar calendarNotificationUltimate = new GregorianCalendar(lpglastbookedyear, lpglastbookedmonth - 1, lpglastbookeddate);
@@ -129,7 +138,13 @@ public class LPG_Utility {
                 calendarNotificationUltimate.set(Calendar.HOUR_OF_DAY,13);
                 calendarNotificationUltimate.set(Calendar.MINUTE,3);
 
-                alarmTimes[1] = new RefillAlarmNotification(notificationFinal,calendarNotificationUltimate);
+                //Test notification
+                GregorianCalendar newnotification2 = (GregorianCalendar) Calendar.getInstance() ;
+                newnotification2.add(Calendar.MINUTE,3);
+
+                //test notificaiton firing for now
+                alarmTimes[1] = new RefillAlarmNotification(notificationFinal,newnotification2);
+                //alarmTimes[1] = new RefillAlarmNotification(notificationFinal,calendarNotificationUltimate);
             }
             return alarmTimes;
         }

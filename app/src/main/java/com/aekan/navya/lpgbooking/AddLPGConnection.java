@@ -349,7 +349,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
                     // get the last booked date and get the date which would be mid-way till expiry
                     // if the mid-way date is not in the past, then set an alarm on that day
 
-
+                            Log.v("Save",lpgconnnectionexpiry.getText().toString());
                             LPG_Utility.RefillAlarmNotification[] alarmNotificationTimers = LPG_Utility.getRefillRemainder(getApplicationContext(),
                                     lpglastdatelabel.getText().toString() ,// Last booked date entered by user
                                     lpgconnnectionexpiry.getText().toString()  , //Connection expiry time
@@ -361,7 +361,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
                             for ( int i = 0 ; i <2 ; i++) {
 
                                 alarmManager.set(android.app.AlarmManager.RTC_WAKEUP, alarmNotificationTimers[i].getGregorialCalendar().getTimeInMillis(), alarmNotificationTimers[i].getRefillCylinder());
-                                Log.v("Alarm", "Alarm Set for  " + alarmNotificationTimers[i].getGregorialCalendar().toString());
+                                Log.v("Alarm", "Alarm Set for  "+ i+" "+ alarmNotificationTimers[i].getGregorialCalendar().getTimeInMillis());
 
                             }
 

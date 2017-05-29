@@ -17,6 +17,10 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".LPG_AlarmReceiver"
+            android:enabled="true"
+            android:exported="true"
+            ></receiver>
         <activity
             android:name=".AddLPGConnection"
             android:label="AddLPGConnection"
