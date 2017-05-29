@@ -7,12 +7,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.aekan.navya.lpgbooking.MainActivity;
-import com.aekan.navya.lpgbooking.R;
 import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
+import com.aekan.navya.lpgbooking.utilities.lpgconnectionparcel;
 
 /**
  * Created by aruramam on 8/6/2016.
@@ -32,14 +30,16 @@ public class LPG_AlarmReceiver extends BroadcastReceiver {
         lpgExpiryNotificationBuilder.setSmallIcon(R.drawable.ic_feedback_black_24dp);
         lpgExpiryNotificationBuilder.setContentTitle(intent.getStringExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONTITLE));
         lpgExpiryNotificationBuilder.setContentText(intent.getStringExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONCONTENT));
+        String lpgRowId = intent.getStringExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONID);
 
         //Create an event to start booking activity
-        Intent intentStartActivity = new Intent(context, MainActivity.class);
+        Intent intentStartActivity = new Intent(context, LPGBooking.class);
+        intentStartActivity.putExtra(lpgconnectionparcel.LPG_CONNECTIONRECORD_PARCEL, new lpgconnectionparcel(lpgRowId));
         //Create a stack builder and add the intent to the stack buildeer
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addParentStack(MainActivity.class);
         taskStackBuilder.addNextIntent(intentStartActivity);
-        PendingIntent pendingIntentStartActivity = taskStackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntentStartActivity = taskStackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
 
         //Add the pending intent to notification through builder object
         lpgExpiryNotificationBuilder.setContentIntent(pendingIntentStartActivity);
