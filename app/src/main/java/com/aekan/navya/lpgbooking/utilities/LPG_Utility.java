@@ -1,6 +1,5 @@
 package com.aekan.navya.lpgbooking.utilities;
 
-import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -34,6 +33,8 @@ public class LPG_Utility {
     public final static String PERMISSION_STATUS = "This string defines permission status";
     public final static String PERMISSION_DENIED = "PERMISSION DENIED";
     public final static String PERMISSION_ACCEPTED = "PERMISSION PROVIDED";
+    public final static String[] LPG_PROVIDERS = {"Indane", "Bharath Gas", "HP Gas"};
+    public final static int LPG_PROVIDER_NOT_FOUND = 100;
 
     public final static int HASH_CAPACITY = 4;
     public final static float HASH_LOAD_FACTOR = 0.8f;
@@ -42,6 +43,16 @@ public class LPG_Utility {
     public final static int MSG_INCREMENTPRIMARYKEY = 1243;
 
     public final static int FINAL_NOTIFICATION_BUFFER = 8;
+
+    public static int getIndexOfProvider(String Provider) {
+        for (int i = 0; i < LPG_PROVIDERS.length; ++i) {
+            if (LPG_PROVIDERS[i].equals(Provider)) {
+                return i;
+            }
+
+        }
+        return LPG_PROVIDER_NOT_FOUND;
+    }
 
     public static RefillAlarmNotification[] getRefillRemainder(Context applicationContext, String lastBookedDate, String expiryDaysStr, String rowID, String connectionName){
         RefillAlarmNotification[] alarmTimes = new RefillAlarmNotification[2];
