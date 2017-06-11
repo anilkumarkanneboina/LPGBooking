@@ -67,4 +67,9 @@
     <dimen name="permission_button_width">88dp</dimen>
     <dimen name="permission_button_height">36dp</dimen>
     <dimen name="permission_button_distance">48dp</dimen>
+
+    <!--progress loader-->
+    <dimen name="loaderdimension">32dp</dimen>
+    <dimen name="loadertextsize">16sp</dimen>
+    <dimen name="loadertextleftmargin">16dp</dimen>
 </resources>

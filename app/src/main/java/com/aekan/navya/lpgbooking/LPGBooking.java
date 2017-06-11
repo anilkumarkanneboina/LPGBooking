@@ -2,6 +2,8 @@ package com.aekan.navya.lpgbooking;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -17,6 +19,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.PhoneStateListener;
+import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
@@ -46,6 +49,7 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
     private final static int LPG_BOOKING_REQUEST_PERMISSION_SMS = 2;
     String lpgparcelConnectionProvider;
     String lpgparcelConnectionPhoneNumber;
+    Intent lpgBookingCallIntent;
     // use a field within this class to store phone no
     // this field would be initialised during onCreate and would
     // be used subsequently during permission response handling
@@ -53,13 +57,13 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
     private String LPG_SMS_REFILL_NO;
     private TelephonyManager telephonyManager;
     private LPG_PhoneListener phoneStateListener;
-    Intent lpgBookingCallIntent ;
     private String lpgparcelConnectionId; // connection id of record being booked
     //String lpgparcelLastBookedDate;
     //String lpgparcelExpectedExpiryDays;
 
     @Override
-    @RequiresPermission(Manifest.permission.CALL_PHONE)
+    @RequiresPermission(allOf = {Manifest.permission.SEND_SMS, Manifest.permission.CALL_PHONE})
+
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
 
@@ -173,6 +177,9 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
 
                 } else{
                     //the app has permission to send sms
+                    SmsManager smsManager = SmsManager.getDefault();
+                    //Get details to send SMS to
+
                 }
             }
         });
@@ -243,12 +250,12 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
     }
 
 
-  /*  @Override
+    @Override
     protected void onResume() {
         super.onResume();
-        telephonyManager.listen(phoneStateListener,PhoneStateListener.LISTEN_CALL_STATE);
+
     }
-*/
+
 
     @Override
     protected void onDestroy() {
@@ -312,6 +319,7 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
             lpgProvider.setText(c.getString(c.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER)));
             LPG_CONNECTION_PHONE_NO = c.getString(c.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_PHONE_NUMBER));
             LPG_SMS_REFILL_NO = c.getString(c.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_SMS_NUMBER));
+            lpgparcelConnectionProvider = c.getString(c.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER));
             // Set expected expiry date
             String lpgparcelLastBookedDate = c.getString(c.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.LAST_BOOKED_DATE));
             String lpgparcelExpectedExpiryDays = c.getString(c.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS));
@@ -348,6 +356,14 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
 
     @Override
     public void updatePrimaryKeyIncrement(String incrementedPrimaryKey) {
+
+    }
+
+    public static class mSMSBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+        }
 
     }
 }
