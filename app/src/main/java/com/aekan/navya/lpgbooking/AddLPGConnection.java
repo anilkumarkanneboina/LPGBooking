@@ -3,7 +3,6 @@ package com.aekan.navya.lpgbooking;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -27,6 +26,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -108,6 +109,12 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         final EditText lpgConnectionId = (EditText) findViewById(R.id.add_connectionid);
         final EditText lpglastdatelabel = (EditText) findViewById(R.id.add_lastbookeddate);
         final EditText lpgconnnectionexpiry = (EditText) findViewById(R.id.add_connectionexpiry);
+
+        //Set Autocomplete values for connectino provider
+        ArrayAdapter<String> lpgProviderAdapter = new ArrayAdapter<String>(this, R.layout.lpg_provider_autocomplete_layout, R.id.autocompletetextview, LPG_Utility.LPG_PROVIDERS);
+        AutoCompleteTextView lpgProviderAutoComplete = (AutoCompleteTextView) findViewById(R.id.add_provideredittext);
+        lpgProviderAutoComplete.setAdapter(lpgProviderAdapter);
+
 
         //set hint to true in TextInputLayout - there is a jarring effect due to update from a different thread
         TextInputLayout connectionTextInput = (TextInputLayout) findViewById(R.id.add_lpgconnectionnamelabel);
@@ -279,7 +286,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
                     ContentValues contentValuesDB = new ContentValues();
                     contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID, finalIDCount);
                     contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME, lpgConnection.getText().toString());
-                    contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER, lpgProvider.getText().toString());
+                    contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER, LPG_Utility.getLPGProvider(lpgProvider.getText().toString()));
                     contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY, lpgAgency.getText().toString());
                     contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_PHONE_NUMBER, lpgAgencyPhoneNo.getText().toString());
                     contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_SMS_NUMBER, lpgAgencySMSNo.getText().toString());

@@ -42,7 +42,7 @@
     <string name="Add_LPGBooking_AddMode_Title">Add Connection</string>
     <string name="Add_LPGBooking_EditMode_Title">Edit Connection</string>
     <string name="Add_Connection_User_Prompt">Please add a new cylinder connection </string>
-
+    <integer name="autocomplete_threshold">2</integer>
     <!--String values for Main Activity -->
     <string name="toast_delete_successful">LPG connection deleted successfully</string>
     <string name="toast_delete_failure">Deletion Failure:Please try later</string>

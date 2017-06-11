@@ -62,13 +62,19 @@
                 app:counterEnabled="true"
                 app:errorEnabled = "true"
                 app:hintAnimationEnabled="true">
-            <EditText
+
+                <AutoCompleteTextView
                 android:id="@+id/add_provideredittext"
                 android:layout_width="@dimen/textfield_width"
                 android:layout_height="@dimen/textinputlayout_height"
                 android:layout_marginLeft="@dimen/add_edit_text_leftmargin"
                 android:layout_marginStart="@dimen/add_edit_text_leftmargin"
+                    android:completionThreshold="@integer/autocomplete_threshold"
+                    android:dropDownAnchor="@id/form_scroll_view"
+                    android:dropDownHeight="@dimen/autocomplete_dropdownheight"
+                    android:dropDownWidth="wrap_content"
                 android:hint="@string/Hint_Provider"
+                    android:popupBackground="@color/colorPrimary"
                 android:textSize="@dimen/add_text_size_lable" />
         </android.support.design.widget.TextInputLayout>
             <android.support.design.widget.TextInputLayout
@@ -119,8 +125,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/add_agencyphonelabel"
-                app:hintAnimationEnabled="true"
                 android:textSize="@dimen/add_text_size_lable"
+                app:hintAnimationEnabled="true"
                 >
                 <EditText
                     android:id="@+id/add_connectionsmsnumber"
