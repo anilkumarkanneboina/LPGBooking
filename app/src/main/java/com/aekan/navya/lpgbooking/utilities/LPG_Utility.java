@@ -26,7 +26,7 @@ public class LPG_Utility {
     public final static int PERMISSION_SMS_NOT_ALLOWED = 1;
     public final static int PERMISSION_CALL_ALLOWED = 2;
     public final static int PERMISSION_CALL_NOT_ALLOWED = 3;
-
+    //constants for lpg booking activity
     public final static String PERMISSION_INTIMATION_MESSAGE = "This string identifies the message to be pasted in permission check activity, to display SMS initimation message";
     public final static String PERMISSION_SMS_INTIMATION = "SHOW SMS MESSAGE";
     public final static String PERMISSION_CALL_INTIMATION = "SHOW CALL MESSAGE";
@@ -36,9 +36,18 @@ public class LPG_Utility {
     public final static String LPG_PROVIDER_INDANE = "INDANE";
     public final static String LPG_PROVIDER_BHARATH = "BHARATH GAS";
     public final static String LPG_PROVIDER_HP = "HP GAS";
+    public final static String LPG_REFILL_TEXT_BHARATH = "LPG";
+    public final static String LPG_REFILL_TEXT_INDANE = "IOC";
+    public final static String LPG_REFILL_TEXT_HP = "HPGAS";
     public final static String[] LPG_PROVIDERS = {LPG_PROVIDER_INDANE, LPG_PROVIDER_BHARATH, LPG_PROVIDER_HP};
     public final static String[] LPG_PROVIDERS_EXTENDEDLIST = {"Indane", "Indian Oil Corp", "IOC", "Hindustan Petroleum", "HPCL", "HP Gas", "Bharath Gas"};
     public final static int LPG_PROVIDER_NOT_FOUND = 100;
+    public final static int SENT_REFILL_SMS = 12;
+    public final static int DELIVERED_REFILL_SMS = 14;
+    public final static String SMS_DELIVERY_MILESTONE = "This will represent present state of SMS Delivery";
+    public final static String PROGRESS_SMS_SENT = "SMS Sent...";
+    public final static String PROGRESS_SMS_DELIVERED = "SMS Delivered ...";
+    public final static String PROGRESS_START = "Sending SMS....";
 
     public final static int HASH_CAPACITY = 4;
     public final static float HASH_LOAD_FACTOR = 0.8f;
@@ -47,6 +56,8 @@ public class LPG_Utility {
     public final static int MSG_INCREMENTPRIMARYKEY = 1243;
 
     public final static int FINAL_NOTIFICATION_BUFFER = 8;
+
+
 
     public static int getIndexOfProvider(String Provider) {
         for (int i = 0; i < LPG_PROVIDERS.length; ++i) {
@@ -134,53 +145,60 @@ public class LPG_Utility {
             // This is evident in pendingIntentRequestCode variable initialization below
 
             int pendingIntentRequestCode = Integer.parseInt(rowID) * 10 + 1;
-                Intent notificationIntent = new Intent(applicationContext,LPG_AlarmReceiver.class);
-                notificationIntent.putExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONTITLE,"Cylinder is half done");
-                notificationIntent.putExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONID,rowID);
-                notificationIntent.putExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONCONTENT, connectionName + " is half empty now. Please click on Book icon for refill booking!!");
+            Intent notificationIntent = new Intent(applicationContext,LPG_AlarmReceiver.class);
+            notificationIntent.putExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONTITLE,"Cylinder is half done");
+            notificationIntent.putExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONID,rowID);
+            notificationIntent.putExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONCONTENT, connectionName + " is half empty now. Please click on Book icon for refill booking!!");
 
 
-                PendingIntent notificationPendingIntent = PendingIntent.getBroadcast(applicationContext, pendingIntentRequestCode, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+            PendingIntent notificationPendingIntent = PendingIntent.getBroadcast(applicationContext, pendingIntentRequestCode, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                //Midway alarm notification record - will be put in first index of Alarm Notification
-                //test notification banner for now
-                alarmTimes[0] = new RefillAlarmNotification(notificationPendingIntent,newNotification);
-                //alarmTimes[0] = new RefillAlarmNotification(notificationPendingIntent,midwayExpiryDate);
+            //Midway alarm notification record - will be put in first index of Alarm Notification
+            //test notification banner for now
+            alarmTimes[0] = new RefillAlarmNotification(notificationPendingIntent,newNotification);
+            //alarmTimes[0] = new RefillAlarmNotification(notificationPendingIntent,midwayExpiryDate);
 
-                // Set another alarm before final expiry
-                Intent notificationExpiryUltmate = new Intent(applicationContext,LPG_AlarmReceiver.class);
-                int requestCodeNotificationUltimate = Integer.parseInt(rowID) * 10 + 2;
-                notificationExpiryUltmate.putExtra(LPG_ALARMINTENT_NOTIFICATIONTITLE,"You need to refill now");
-                notificationExpiryUltmate.putExtra(LPG_ALARMINTENT_NOTIFICATIONID,rowID);
-                notificationExpiryUltmate.putExtra(LPG_ALARMINTENT_NOTIFICATIONCONTENT,connectionName + " is about to expire. Please click on Book to refill now!!");
-                PendingIntent notificationFinal = PendingIntent.getBroadcast(applicationContext,requestCodeNotificationUltimate, notificationExpiryUltmate,PendingIntent.FLAG_CANCEL_CURRENT);
-                // This notification would be set 8 days before final expiry date
-                // this expiry
-                GregorianCalendar calendarNotificationUltimate = new GregorianCalendar(lpglastbookedyear, lpglastbookedmonth - 1, lpglastbookeddate);
-                calendarNotificationUltimate.add(Calendar.DAY_OF_MONTH, expiryDays - FINAL_NOTIFICATION_BUFFER);
+            // Set another alarm before final expiry
+            Intent notificationExpiryUltmate = new Intent(applicationContext,LPG_AlarmReceiver.class);
+            int requestCodeNotificationUltimate = Integer.parseInt(rowID) * 10 + 2;
+            notificationExpiryUltmate.putExtra(LPG_ALARMINTENT_NOTIFICATIONTITLE,"You need to refill now");
+            notificationExpiryUltmate.putExtra(LPG_ALARMINTENT_NOTIFICATIONID,rowID);
+            notificationExpiryUltmate.putExtra(LPG_ALARMINTENT_NOTIFICATIONCONTENT,connectionName + " is about to expire. Please click on Book to refill now!!");
+            PendingIntent notificationFinal = PendingIntent.getBroadcast(applicationContext,requestCodeNotificationUltimate, notificationExpiryUltmate,PendingIntent.FLAG_CANCEL_CURRENT);
+            // This notification would be set 8 days before final expiry date
+            // this expiry
+            GregorianCalendar calendarNotificationUltimate = new GregorianCalendar(lpglastbookedyear, lpglastbookedmonth - 1, lpglastbookeddate);
+            calendarNotificationUltimate.add(Calendar.DAY_OF_MONTH, expiryDays - FINAL_NOTIFICATION_BUFFER);
 
-                // If this alarm notification is in the past,
-                // provide alartm notification the next day
-                if ( sysDate.compareTo(calendarNotificationUltimate) <= 0  ){
-                    calendarNotificationUltimate = (GregorianCalendar) sysDate;
-                    calendarNotificationUltimate.add(Calendar.DAY_OF_MONTH,1);
-                }
+            // If this alarm notification is in the past,
+            // provide alartm notification the next day
+            if ( sysDate.compareTo(calendarNotificationUltimate) <= 0  ){
+                calendarNotificationUltimate = (GregorianCalendar) sysDate;
+                calendarNotificationUltimate.add(Calendar.DAY_OF_MONTH,1);
+            }
 
-                calendarNotificationUltimate.set(Calendar.HOUR_OF_DAY,13);
-                calendarNotificationUltimate.set(Calendar.MINUTE,3);
+            calendarNotificationUltimate.set(Calendar.HOUR_OF_DAY,13);
+            calendarNotificationUltimate.set(Calendar.MINUTE,3);
 
-                //Test notification
-                GregorianCalendar newnotification2 = (GregorianCalendar) Calendar.getInstance() ;
-                newnotification2.add(Calendar.MINUTE,3);
+            //Test notification
+            GregorianCalendar newnotification2 = (GregorianCalendar) Calendar.getInstance() ;
+            newnotification2.add(Calendar.MINUTE,3);
 
-                //test notificaiton firing for now
-                alarmTimes[1] = new RefillAlarmNotification(notificationFinal,newnotification2);
-                //alarmTimes[1] = new RefillAlarmNotification(notificationFinal,calendarNotificationUltimate);
+            //test notificaiton firing for now
+            alarmTimes[1] = new RefillAlarmNotification(notificationFinal,newnotification2);
+            //alarmTimes[1] = new RefillAlarmNotification(notificationFinal,calendarNotificationUltimate);
             }
             return alarmTimes;
         }
 
+    public static String getSMSTextMessage(String provider){
+        String textMessage = "LPG";
+        if ( provider.equals(LPG_PROVIDER_BHARATH)){textMessage = LPG_REFILL_TEXT_BHARATH;}
+        if ( provider.equals(LPG_PROVIDER_INDANE)) {textMessage = LPG_REFILL_TEXT_INDANE;}
+        if ( provider.equals(LPG_PROVIDER_HP)) {textMessage = LPG_REFILL_TEXT_HP;}
+        return textMessage;
 
+    }
 
 
 

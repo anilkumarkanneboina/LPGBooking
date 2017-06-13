@@ -76,7 +76,11 @@
     <string name="permission_button_cancel">Cancel</string>
     <string name="permission_button_ok">OK</string>
 
+    <!--progress loader messages-->
+    <string name="progress_loader_text">Loading...</string>
     <!--Error messages-->
     <string name="connection.detail.missing">Connection not found</string>
+    <string name="addlpg_connection_not_found">Not Found</string>
+
 
 </resources>
