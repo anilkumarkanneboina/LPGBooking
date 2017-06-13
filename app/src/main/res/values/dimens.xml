@@ -71,5 +71,6 @@
     <!--progress loader-->
     <dimen name="loaderdimension">32dp</dimen>
     <dimen name="loadertextsize">16sp</dimen>
+    <dimen name="loader_layout_topmargin">16dp</dimen>
     <dimen name="loadertextleftmargin">16dp</dimen>
 </resources>

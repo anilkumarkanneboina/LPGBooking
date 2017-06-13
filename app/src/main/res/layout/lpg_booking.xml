@@ -31,9 +31,6 @@
         layout="@layout/content_lpg_booking" />
 
         <include
-            android:id="@+id/progressloader"
-
-
             layout="@layout/progress_loader" />
     </LinearLayout>
 

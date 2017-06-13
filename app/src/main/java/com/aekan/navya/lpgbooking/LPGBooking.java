@@ -6,12 +6,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Messenger;
+import android.provider.Telephony;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
 import android.support.v4.app.ActivityCompat;
@@ -23,8 +25,11 @@ import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.aekan.navya.lpgbooking.utilities.LPGDataAPI;
 import com.aekan.navya.lpgbooking.utilities.LPGServiceCallBackHandler;
@@ -50,6 +55,7 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
     String lpgparcelConnectionProvider;
     String lpgparcelConnectionPhoneNumber;
     Intent lpgBookingCallIntent;
+    private String lpgProviderName;
     // use a field within this class to store phone no
     // this field would be initialised during onCreate and would
     // be used subsequently during permission response handling
@@ -58,9 +64,9 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
     private TelephonyManager telephonyManager;
     private LPG_PhoneListener phoneStateListener;
     private String lpgparcelConnectionId; // connection id of record being booked
-    //String lpgparcelLastBookedDate;
-    //String lpgparcelExpectedExpiryDays;
-
+    private mSMSBroadcastReceiver mSMSBroadcast;
+    //handle progress loader for SMS sending
+    private boolean misProgressBarLoaded ;
     @Override
     @RequiresPermission(allOf = {Manifest.permission.SEND_SMS, Manifest.permission.CALL_PHONE})
 
@@ -73,7 +79,7 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
         //set content view for the activity
         setContentView(R.layout.lpg_booking);
         EditText lpgConnectionName = (EditText) findViewById(R.id.lpgbooking_connectionname_edittext);
-        EditText lpgProvider = (EditText) findViewById(R.id.lpgbooking_provider_edittext);
+        final EditText lpgProvider = (EditText) findViewById(R.id.lpgbooking_provider_edittext);
         EditText lpgExpiryDate = (EditText) findViewById(R.id.lpgbooking_expected_expiry_date_edittext);
         ImageView lpgBookingCall = (ImageView) findViewById(R.id.lpgbooking_call_img);
         ImageView lpgBookingSMS = (ImageView) findViewById(R.id.lpgbooking_sms_img);
@@ -83,6 +89,8 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
         lpgProvider.setClickable(false);
         lpgBookingCall.setEnabled(false);
         lpgBookingSMS.setEnabled(false);
+        misProgressBarLoaded = false;
+
         //set back stack for the activity
         Toolbar toolbar = (Toolbar) findViewById(R.id.lpgbooking_toolbar);
         //set support action bar
@@ -178,7 +186,8 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
                 } else{
                     //the app has permission to send sms
                     SmsManager smsManager = SmsManager.getDefault();
-                    //Get details to send SMS to
+                    //Get text message to send as SMS
+                    String SMSTextMessage = LPG_Utility.getSMSTextMessage(lpgProvider.getText().toString());
 
                 }
             }
@@ -253,9 +262,23 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
     @Override
     protected void onResume() {
         super.onResume();
-
+        //register the broadcast
+        mSMSBroadcast = new mSMSBroadcastReceiver();
+        IntentFilter smsIntentFilter = new IntentFilter(	Telephony.Sms.Intents.SMS_DELIVER_ACTION);
+        smsIntentFilter.addAction(Telephony.Sms.Intents.SMS_RECEIVED_ACTION);
+        this.registerReceiver(mSMSBroadcast,smsIntentFilter);
     }
 
+    @Override
+    protected void onPause(){
+        super.onPause();
+        // unregister broadcast
+        if ( mSMSBroadcast != null){
+            this.unregisterReceiver(mSMSBroadcast);
+        }
+
+
+    }
 
     @Override
     protected void onDestroy() {
@@ -345,9 +368,25 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
             ClickToCall.setEnabled(true);
             ClickToSMS.setEnabled(true);
 
+            //disable sms sending if provider is not present
+
+
             //Set telephone call intent for call image
             lpgBookingCallIntent = new Intent(Intent.ACTION_CALL);
             lpgBookingCallIntent.setData(Uri.parse("tel:" + LPG_CONNECTION_PHONE_NO));
+
+        }
+        else {
+            // the given cylinder does not exist anymore.
+            //disable call buttons
+            ClickToCall.setEnabled(false);
+            ClickToSMS.setEnabled(false);
+
+            //Update text fields with a notification message for user
+            String notificationMessage = getResources().getString(R.string.addlpg_connection_not_found);
+            lpgConnectionName.setText(notificationMessage);
+            lpgProvider.setText(notificationMessage);
+            lpgExpiryDate.setText(notificationMessage);
 
         }
 
@@ -359,9 +398,24 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
 
     }
 
-    public static class mSMSBroadcastReceiver extends BroadcastReceiver {
+    public  class mSMSBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
+            //get nature of intent from extras value
+                int intentAction = intent.getIntExtra(LPG_Utility.SMS_DELIVERY_MILESTONE,1);
+                TextView progressText = (TextView) findViewById(R.id.progresstext);
+                switch (intentAction) {
+                    case (LPG_Utility.SENT_REFILL_SMS):
+                        progressText.setText(LPG_Utility.PROGRESS_SMS_SENT);
+                        break;
+                    case (LPG_Utility.DELIVERED_REFILL_SMS):
+                        progressText.setText(LPG_Utility.PROGRESS_SMS_DELIVERED);
+                        break;
+                    default:
+                        progressText.setText(LPG_Utility.PROGRESS_START);
+
+                }
+
 
         }
 
