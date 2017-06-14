@@ -2,6 +2,7 @@ package com.aekan.navya.lpgbooking;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -30,6 +31,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aekan.navya.lpgbooking.utilities.LPGDataAPI;
 import com.aekan.navya.lpgbooking.utilities.LPGServiceCallBackHandler;
@@ -81,8 +83,9 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
         EditText lpgConnectionName = (EditText) findViewById(R.id.lpgbooking_connectionname_edittext);
         final EditText lpgProvider = (EditText) findViewById(R.id.lpgbooking_provider_edittext);
         EditText lpgExpiryDate = (EditText) findViewById(R.id.lpgbooking_expected_expiry_date_edittext);
-        ImageView lpgBookingCall = (ImageView) findViewById(R.id.lpgbooking_call_img);
-        ImageView lpgBookingSMS = (ImageView) findViewById(R.id.lpgbooking_sms_img);
+        final ImageView lpgBookingCall = (ImageView) findViewById(R.id.lpgbooking_call_img);
+        final ImageView lpgBookingSMS = (ImageView) findViewById(R.id.lpgbooking_sms_img);
+        final TextView smsTipTextView = (TextView) findViewById(R.id.lpgbooking_smsnotification);
         //make the edittext as non clickable
         lpgConnectionName.setClickable(false);
         lpgExpiryDate.setClickable(false);
@@ -188,6 +191,32 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
                     SmsManager smsManager = SmsManager.getDefault();
                     //Get text message to send as SMS
                     String SMSTextMessage = LPG_Utility.getSMSTextMessage(lpgProvider.getText().toString());
+
+                    //sent pending intent - will this work?
+                    Intent smsSentActionIntent = new Intent(getApplicationContext(), mSMSBroadcastReceiver.class);
+                    smsSentActionIntent.putExtra(LPG_Utility.SMS_DELIVERY_MILESTONE, LPG_Utility.SENT_REFILL_SMS);
+                    PendingIntent smsSentActionPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, smsSentActionIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+                    //delivery intent
+                    Intent smsDeliveredActionIntent = new Intent(getApplicationContext(), mSMSBroadcastReceiver.class);
+                    smsDeliveredActionIntent.putExtra(LPG_Utility.SMS_DELIVERY_MILESTONE, LPG_Utility.DELIVERED_REFILL_SMS);
+                    PendingIntent smsDeliveredActionPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 1, smsDeliveredActionIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+                    //send SMS
+
+
+                    if (LPG_SMS_REFILL_NO != null) {
+                        //enable SMS send notification area
+                        ViewGroup smsSendingNotification = (LinearLayout) findViewById(R.id.progressloader);
+                        smsSendingNotification.setVisibility(View.VISIBLE);
+                        smsManager.sendTextMessage(LPG_SMS_REFILL_NO, null, SMSTextMessage, smsSentActionPendingIntent, smsDeliveredActionPendingIntent);
+                        smsTipTextView.setText(getString(R.string.lpgbooking_smsnotificationsuccess));
+                        lpgBookingCall.setEnabled(false);
+                        lpgBookingSMS.setEnabled(false);
+
+                    } else {
+                        Toast.makeText(getApplicationContext(), "SMS Cound not be sent", Toast.LENGTH_SHORT).show();
+                    }
 
                 }
             }
@@ -369,7 +398,9 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
             ClickToSMS.setEnabled(true);
 
             //disable sms sending if provider is not present
-
+            if (LPG_Utility.getIndexOfProvider(lpgparcelConnectionProvider) == LPG_Utility.LPG_PROVIDER_NOT_FOUND) {
+                ClickToSMS.setEnabled(false);
+            }
 
             //Set telephone call intent for call image
             lpgBookingCallIntent = new Intent(Intent.ACTION_CALL);
@@ -387,6 +418,7 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
             lpgConnectionName.setText(notificationMessage);
             lpgProvider.setText(notificationMessage);
             lpgExpiryDate.setText(notificationMessage);
+            LPG_SMS_REFILL_NO = null;
 
         }
 

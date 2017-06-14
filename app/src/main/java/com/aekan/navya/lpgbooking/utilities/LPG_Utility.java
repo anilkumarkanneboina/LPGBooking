@@ -200,12 +200,7 @@ public class LPG_Utility {
 
     }
 
-
-
-
-
-
-    public static class RefillAlarmNotification{
+    public static class RefillAlarmNotification {
         private PendingIntent RefillCylinder;
         private GregorianCalendar AlarmTickerTime;
 

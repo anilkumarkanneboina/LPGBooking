@@ -48,14 +48,15 @@
     <string name="toast_delete_failure">Deletion Failure:Please try later</string>
 
     <!--lpg booking activity-->
-    <string name="lpgbooking_activity_description">You can book for your lpg cylinder refill</string>
+    <string name="lpgbooking_activity_description">You can book for your lpg cylinder refill.through call or sms option.</string>
     <string name="lpgbooking_connection_name">Connection Name</string>
     <string name="lpgbooking_connection_provider">Connection Provider</string>
     <string name="lpgbooking_expected_expiry_Dte">Expected Expiry Date</string>
     <string name="lpgbooking_callpermissiondialog_title">Permission Requested</string>
     <string name="lpgbooking_permissioncancellation_request">Sure!! You can book re-fill offline by your choice, and provide last booked date in Edit Connections screen from Home page </string>
     <string name="dialogDBQueryFailed">There seems to be an issue with your connection details. Please try again later or create a new connection</string>
-
+    <string name="lpgbooking_smsnotification">SMS booking facility available only for Indane(IOCL), Bharath Gas(BPCL) and HP Gas(HP Gas). </string>
+    <string name="">SMS sent. Please check with distributor for successful booking and change last booked date accordingly.</string>
 
     <!--string values for confirm LPG Booking-->
     <string name="confirmbooking_label">Confirm your booking</string>
@@ -68,6 +69,7 @@
     <string name="confirmbooking_success">Great!! We have successfully started tracking your new booking. We will keep you updated about time to book refill for this cylinder!!</string>
     <string name="confirmbooking_failure">Never mind!! We will inform you to book this cylinder again in a day\'s time</string>
     <string name="confirmbooking_failure_notificationmessage">could not be booked in your last attempt. You can try booking it now!!!</string>
+
 
     <!--String values for permission check activity-->
     <string name="permission_intimation_user_for_sms">Well, you would need to provide permission to us to send and read text messages. Currently, this is not provided. Please let us know if you can provide the access now. </string>
