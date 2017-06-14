@@ -88,11 +88,26 @@
 
     </android.support.design.widget.TextInputLayout>
 
+    <!--Text view to show error messages for SMS or Phone booking. -->
+    <TextView
+        android:id="@+id/lpgbooking_smsnotification"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lpgbooking_expected_expiry_date"
+        android:layout_marginLeft="@dimen/lpgbooking_margin"
+        android:layout_marginRight="@dimen/lpgbooking_margin"
+        android:paddingEnd="@dimen/lpgbooking_smsnotification_paddingleft"
+        android:paddingLeft="@dimen/lpgbooking_smsnotification_paddingleft"
+        android:paddingRight="@dimen/lpgbooking_smsnotification_paddingleft"
+        android:paddingStart="@dimen/lpgbooking_smsnotification_paddingleft"
+        android:paddingTop="@dimen/lpgbooking_smsnotification_paddingtop"
+        android:text="@string/lpgbooking_smsnotification" />
+
     <!--Relative layout for image icons-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/lpgbooking_expected_expiry_date"
+        android:layout_below="@id/lpgbooking_smsnotification"
         android:layout_margin="@dimen/lpgbooking_margin_imagelayout"
         android:gravity="right"
         android:orientation="horizontal">
