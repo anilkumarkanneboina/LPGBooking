@@ -2,14 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:android.support.v7.appCompat="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="fill_parent">
 
     <TextView
         android:id="@+id/lpgbooking_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/lpgbooking_margin"
-        android:paddingBottom="@dimen/lpgbooking_padding_bottom"
+
         android:paddingLeft="@dimen/lpgbooking_padding_left"
         android:paddingStart="@dimen/lpgbooking_padding_left"
         android:paddingTop="@dimen/lpgbooking_padding_top"
@@ -26,10 +26,10 @@
         android:layout_margin="@dimen/lpgbooking_margin"
         android:paddingLeft="@dimen/lpgbooking_padding_left"
         android:paddingStart="@dimen/lpgbooking_padding_left"
-        android:paddingTop="@dimen/lpgbooking_padding_top"
+        android:paddingTop="@dimen/lpgbooking_padding_insideview"
         android.support.v7.appCompat:hintAnimationEnabled="true"
 
-    >
+        >
 
         <EditText
             android:id="@+id/lpgbooking_connectionname_edittext"
@@ -51,7 +51,7 @@
         android:layout_margin="@dimen/lpgbooking_margin"
         android:paddingLeft="@dimen/lpgbooking_padding_left"
         android:paddingStart="@dimen/lpgbooking_padding_left"
-        android:paddingTop="@dimen/lpgbooking_padding_top"
+        android:paddingTop="@dimen/lpgbooking_padding_insideview"
         android.support.v7.appCompat:hintAnimationEnabled="true">
 
         <EditText
@@ -74,7 +74,7 @@
         android:layout_margin="@dimen/lpgbooking_margin"
         android:paddingLeft="@dimen/lpgbooking_padding_left"
         android:paddingStart="@dimen/lpgbooking_padding_left"
-        android:paddingTop="@dimen/lpgbooking_padding_top"
+        android:paddingTop="@dimen/lpgbooking_padding_insideview"
         android.support.v7.appCompat:hintAnimationEnabled="true">
 
         <EditText
@@ -101,10 +101,12 @@
         android:paddingRight="@dimen/lpgbooking_smsnotification_paddingleft"
         android:paddingStart="@dimen/lpgbooking_smsnotification_paddingleft"
         android:paddingTop="@dimen/lpgbooking_smsnotification_paddingtop"
-        android:text="@string/lpgbooking_smsnotification" />
+        android:text="@string/lpgbooking_smsnotification"
+        android:visibility="visible" />
 
     <!--Relative layout for image icons-->
     <LinearLayout
+        android:id="@+id/lpgbooking_bookingtoolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/lpgbooking_smsnotification"
@@ -138,5 +140,32 @@
             android:layout_marginTop="16dp"
             android:background="@drawable/ic_message_green"
             android:paddingTop="@dimen/lpgbooking_padding_top" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/progressloader"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lpgbooking_bookingtoolbar"
+        android:layout_marginTop="@dimen/loader_layout_topmargin"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+
+        <ProgressBar
+            android:layout_width="@dimen/loaderdimension"
+            android:layout_height="@dimen/loaderdimension"
+            android:layout_gravity="center_vertical" />
+
+        <TextView
+            android:id="@+id/progresstext"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/loadertextleftmargin"
+            android:gravity="center_vertical"
+            android:text="@string/progress_loader_text" />
+
     </LinearLayout>
 </RelativeLayout>

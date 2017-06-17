@@ -33,12 +33,14 @@
     <!--dimensions for lpg booking-->
     <dimen name="lpgbooking_padding_left">16dp</dimen>
     <dimen name="lpgbookin_padding_right">16dp</dimen>
-    <dimen name="lpgbooking_padding_top">24dp</dimen>
+    <dimen name="lpgbooking_padding_top">64dp</dimen>
+    <dimen name="lpgbooking_padding_insideview">8dp</dimen>
     <dimen name="lpgbooking_padding_bottom">16dp</dimen>
+    <dimen name="lpgbooking_includelayout_height">640dp</dimen>
     <dimen name="lpgbooking_description_fontsize">20sp</dimen>
     <dimen name="lpgbooking_textinputlayout_height">56dp</dimen>
     <dimen name="lpgbooking_connectionname_fontsize">16sp</dimen>
-    <dimen name="lpgbooking_margin">8dp</dimen>
+    <dimen name="lpgbooking_margin">4dp</dimen>
     <dimen name="lpgbooking_margin_imagelayout">16dp</dimen>
     <dimen name="lpgbooking_margin_top_image">16dp</dimen>
     <dimen name="lpgbooking_margin_left_image">82dp</dimen>
@@ -73,8 +75,8 @@
     <dimen name="permission_button_distance">48dp</dimen>
 
     <!--progress loader-->
-    <dimen name="loaderdimension">32dp</dimen>
+    <dimen name="loaderdimension">40dp</dimen>
     <dimen name="loadertextsize">16sp</dimen>
-    <dimen name="loader_layout_topmargin">16dp</dimen>
+    <dimen name="loader_layout_topmargin">2dp</dimen>
     <dimen name="loadertextleftmargin">16dp</dimen>
 </resources>

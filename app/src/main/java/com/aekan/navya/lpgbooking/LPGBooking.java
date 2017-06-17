@@ -7,14 +7,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Messenger;
-import android.provider.Telephony;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
 import android.support.v4.app.ActivityCompat;
@@ -68,7 +66,7 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
     private String lpgparcelConnectionId; // connection id of record being booked
     private mSMSBroadcastReceiver mSMSBroadcast;
     //handle progress loader for SMS sending
-    private boolean misProgressBarLoaded ;
+
     @Override
     @RequiresPermission(allOf = {Manifest.permission.SEND_SMS, Manifest.permission.CALL_PHONE})
 
@@ -92,12 +90,12 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
         lpgProvider.setClickable(false);
         lpgBookingCall.setEnabled(false);
         lpgBookingSMS.setEnabled(false);
-        misProgressBarLoaded = false;
+
 
         //set back stack for the activity
         Toolbar toolbar = (Toolbar) findViewById(R.id.lpgbooking_toolbar);
         //set support action bar
-        setSupportActionBar(toolbar);
+        // setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,6 +175,9 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
         lpgBookingSMS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.v("SMS", "Within SMS Click");
+
+
                 //check if application has permission to send sms
                 if ((ContextCompat.checkSelfPermission(v.getContext(),Manifest.permission.SEND_SMS)) != PackageManager.PERMISSION_GRANTED) {
                     // no permission to send sms
@@ -188,36 +189,10 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
 
                 } else{
                     //the app has permission to send sms
-                    SmsManager smsManager = SmsManager.getDefault();
-                    //Get text message to send as SMS
-                    String SMSTextMessage = LPG_Utility.getSMSTextMessage(lpgProvider.getText().toString());
-
-                    //sent pending intent - will this work?
-                    Intent smsSentActionIntent = new Intent(getApplicationContext(), mSMSBroadcastReceiver.class);
-                    smsSentActionIntent.putExtra(LPG_Utility.SMS_DELIVERY_MILESTONE, LPG_Utility.SENT_REFILL_SMS);
-                    PendingIntent smsSentActionPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, smsSentActionIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-
-                    //delivery intent
-                    Intent smsDeliveredActionIntent = new Intent(getApplicationContext(), mSMSBroadcastReceiver.class);
-                    smsDeliveredActionIntent.putExtra(LPG_Utility.SMS_DELIVERY_MILESTONE, LPG_Utility.DELIVERED_REFILL_SMS);
-                    PendingIntent smsDeliveredActionPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 1, smsDeliveredActionIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-
-                    //send SMS
+                    Log.v("SMS", "Send SMS - App has SMS permission");
 
 
-                    if (LPG_SMS_REFILL_NO != null) {
-                        //enable SMS send notification area
-                        ViewGroup smsSendingNotification = (LinearLayout) findViewById(R.id.progressloader);
-                        smsSendingNotification.setVisibility(View.VISIBLE);
-                        smsManager.sendTextMessage(LPG_SMS_REFILL_NO, null, SMSTextMessage, smsSentActionPendingIntent, smsDeliveredActionPendingIntent);
-                        smsTipTextView.setText(getString(R.string.lpgbooking_smsnotificationsuccess));
-                        lpgBookingCall.setEnabled(false);
-                        lpgBookingSMS.setEnabled(false);
-
-                    } else {
-                        Toast.makeText(getApplicationContext(), "SMS Cound not be sent", Toast.LENGTH_SHORT).show();
-                    }
-
+                    sendSMS();
                 }
             }
         });
@@ -269,7 +244,8 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
 
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED ){
                     // send sms
-
+                    Log.v("SMS", "Send SMS after permission grant");
+                    sendSMS();
                 } else {
                     ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper(getResources().getString(R.string.lpgbooking_callpermissiondialog_title),"OK",null,new DialogInterface.OnClickListener() {
                         @Override
@@ -288,26 +264,27 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
     }
 
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //register the broadcast
-        mSMSBroadcast = new mSMSBroadcastReceiver();
-        IntentFilter smsIntentFilter = new IntentFilter(	Telephony.Sms.Intents.SMS_DELIVER_ACTION);
-        smsIntentFilter.addAction(Telephony.Sms.Intents.SMS_RECEIVED_ACTION);
-        this.registerReceiver(mSMSBroadcast,smsIntentFilter);
-    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        //register the broadcast
+//        Log.v("Resume", "In ONResume");
+//        mSMSBroadcast = new LPGBooking.mSMSBroadcastReceiver();
+//        IntentFilter smsIntentFilter = new IntentFilter(	Telephony.Sms.Intents.SMS_DELIVER_ACTION);
+//        smsIntentFilter.addAction(Telephony.Sms.Intents.SMS_RECEIVED_ACTION);
+//        this.registerReceiver(mSMSBroadcast,smsIntentFilter);
+//    }
 
-    @Override
-    protected void onPause(){
-        super.onPause();
-        // unregister broadcast
-        if ( mSMSBroadcast != null){
-            this.unregisterReceiver(mSMSBroadcast);
-        }
-
-
-    }
+//    @Override
+//    protected void onPause(){
+//        super.onPause();
+//        // unregister broadcast
+//        if ( mSMSBroadcast != null){
+//            this.unregisterReceiver(mSMSBroadcast);
+//        }
+//
+//
+//    }
 
     @Override
     protected void onDestroy() {
@@ -339,21 +316,21 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
                 }
 
             case LPG_BOOKING_REQUEST_PERMISSION_SMS:
-                    switch (resultCode){
-                        case Activity.RESULT_CANCELED:
-                            ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper(getResources().getString(R.string.lpgbooking_permissioncancellation_request),"OK",null,new DialogInterface.OnClickListener(){
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    Intent homeIntent = new Intent(getApplicationContext(),MainActivity.class);
-                                    startActivity(homeIntent);
-                                }
-                            } ,null).show(getSupportFragmentManager(),"Permission not granted for SMS");
-                            break;
-                        case Activity.RESULT_OK:
-                            //Request for SMS permission
-                            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS},LPG_BOOKING_REQUEST_PERMISSION_SMS);
-                    }
+                switch (resultCode) {
+                    case Activity.RESULT_CANCELED:
+                        ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper(getResources().getString(R.string.lpgbooking_permissioncancellation_request), "OK", null, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
+                                startActivity(homeIntent);
+                            }
+                        }, null).show(getSupportFragmentManager(), "Permission not granted for SMS");
+                        break;
+                    case Activity.RESULT_OK:
+                        //Request for SMS permission
+                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, LPG_BOOKING_REQUEST_PERMISSION_SMS);
+                }
         }
 
 
@@ -430,23 +407,77 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
 
     }
 
+    public void sendSMS() {
+        Log.v("SMS", "Within Send SMS");
+        final ImageView lpgBookingCall = (ImageView) findViewById(R.id.lpgbooking_call_img);
+        final ImageView lpgBookingSMS = (ImageView) findViewById(R.id.lpgbooking_sms_img);
+        final TextView smsTipTextView = (TextView) findViewById(R.id.lpgbooking_smsnotification);
+        final EditText lpgProvider = (EditText) findViewById(R.id.lpgbooking_provider_edittext);
+
+
+        //the app has permission to send sms
+        SmsManager smsManager = SmsManager.getDefault();
+        //Get text message to send as SMS
+        String SMSTextMessage = LPG_Utility.getSMSTextMessage(lpgProvider.getText().toString());
+
+        //sent pending intent - will this work?
+        Intent smsSentActionIntent = new Intent(getApplicationContext(), LPGBooking.mSMSBroadcastReceiver.class);
+        smsSentActionIntent.setClass(getApplicationContext(), LPGBooking.mSMSBroadcastReceiver.class);
+
+        smsSentActionIntent.putExtra(LPG_Utility.SMS_DELIVERY_MILESTONE, LPG_Utility.SENT_REFILL_SMS);
+        PendingIntent smsSentActionPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, smsSentActionIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        //delivery intent
+        Intent smsDeliveredActionIntent = new Intent(getApplicationContext(), LPGBooking.mSMSBroadcastReceiver.class);
+        smsDeliveredActionIntent.setClass(getApplicationContext(), LPGBooking.mSMSBroadcastReceiver.class);
+        smsDeliveredActionIntent.putExtra(LPG_Utility.SMS_DELIVERY_MILESTONE, LPG_Utility.DELIVERED_REFILL_SMS);
+
+        PendingIntent smsDeliveredActionPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 1, smsDeliveredActionIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        //send SMS
+
+        Log.v("SMS", "SMS No " + LPG_SMS_REFILL_NO);
+        if (LPG_SMS_REFILL_NO != null) {
+            //enable SMS send notification area
+            Log.v("SMS", "Refill no not null");
+            ViewGroup smsSendingNotification = (LinearLayout) findViewById(R.id.progressloader);
+            smsSendingNotification.setVisibility(View.VISIBLE);
+            Log.v("SMS", "Before calling sendTextMessage");
+            //smsManager.sendTextMessage(LPG_SMS_REFILL_NO, null, SMSTextMessage, null, null);
+            smsManager.sendTextMessage(LPG_SMS_REFILL_NO, null, SMSTextMessage, smsSentActionPendingIntent, smsDeliveredActionPendingIntent);
+            smsTipTextView.setText(getString(R.string.lpgbooking_smsnotificationsuccess));
+            lpgBookingCall.setEnabled(false);
+            lpgBookingSMS.setEnabled(false);
+
+        } else {
+            Toast.makeText(getApplicationContext(), "SMS Cound not be sent", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
     public  class mSMSBroadcastReceiver extends BroadcastReceiver {
+        private Activity lpgBooking;
+
+        public mSMSBroadcastReceiver() {
+            super();
+        }
+
         @Override
         public void onReceive(Context context, Intent intent) {
             //get nature of intent from extras value
-                int intentAction = intent.getIntExtra(LPG_Utility.SMS_DELIVERY_MILESTONE,1);
-                TextView progressText = (TextView) findViewById(R.id.progresstext);
-                switch (intentAction) {
-                    case (LPG_Utility.SENT_REFILL_SMS):
-                        progressText.setText(LPG_Utility.PROGRESS_SMS_SENT);
-                        break;
-                    case (LPG_Utility.DELIVERED_REFILL_SMS):
-                        progressText.setText(LPG_Utility.PROGRESS_SMS_DELIVERED);
-                        break;
-                    default:
-                        progressText.setText(LPG_Utility.PROGRESS_START);
+            int intentAction = intent.getIntExtra(LPG_Utility.SMS_DELIVERY_MILESTONE, 1);
+            TextView progressText = (TextView) findViewById(R.id.progresstext);
+            switch (intentAction) {
+                case (LPG_Utility.SENT_REFILL_SMS):
+                    progressText.setText(LPG_Utility.PROGRESS_SMS_SENT);
+                    break;
+                case (LPG_Utility.DELIVERED_REFILL_SMS):
+                    progressText.setText(LPG_Utility.PROGRESS_SMS_DELIVERED);
+                    break;
+                default:
+                    progressText.setText(LPG_Utility.PROGRESS_START);
 
-                }
+            }
 
 
         }

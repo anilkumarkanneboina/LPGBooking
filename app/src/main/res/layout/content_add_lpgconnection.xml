@@ -36,22 +36,23 @@
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/add_lpgconnectionnamelabel"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/add_lpgconnection_userprompt"
-                    app:counterEnabled="true"
+                app:counterEnabled="true"
                 app:errorEnabled="true"
-                    app:hintAnimationEnabled="true"    >
-                    <EditText
-                        android:id="@+id/add_lpgconnectionnameedittext"
-                        android:layout_width="300dp"
-                        android:layout_height="@dimen/textinputlayout_height"
-                        android:layout_marginLeft="@dimen/add_edit_text_leftmargin"
-                        android:layout_marginStart="@dimen/add_edit_text_leftmargin"
-                        android:hint="@string/Hint_Connection_Name"
-                        android:paddingBottom="2dp"
-                        android:textSize="@dimen/add_text_size_lable" />
-                </android.support.design.widget.TextInputLayout>
+                app:hintAnimationEnabled="true">
+
+                <EditText
+                    android:id="@+id/add_lpgconnectionnameedittext"
+                    android:layout_width="300dp"
+                    android:layout_height="@dimen/textinputlayout_height"
+                    android:layout_marginLeft="@dimen/add_edit_text_leftmargin"
+                    android:layout_marginStart="@dimen/add_edit_text_leftmargin"
+                    android:hint="@string/Hint_Connection_Name"
+                    android:paddingBottom="2dp"
+                    android:textSize="@dimen/add_text_size_lable" />
+            </android.support.design.widget.TextInputLayout>
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/add_providerlabel"
                 android:layout_width="match_parent"
@@ -64,28 +65,28 @@
                 app:hintAnimationEnabled="true">
 
                 <AutoCompleteTextView
-                android:id="@+id/add_provideredittext"
-                android:layout_width="@dimen/textfield_width"
-                android:layout_height="@dimen/textinputlayout_height"
-                android:layout_marginLeft="@dimen/add_edit_text_leftmargin"
-                android:layout_marginStart="@dimen/add_edit_text_leftmargin"
+                    android:id="@+id/add_provideredittext"
+                    android:layout_width="@dimen/textfield_width"
+                    android:layout_height="@dimen/textinputlayout_height"
+                    android:layout_marginLeft="@dimen/add_edit_text_leftmargin"
+                    android:layout_marginStart="@dimen/add_edit_text_leftmargin"
                     android:completionThreshold="@integer/autocomplete_threshold"
-                    android:dropDownAnchor="@id/form_scroll_view"
+                    android:dropDownAnchor="@id/add_provideredittext"
                     android:dropDownHeight="@dimen/autocomplete_dropdownheight"
                     android:dropDownWidth="wrap_content"
-                android:hint="@string/Hint_Provider"
+                    android:hint="@string/Hint_Provider"
                     android:popupBackground="@color/colorPrimary"
-                android:textSize="@dimen/add_text_size_lable" />
-        </android.support.design.widget.TextInputLayout>
+                    android:textSize="@dimen/add_text_size_lable" />
+            </android.support.design.widget.TextInputLayout>
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/add_agencylabel"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_below="@id/add_providerlabel"
-                    android:textSize="@dimen/add_text_size_lable"
-                    app:counterEnabled="true"
+                android:textSize="@dimen/add_text_size_lable"
+                app:counterEnabled="true"
 
                 app:errorEnabled="true"
                 app:hintAnimationEnabled="true">
@@ -116,8 +117,7 @@
                     android:layout_marginLeft="@dimen/add_edit_text_leftmargin"
                     android:layout_marginStart="@dimen/add_edit_text_leftmargin"
                     android:hint="@string/Hint_Agency_Phone"
-                    android:textSize="@dimen/add_text_size_lable"
-                     />
+                    android:textSize="@dimen/add_text_size_lable" />
 
             </android.support.design.widget.TextInputLayout>
             <android.support.design.widget.TextInputLayout
@@ -145,21 +145,22 @@
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/add_connectionidlabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/add_connectionsmslayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/add_connectionsmslayout"
                 android:textSize="@dimen/add_text_size_lable"
                 app:counterEnabled="true"
-            app:errorEnabled = "true"
+                app:errorEnabled="true"
                 app:hintAnimationEnabled="true">
-            <EditText
-                android:id="@+id/add_connectionid"
-                android:layout_width="@dimen/textfield_width"
-                android:layout_height="@dimen/textinputlayout_height"
-                android:layout_marginLeft="@dimen/add_edit_text_leftmargin"
-                android:layout_marginStart="@dimen/add_edit_text_leftmargin"
-                android:hint="@string/Add_Connection_id"
-                android:textSize="@dimen/add_text_size_lable"    />
+
+                <EditText
+                    android:id="@+id/add_connectionid"
+                    android:layout_width="@dimen/textfield_width"
+                    android:layout_height="@dimen/textinputlayout_height"
+                    android:layout_marginLeft="@dimen/add_edit_text_leftmargin"
+                    android:layout_marginStart="@dimen/add_edit_text_leftmargin"
+                    android:hint="@string/Add_Connection_id"
+                    android:textSize="@dimen/add_text_size_lable" />
             </android.support.design.widget.TextInputLayout>
             <LinearLayout
                 android:id="@+id/add_lastbookeddate_layout"
@@ -203,51 +204,52 @@
             </LinearLayout>
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/add_connectionexpirydatelabel"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/add_lastbookeddate_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/add_lastbookeddate_layout"
                 android:textSize="@dimen/add_text_size_lable"
                 app:counterEnabled="true"
-        app:errorEnabled = "true"
+                app:errorEnabled="true"
                 app:hintAnimationEnabled="true">
-        <EditText
-            android:id="@+id/add_connectionexpiry"
-            android:layout_width="@dimen/textfield_width"
-            android:layout_height="@dimen/textinputlayout_height"
-            android:layout_marginLeft="@dimen/add_edit_text_leftmargin"
-            android:layout_marginStart="@dimen/add_edit_text_leftmargin"
-            android:hint="@string/Add_Expiry_days"
-            android:textSize="@dimen/add_text_size_lable"    />
-    </android.support.design.widget.TextInputLayout>
+
+                <EditText
+                    android:id="@+id/add_connectionexpiry"
+                    android:layout_width="@dimen/textfield_width"
+                    android:layout_height="@dimen/textinputlayout_height"
+                    android:layout_marginLeft="@dimen/add_edit_text_leftmargin"
+                    android:layout_marginStart="@dimen/add_edit_text_leftmargin"
+                    android:hint="@string/Add_Expiry_days"
+                    android:textSize="@dimen/add_text_size_lable" />
+            </android.support.design.widget.TextInputLayout>
         </RelativeLayout>
     </ScrollView>
 
-<!--<LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:orientation="horizontal"
-        android:gravity="center|bottom"
-        android:layout_marginTop="16dp"
-        android:layout_below="@+id/form_scroll_view"
+    <!--<LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:orientation="horizontal"
+            android:gravity="center|bottom"
+            android:layout_marginTop="16dp"
+            android:layout_below="@+id/form_scroll_view"
 
-        >
-        <Button
-        android:layout_width="wrap_content"
-        android:layout_height="36dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:text="@string/btn_Cancel"
-        android:background="@color/lpg_expiry_textcolor"/>
-        <Button
+            >
+            <Button
             android:layout_width="wrap_content"
             android:layout_height="36dp"
-            android:text="@string/btn_Submit"
-            android:id="@+id/save_button"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:layout_marginRight="24dp"
-            android:layout_marginEnd="24dp"
-            android:background="@color/lpg_name_bkgrnd"/>
-</LinearLayout>-->
+            android:text="@string/btn_Cancel"
+            android:background="@color/lpg_expiry_textcolor"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="@string/btn_Submit"
+                android:id="@+id/save_button"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:layout_marginRight="24dp"
+                android:layout_marginEnd="24dp"
+                android:background="@color/lpg_name_bkgrnd"/>
+    </LinearLayout>-->
 
 </RelativeLayout>

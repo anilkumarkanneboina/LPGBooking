@@ -111,7 +111,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         final EditText lpgconnnectionexpiry = (EditText) findViewById(R.id.add_connectionexpiry);
 
         //Set Autocomplete values for connectino provider
-        ArrayAdapter<String> lpgProviderAdapter = new ArrayAdapter<String>(this, R.layout.lpg_provider_autocomplete_layout, R.id.autocompletetextview, LPG_Utility.LPG_PROVIDERS);
+        ArrayAdapter<String> lpgProviderAdapter = new ArrayAdapter<String>(this, R.layout.lpg_provider_autocomplete_layout, R.id.autocompletetextview, LPG_Utility.LPG_PROVIDERS_EXTENDEDLIST);
         AutoCompleteTextView lpgProviderAutoComplete = (AutoCompleteTextView) findViewById(R.id.add_provideredittext);
         lpgProviderAutoComplete.setAdapter(lpgProviderAdapter);
 

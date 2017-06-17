@@ -56,6 +56,7 @@ public class PermissionCheckForFeature extends AppCompatActivity {
                 Intent intentCancel = new Intent();
                 intentCancel.putExtra(LPG_Utility.PERMISSION_STATUS,LPG_Utility.PERMISSION_DENIED);
                 setResult(Activity.RESULT_CANCELED,intentCancel);
+                finish();
             }
 
         });
@@ -67,6 +68,7 @@ public class PermissionCheckForFeature extends AppCompatActivity {
                 Intent intentOK = new Intent();
                 intentOK.putExtra(LPG_Utility.PERMISSION_STATUS,LPG_Utility.PERMISSION_DENIED);
                 setResult(Activity.RESULT_OK,intentOK);
+                finish();
             }
         });
     }
