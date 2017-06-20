@@ -37,7 +37,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.aekan.navya.lpgbooking.MainActivity" />
         </activity>
-
+        <activity
+            android:name=".PhoneBookingRegistration"
+            android:label="Phone Booking Registration"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.aekan.navya.lpgbooking.MainActivity" />
+        </activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"

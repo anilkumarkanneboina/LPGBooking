@@ -48,7 +48,8 @@ public class LPG_Utility {
     public final static String PROGRESS_SMS_SENT = "SMS Sent...";
     public final static String PROGRESS_SMS_DELIVERED = "SMS Delivered ...";
     public final static String PROGRESS_START = "Sending SMS....";
-
+    public final static int NAVDRAWER_HEADER = 23;
+    public final static int NAVDRAWER_LINEITEM = 12;
     public final static int HASH_CAPACITY = 4;
     public final static float HASH_LOAD_FACTOR = 0.8f;
 

@@ -7,12 +7,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Messenger;
+import android.provider.Telephony;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
 import android.support.v4.app.ActivityCompat;
@@ -66,6 +68,13 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
     private String lpgparcelConnectionId; // connection id of record being booked
     private mSMSBroadcastReceiver mSMSBroadcast;
     //handle progress loader for SMS sending
+    private Intent smsSentActionIntent;
+    private Intent smsDeliveredActionIntent;
+    //broadcast receiver objects for sms sent and delivered actions
+    private mSMSBroadcastReceiver smsSentReceiver;
+    private boolean isSmsSentReceiverRegistered;
+    private mSMSBroadcastReceiver smsDeliveryReceiver;
+    private boolean isSmsDeliveredReceiverRegistered;
 
     @Override
     @RequiresPermission(allOf = {Manifest.permission.SEND_SMS, Manifest.permission.CALL_PHONE})
@@ -90,6 +99,10 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
         lpgProvider.setClickable(false);
         lpgBookingCall.setEnabled(false);
         lpgBookingSMS.setEnabled(false);
+        smsDeliveryReceiver = null;
+        smsSentReceiver = null;
+        isSmsDeliveredReceiverRegistered = false;
+        isSmsSentReceiverRegistered = false;
 
 
         //set back stack for the activity
@@ -275,21 +288,32 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
 //        this.registerReceiver(mSMSBroadcast,smsIntentFilter);
 //    }
 
-//    @Override
-//    protected void onPause(){
-//        super.onPause();
-//        // unregister broadcast
-//        if ( mSMSBroadcast != null){
-//            this.unregisterReceiver(mSMSBroadcast);
-//        }
-//
-//
-//    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // unregister broadcast
+        //unregister broadcast receivers for sms delivery and sending
+        if (isSmsSentReceiverRegistered == true) {
+            unregisterReceiver(smsDeliveryReceiver);
+        }
+        if (isSmsDeliveredReceiverRegistered == true) {
+            unregisterReceiver(smsSentReceiver);
+        }
+
+
+    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
+        //unregister broadcast receivers for sms delivery and sending
+        if (isSmsSentReceiverRegistered == true) {
+            unregisterReceiver(smsDeliveryReceiver);
+        }
+        if (isSmsDeliveredReceiverRegistered == true) {
+            unregisterReceiver(smsSentReceiver);
+        }
     }
 
     protected void onActivityResult(int requestCode, int resultCode , Intent resultIntent){
@@ -419,20 +443,38 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
         SmsManager smsManager = SmsManager.getDefault();
         //Get text message to send as SMS
         String SMSTextMessage = LPG_Utility.getSMSTextMessage(lpgProvider.getText().toString());
-
+        PendingIntent smsSentActionPendingIntent = null;
+        PendingIntent smsDeliveredActionPendingIntent = null;
         //sent pending intent - will this work?
-        Intent smsSentActionIntent = new Intent(getApplicationContext(), LPGBooking.mSMSBroadcastReceiver.class);
-        smsSentActionIntent.setClass(getApplicationContext(), LPGBooking.mSMSBroadcastReceiver.class);
+        try {
+            smsSentActionIntent = new Intent(getApplicationContext(), LPGBooking.mSMSBroadcastReceiver.class);
+            smsSentActionIntent.setClass(getApplicationContext(), LPGBooking.mSMSBroadcastReceiver.class);
+            smsSentActionIntent.putExtra(LPG_Utility.SMS_DELIVERY_MILESTONE, LPG_Utility.SENT_REFILL_SMS);
+            smsSentActionPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, smsSentActionIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        smsSentActionIntent.putExtra(LPG_Utility.SMS_DELIVERY_MILESTONE, LPG_Utility.SENT_REFILL_SMS);
-        PendingIntent smsSentActionPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, smsSentActionIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+            //register sms send broadcast
+            smsSentReceiver = new mSMSBroadcastReceiver();
+            registerReceiver(smsSentReceiver, new IntentFilter(Telephony.Sms.Intents.SMS_DELIVER_ACTION));
+            //isSmsSentReceiverRegistered = true;
+        } catch (Exception e) {
+            Log.v("SMS", "Exception sent Intent");
 
+        }
         //delivery intent
-        Intent smsDeliveredActionIntent = new Intent(getApplicationContext(), LPGBooking.mSMSBroadcastReceiver.class);
-        smsDeliveredActionIntent.setClass(getApplicationContext(), LPGBooking.mSMSBroadcastReceiver.class);
-        smsDeliveredActionIntent.putExtra(LPG_Utility.SMS_DELIVERY_MILESTONE, LPG_Utility.DELIVERED_REFILL_SMS);
+        try {
+            smsDeliveredActionIntent = new Intent(getApplicationContext(), LPGBooking.mSMSBroadcastReceiver.class);
+            smsDeliveredActionIntent.setClass(getApplicationContext(), LPGBooking.mSMSBroadcastReceiver.class);
+            smsDeliveredActionIntent.putExtra(LPG_Utility.SMS_DELIVERY_MILESTONE, LPG_Utility.DELIVERED_REFILL_SMS);
+            smsDeliveredActionPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 1, smsDeliveredActionIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        PendingIntent smsDeliveredActionPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 1, smsDeliveredActionIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+            //register sms delivery broadcast
+            smsDeliveryReceiver = new mSMSBroadcastReceiver();
+            registerReceiver(smsDeliveryReceiver, new IntentFilter(Telephony.Sms.Intents.SMS_DELIVER_ACTION));
+            // isSmsDeliveredReceiverRegistered = true;
+        } catch (Exception e) {
+            Log.v("SMS", "Exception deliver Intent");
+        }
+
 
         //send SMS
 
@@ -443,8 +485,8 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
             ViewGroup smsSendingNotification = (LinearLayout) findViewById(R.id.progressloader);
             smsSendingNotification.setVisibility(View.VISIBLE);
             Log.v("SMS", "Before calling sendTextMessage");
-            //smsManager.sendTextMessage(LPG_SMS_REFILL_NO, null, SMSTextMessage, null, null);
-            smsManager.sendTextMessage(LPG_SMS_REFILL_NO, null, SMSTextMessage, smsSentActionPendingIntent, smsDeliveredActionPendingIntent);
+            smsManager.sendTextMessage(LPG_SMS_REFILL_NO, null, SMSTextMessage, null, null);
+            //smsManager.sendTextMessage(LPG_SMS_REFILL_NO, null, SMSTextMessage, smsSentActionPendingIntent, smsDeliveredActionPendingIntent);
             smsTipTextView.setText(getString(R.string.lpgbooking_smsnotificationsuccess));
             lpgBookingCall.setEnabled(false);
             lpgBookingSMS.setEnabled(false);

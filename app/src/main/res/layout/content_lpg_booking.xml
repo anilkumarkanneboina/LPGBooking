@@ -151,7 +151,7 @@
         android:layout_marginTop="@dimen/loader_layout_topmargin"
         android:gravity="center_horizontal"
         android:orientation="horizontal"
-        android:visibility="visible">
+        android:visibility="gone">
 
 
         <ProgressBar

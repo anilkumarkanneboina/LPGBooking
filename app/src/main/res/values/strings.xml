@@ -84,5 +84,14 @@
     <string name="connection.detail.missing">Connection not found</string>
     <string name="addlpg_connection_not_found">Not Found</string>
 
+    <string-array name="navigation_menuitems">
+        <item>LPG Booking</item>
+        <item>Home</item>
+        <item>Add LPG Connection</item>
+        <item>Phone booking registration</item>
+        <item>SMS booking registration</item>
+        <item>FAQs</item>
+    </string-array>
+
 
 </resources>
