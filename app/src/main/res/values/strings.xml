@@ -83,7 +83,7 @@
     <!--Error messages-->
     <string name="connection.detail.missing">Connection not found</string>
     <string name="addlpg_connection_not_found">Not Found</string>
-
+    <!--Navigation drawer-->
     <string-array name="navigation_menuitems">
         <item>LPG Booking</item>
         <item>Home</item>
@@ -93,5 +93,12 @@
         <item>FAQs</item>
     </string-array>
 
+    <!--Phone booking registration-->
+    <string name="phonebooking_activity_title">Phone Booking Registration</string>
 
+    <!--SMS booking Registration -->
+    <string name="smsbooking_activity_title">SMS Booking Registration</string>
+
+    <!--FAQs activity-->
+    <string name="FAQs_title">FAQs</string>
 </resources>

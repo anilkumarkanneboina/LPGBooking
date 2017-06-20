@@ -1,3 +1,5 @@
+package com.aekan.navya.lpgbooking;
+
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,7 +9,6 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.aekan.navya.lpgbooking.R;
 import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
 
 import java.util.HashMap;
@@ -109,6 +110,8 @@ public class NavigationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     resIconId = R.drawable.ic_home_black_24dp;
                 }
                 lineItemViewHolder.mIcon.setImageResource(resIconId);
+                //set onclick listener
+                
                 break;
 
         }

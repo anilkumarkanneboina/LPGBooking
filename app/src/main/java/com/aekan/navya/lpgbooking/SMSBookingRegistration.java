@@ -10,17 +10,18 @@ import android.view.View;
  * Created by arunramamurthy on 20/06/17.
  */
 
-public class PhoneBookingRegistration extends AppCompatActivity {
+public class SMSBookingRegistration extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //call super class
         super.onCreate(savedInstanceState);
         //inflate
-        setContentView(R.layout.phone_registration);
+        setContentView(R.layout.sms_registration);
         //Configure tool bar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.phoneregistration_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.smsregistration_toolbar);
 
-        toolbar.setTitle(R.string.phonebooking_activity_title);
+        toolbar.setTitle(R.string.smsbooking_activity_title);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
