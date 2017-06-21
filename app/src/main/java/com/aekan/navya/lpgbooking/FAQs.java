@@ -17,7 +17,7 @@ public class FAQs extends AppCompatActivity {
         //call super class
         super.onCreate(savedInstanceState);
         //inflate
-        setContentView(R.layout.FAQs);
+        setContentView(R.layout.faqs);
         //Configure tool bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.faqs_toolbar);
 

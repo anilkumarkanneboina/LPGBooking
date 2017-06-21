@@ -11,7 +11,7 @@
         android:layout_height="@dimen/navdrawer_lineitem_icon_size"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="@dimen/navdrawer_icon_marginleft"
-        android:alpha="@fraction/navdrawer_icon_alpha"
+        android:alpha=".54"
         android:src="@drawable/ic_home_black_24dp" />
 
     <TextView
@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/navdrawer_menuitem_marginleft"
-        android:alpha="@fraction/navdrawer_menu_alpha"
+        android:alpha=".87"
         android:gravity="center_vertical"
         android:text="Home"
         android:textColor="#000000"

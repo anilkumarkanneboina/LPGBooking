@@ -7,14 +7,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 
 import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
@@ -22,13 +23,17 @@ import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.HashMap;
+
+public class MainActivity extends AppCompatActivity implements NavigationAdapter.ListenerAdapter {
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
    private GoogleApiClient client;
+    private HashMap<Integer, AdapterView.OnItemClickListener> mListenerAdapter;
+    private DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +63,23 @@ public class MainActivity extends AppCompatActivity {
 
             //Test commit - dummy comment
         });
+
+        //Set Drawer layout
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.navdrawer);
+        //Set recycler view, by initialising the adapter
+        RecyclerView recyclerViewNavigation = (RecyclerView) findViewById(R.id.nav_recyclerview);
+        recyclerViewNavigation.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+        NavigationAdapter navigationAdapter = new NavigationAdapter(getApplicationContext(), this);
+        recyclerViewNavigation.setAdapter(navigationAdapter);
+        //Enable toggle action button for drawer layout
+        toolbar.setNavigationIcon(R.drawable.ic_menu_48);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        //set Drawer shadow
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+
+
 
         ///////////////////////////////////////
         //Create recycler view and initialize it
@@ -163,5 +185,61 @@ public class MainActivity extends AppCompatActivity {
         );
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();
+    }
+
+    public HashMap<Integer, AdapterView.OnItemClickListener> getmListenerAdapter() {
+        HashMap<Integer, AdapterView.OnItemClickListener> listenerHashMap = new HashMap<Integer, AdapterView.OnItemClickListener>();
+        //Listener adapter for Header ;
+        listenerHashMap.put(new Integer(0), null);
+
+        //Listener adapter for Home screen
+        listenerHashMap.put(new Integer(1), new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+            }
+        });
+
+        //listener adapter for add lpg connection
+        listenerHashMap.put(new Integer(2), new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent addLPGIntent = new Intent(getApplicationContext(), AddLPGConnection.class);
+                addLPGIntent.putExtra(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.FIELD_CONNECTION_ID_EDIT, LPG_Utility.LPG_CONNECTION_ID);
+                startActivity(addLPGIntent);
+
+            }
+        });
+
+        //listerner adapter for Phone booking registration
+        listenerHashMap.put(new Integer(3), new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent addLPGIntent = new Intent(getApplicationContext(), PhoneBookingRegistration.class);
+                startActivity(addLPGIntent);
+
+            }
+        });
+
+        //listerner adapter for SMS booking registration
+        listenerHashMap.put(new Integer(4), new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent addLPGIntent = new Intent(getApplicationContext(), SMSBookingRegistration.class);
+                startActivity(addLPGIntent);
+
+            }
+        });
+        //listener adapter for FAQs booking registratino
+        listenerHashMap.put(new Integer(5), new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent addLPGIntent = new Intent(getApplicationContext(), FAQs.class);
+                startActivity(addLPGIntent);
+
+            }
+        });
+
+        return listenerHashMap;
     }
 }

@@ -85,11 +85,10 @@
     <dimen name="navdrawer_icon_marginleft">16dp</dimen>
     <dimen name="navdrawer_lineitem_height">56dp</dimen>
     <dimen name="navdrawer_menuitem_marginleft">32dp</dimen>
-    <fraction name="navdrawer_icon_alpha">.54</fraction>
-    <fraction name="navdrawer_menu_alpha">.87</fraction>
+
     <dimen name="navdrawer_textsize">14sp</dimen>
     <dimen name="navdrawer_header_height">72dp</dimen>
-    <dimen name="navdrawer_header_alpha">.95</dimen>
+
     <dimen name="navdrawer_header_fontsize">16sp</dimen>
     <dimen name="navdrawer_header_leftmargin">24dp</dimen>
 </resources>

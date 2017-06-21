@@ -24,7 +24,7 @@ public class NavigationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private HashMap<Integer, String> mMenuNameMap;
     private HashMap<Integer, AdapterView.OnItemClickListener> mListenerAdapter;
 
-    public NavigationAdapter(final Context context) {
+    public NavigationAdapter(final Context context, final ListenerAdapter listenerHashMap) {
         //set String map of menu items
         String[] menuName = context.getResources().getStringArray(R.array.navigation_menuitems);
         mMenuNameMap = new HashMap<Integer, String>();
@@ -40,6 +40,8 @@ public class NavigationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         mIconMap.put(new Integer(3), new Integer(R.drawable.ic_call_black_36dp));
         mIconMap.put(new Integer(4), new Integer(R.drawable.ic_textsms_black_24dp));
         mIconMap.put(new Integer(5), new Integer(R.drawable.ic_collections_bookmark_black_24dp));
+        //set listener adapter
+        mListenerAdapter = listenerHashMap.getmListenerAdapter();
 
     }
 
@@ -121,6 +123,11 @@ public class NavigationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public int getItemCount() {
         return mMenuNameMap.size();
+    }
+
+    public interface ListenerAdapter {
+        HashMap<Integer, AdapterView.OnItemClickListener> getmListenerAdapter();
+
     }
 
     public static class HeaderViewHolder extends RecyclerView.ViewHolder {
