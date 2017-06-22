@@ -92,7 +92,8 @@
         <item>SMS booking registration</item>
         <item>FAQs</item>
     </string-array>
-
+    <string name="navdrawer_open">Drawer Open</string>
+    <string name="navdrawer_close">Drawer Close</string>
     <!--Phone booking registration-->
     <string name="phonebooking_activity_title">Phone Booking Registration</string>
 

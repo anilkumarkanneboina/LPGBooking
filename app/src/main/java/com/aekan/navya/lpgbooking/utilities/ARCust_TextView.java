@@ -6,7 +6,6 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
-import android.widget.TextView;
 
 import com.aekan.navya.lpgbooking.R;
 
@@ -15,7 +14,7 @@ import com.aekan.navya.lpgbooking.R;
  * This is custom text view to be used in app
  */
 
-public class ARCust_TextView extends TextView {
+public class ARCust_TextView extends android.support.v7.widget.AppCompatTextView {
     //custom constructor
     public ARCust_TextView(Context context){
         super(context);

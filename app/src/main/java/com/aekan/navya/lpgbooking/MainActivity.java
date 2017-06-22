@@ -1,6 +1,7 @@
 package com.aekan.navya.lpgbooking;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -9,11 +10,13 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 
@@ -34,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
    private GoogleApiClient client;
     private HashMap<Integer, AdapterView.OnItemClickListener> mListenerAdapter;
     private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle navDrawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,20 +70,32 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
 
         //Set Drawer layout
         mDrawerLayout = (DrawerLayout) findViewById(R.id.navdrawer);
+        Log.v("Main", "Drawer layout bar set");
+
         //Set recycler view, by initialising the adapter
         RecyclerView recyclerViewNavigation = (RecyclerView) findViewById(R.id.nav_recyclerview);
         recyclerViewNavigation.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerViewNavigation.setLayoutManager(linearLayoutManager);
         NavigationAdapter navigationAdapter = new NavigationAdapter(getApplicationContext(), this);
         recyclerViewNavigation.setAdapter(navigationAdapter);
+
+
         //Enable toggle action button for drawer layout
-        toolbar.setNavigationIcon(R.drawable.ic_menu_48);
+        //toolbar.setNavigationIcon(R.drawable.ic_menu_48);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         //set Drawer shadow
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
-
+        //set drawer toggle action listerener
+        navDrawerToggle = new ActionBarDrawerToggle(this,//current activity
+                mDrawerLayout, //drawer layout
+                toolbar,
+                R.string.navdrawer_open,
+                R.string.navdrawer_close
+        );
+        mDrawerLayout.setDrawerListener(navDrawerToggle);
 
         ///////////////////////////////////////
         //Create recycler view and initialize it
@@ -242,4 +258,32 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
 
         return listenerHashMap;
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        //handle necessary actions for navigation drawer
+        if (navDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        //call action bar toggle object with new configuration
+        super.onConfigurationChanged(newConfig);
+        //call appropriate method from navigation drawer
+        Log.v("Drawer", "Inside Configuration changed");
+        navDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        Log.v("Drawer", "Inside Post Create");
+        navDrawerToggle.syncState();
+    }
+
+
 }

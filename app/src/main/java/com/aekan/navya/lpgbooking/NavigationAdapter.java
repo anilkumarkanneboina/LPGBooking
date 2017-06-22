@@ -2,6 +2,7 @@ package com.aekan.navya.lpgbooking;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,11 +26,14 @@ public class NavigationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private HashMap<Integer, AdapterView.OnItemClickListener> mListenerAdapter;
 
     public NavigationAdapter(final Context context, final ListenerAdapter listenerHashMap) {
+        Log.v("Recyclerview", "Constructor");
+
         //set String map of menu items
         String[] menuName = context.getResources().getStringArray(R.array.navigation_menuitems);
         mMenuNameMap = new HashMap<Integer, String>();
-        for (int i = 0; i < mMenuNameMap.size(); ++i) {
-            mMenuNameMap.put(new Integer(i), menuName[i]);
+        for (int i = 0; i < menuName.length; ++i) {
+            mMenuNameMap.put(Integer.valueOf(i), menuName[i]);
+            Log.v("Recyclerview", " Menu Map " + mMenuNameMap.get(Integer.valueOf(i)));
         }
 
         //Set icon map for navigation items
@@ -45,15 +49,13 @@ public class NavigationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     }
 
-    public void setmListenerAdapter(HashMap<Integer, AdapterView.OnItemClickListener> listener) {
-        mListenerAdapter = listener;
-    }
 
     //override get item view type
     @Override
     public int getItemViewType(int position) {
+        Log.v("Recyclerview", "Position inside getItemViewtype " + position);
         int itemViewType = 0;
-        if ((position - 1) == 0) {
+        if ((position) == 0) {
             return LPG_Utility.NAVDRAWER_HEADER;
         }
         return LPG_Utility.NAVDRAWER_LINEITEM;
@@ -62,16 +64,18 @@ public class NavigationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Log.v("Recyclerview", " View type is " + viewType);
         switch (viewType) {
             case LPG_Utility.NAVDRAWER_HEADER:
-                View navHeader = LayoutInflater.from(parent.getContext()).inflate(R.layout.navdrawer_header, parent);
+                View navHeader = LayoutInflater.from(parent.getContext()).inflate(R.layout.navdrawer_header, parent, false);
                 return new NavigationAdapter.HeaderViewHolder(navHeader);
 
             case LPG_Utility.NAVDRAWER_LINEITEM:
-                View navLineItem = LayoutInflater.from(parent.getContext()).inflate(R.layout.navdrawer_lineitem, parent);
+                View navLineItem = LayoutInflater.from(parent.getContext()).inflate(R.layout.navdrawer_lineitem, parent, false);
                 return new NavigationAdapter.LineItemViewHolder(navLineItem);
 
             default:
+                Log.v("Recyclerview", " No valid view type");
                 return null;
         }
 
@@ -80,14 +84,15 @@ public class NavigationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
+        Log.v("Recyclerview", " On Bind position " + position);
+        Log.v("Recyclerview", " On Bind view Type " + holder.getItemViewType());
         switch (holder.getItemViewType()) {
             case LPG_Utility.NAVDRAWER_HEADER:
                 HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
                 //set header name
                 String headerName = new String();
-                if ((position - 1) >= 0) {
-                    headerName = mMenuNameMap.get(new Integer(position - 1));
+                if (mMenuNameMap.containsKey(Integer.valueOf(position))) {
+                    headerName = mMenuNameMap.get(Integer.valueOf(position));
                 } else {
                     headerName = "Home";
                 }
@@ -98,16 +103,16 @@ public class NavigationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 LineItemViewHolder lineItemViewHolder = (LineItemViewHolder) holder;
                 //set line item name
                 String lineItemName = new String();
-                if ((position - 1) >= 0) {
-                    lineItemName = mMenuNameMap.get(new Integer(position - 1));
+                if (mMenuNameMap.containsKey(Integer.valueOf(position))) {
+                    lineItemName = mMenuNameMap.get(new Integer(position));
                 } else {
                     lineItemName = "Home";
                 }
                 lineItemViewHolder.mMenuItem.setText(lineItemName);
                 //set icon
                 int resIconId;
-                if (mIconMap.containsKey(new Integer(position - 1))) {
-                    resIconId = mIconMap.get(new Integer(position - 1)).intValue();
+                if (mIconMap.containsKey(Integer.valueOf(position))) {
+                    resIconId = mIconMap.get(Integer.valueOf(position)).intValue();
                 } else {
                     resIconId = R.drawable.ic_home_black_24dp;
                 }
