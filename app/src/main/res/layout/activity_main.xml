@@ -65,9 +65,10 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/nav_recyclerview"
-        android:layout_width="240dp"
+        android:layout_width="280dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="@color/colorWhite"
         android:choiceMode="singleChoice" />
 
 </android.support.v4.widget.DrawerLayout>
