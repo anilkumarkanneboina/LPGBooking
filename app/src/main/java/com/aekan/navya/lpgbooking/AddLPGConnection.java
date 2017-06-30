@@ -71,8 +71,8 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         if (db == null ){
             Log.v("DB","DB Is null");
         }
-        // Set the holder to have connection id string
-        String connectionPrimaryKey = null;
+
+
         // Set REGEX strings for data validation
         final String regexNumber = "[0-9]{5,15}+";
         final String regexExpiryDays = "[0-9]+";
@@ -142,7 +142,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         // intent filter being passed to the activity
         final Bundle connectionBundle = getIntent().getExtras();
         final String connectionIdString = getIntent().getStringExtra(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.FIELD_CONNECTION_ID_EDIT);
-        Log.v("String Value ", connectionIdString);
+
 
         if (!(connectionIdString.equals(LPG_Utility.LPG_CONNECTION_ID))) {
             //get the connection id associated with the bundle
@@ -150,7 +150,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
 
             //Check if we have cached details for the connection id
             Boolean containsKey = ((LPGApplication) getApplication()).cacheLocalData.containsKey(connectionIdString);
-            Log.v("EditConnection ", " contains Key " + Boolean.toString(containsKey));
+
 
             if (((LPGApplication) getApplication()).cacheLocalData.containsKey(connectionIdString)) {
                 //logic to bind connection details with activity
@@ -227,21 +227,10 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
             }
         });
 
-
-
-
-
-
-
-
-
-
         //Get the database
         final SQLiteDatabase sqLiteDatabase = ((LPGApplication) getApplication()).LPGDB;
 
         //Set onclick listener for Save button ;
-
-
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -371,10 +360,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
                                 Log.v("Alarm", "Alarm Set for  "+ i+" "+ alarmNotificationTimers[i].getGregorialCalendar().getTimeInMillis());
 
                             }
-
-
-
-                        }
+                }
                 else {
                     scrollView.scrollTo(0,scrollToError.getBottom());
                 }
@@ -470,8 +456,14 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
 
     @Override
     public void updateActivityWithLPGDetailsCursor(Cursor c) {
-        SQLiteCursor dataCursor = (SQLiteCursor) c;
 
+        SQLiteCursor dataCursor;
+        if (c != null) {
+            dataCursor = (SQLiteCursor) c;
+        } else {
+            Toast.makeText(getApplicationContext(), getResources().getText(R.string.connection_detail_missing), Toast.LENGTH_LONG).show();
+            return;
+        }
         //Get text boxes which would need to be updated
         /*lpgConnection.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME)));
         lpgProvider.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER)));
@@ -522,6 +514,9 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         finalIDCount = incrementedPrimaryKey;
         FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.fab_save_connection);
         floatingActionButton.setEnabled(true);
+    }
+
+    public void updateAllConnectionData(Cursor c) {
     }
 
     public static class BookedDateFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
@@ -576,6 +571,4 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
             }
         }
     }
-
-
 }

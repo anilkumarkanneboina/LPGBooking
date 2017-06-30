@@ -8,7 +8,6 @@ import android.util.Log;
 import com.aekan.navya.lpgbooking.LPG_AlarmReceiver;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
@@ -55,6 +54,7 @@ public class LPG_Utility {
 
     public final static int MSG_GETALLCYLINDERS = 0;
     public final static int MSG_INCREMENTPRIMARYKEY = 1243;
+    public final static int MSG_POPULATECONNECTION = 234;
 
     public final static int FINAL_NOTIFICATION_BUFFER = 8;
 
@@ -92,7 +92,7 @@ public class LPG_Utility {
         String[] strDateFields = lastBookedDate.split("/");
         int lpglastbookeddate, lpglastbookedmonth, lpglastbookedyear;
         Calendar sysDate = Calendar.getInstance();
-        Date lpgLastBooked;
+
         GregorianCalendar lpgLastBookedGregCalendar;
         int expiryDays = Integer.parseInt(expiryDaysStr);
 
@@ -113,9 +113,6 @@ public class LPG_Utility {
             GregorianCalendar midwayExpiryDate = lpgLastBookedGregCalendar;
             midwayExpiryDate.add(Calendar.DATE, Math.round(expiryDays / 2));
 
-
-
-
             //compare this midway expiry time with sys date and
             //create an alarm only if this date is in future
 
@@ -124,7 +121,6 @@ public class LPG_Utility {
                 // Create an intent and use that to create the pending intent for alarm manager
                 midwayExpiryDate = (GregorianCalendar) sysDate;
                 midwayExpiryDate.add(Calendar.DAY_OF_MONTH,1);
-
             }
 
             midwayExpiryDate.set(Calendar.HOUR_OF_DAY, 12);
@@ -132,10 +128,10 @@ public class LPG_Utility {
 
             //Test notification creation
             GregorianCalendar newNotification =  ((GregorianCalendar) Calendar.getInstance());
-            newNotification.set(Calendar.MINUTE,55);
-            newNotification.set(Calendar.HOUR_OF_DAY,19);
+            newNotification.add(Calendar.SECOND, 20);
 
-            Log.v("Notification1",newNotification.toString() );
+
+            Log.v("Notification1", newNotification.toString());
 
             // Create a pending intent request code, which will refer to the alarm being set for this lpg connnection id
             // Utilising the same pending intent request code will help to replace the existing alarm, if there is a change in
@@ -179,7 +175,7 @@ public class LPG_Utility {
             }
 
             calendarNotificationUltimate.set(Calendar.HOUR_OF_DAY,13);
-            calendarNotificationUltimate.set(Calendar.MINUTE,3);
+            calendarNotificationUltimate.set(Calendar.SECOND, 30);
 
             //Test notification
             GregorianCalendar newnotification2 = (GregorianCalendar) Calendar.getInstance() ;

@@ -497,6 +497,9 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
 
     }
 
+    public void updateAllConnectionData(Cursor c) {
+    }
+
     public  class mSMSBroadcastReceiver extends BroadcastReceiver {
         private Activity lpgBooking;
 

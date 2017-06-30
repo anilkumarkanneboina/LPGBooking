@@ -35,6 +35,11 @@ public class LPGServiceCallBackHandler implements Handler.Callback {
             case LPG_Utility.MSG_INCREMENTPRIMARYKEY:
                 //call appropriate call back method
                 mServiceResponseCallBack.updatePrimaryKeyIncrement((String) msg.obj);
+                break;
+            case LPG_Utility.MSG_POPULATECONNECTION:
+                //call method to populate cylinder conne tions
+                mServiceResponseCallBack.updateAllConnectionData((Cursor) msg.obj);
+                break;
             default:
                 break;
         }

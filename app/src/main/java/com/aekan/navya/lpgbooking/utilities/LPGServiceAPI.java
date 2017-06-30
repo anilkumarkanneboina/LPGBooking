@@ -10,7 +10,10 @@ import android.os.Messenger;
 
 public interface LPGServiceAPI {
 
-    public void populateCylinderInfoThroughCursorWithRowID(String rowID, Messenger messenger);
-    public void updateCylinderIDCursor(Messenger messenger);
+    void populateCylinderInfoThroughCursorWithRowID(String rowID, Messenger messenger);
+
+    void updateCylinderIDCursor(Messenger messenger);
+
+    void populateAllConnections(Messenger messenger);
 
 }

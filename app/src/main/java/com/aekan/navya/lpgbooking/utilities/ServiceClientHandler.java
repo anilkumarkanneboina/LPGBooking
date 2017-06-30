@@ -1,13 +1,11 @@
 package com.aekan.navya.lpgbooking.utilities;
 
-import android.app.Service;
 import android.database.Cursor;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.RemoteException;
 import android.util.Log;
-import android.widget.Toast;
 
 /**
  * Created by aruramam on 3/29/2017.
@@ -72,6 +70,19 @@ public class ServiceClientHandler extends Handler {
             //close the looper thread
             this.getLooper().quit();
             break;
+        case (LPG_Utility.MSG_POPULATECONNECTION):
+            //get all connection details in a cursor
+            Cursor allConnectionDetails = mServiceClient.getAllConnectionDetails();
+
+            Message allConnectionMessage = Message.obtain(null, LPG_Utility.MSG_POPULATECONNECTION, allConnectionDetails);
+            try {
+                message.replyTo.send(allConnectionMessage);
+            } catch (Exception e) {
+                Log.v("Messenger", "Messenger Offline");
+            }
+            //get the looper out
+            this.getLooper().quit();
+
         default:
             this.getLooper().quit();
             break;

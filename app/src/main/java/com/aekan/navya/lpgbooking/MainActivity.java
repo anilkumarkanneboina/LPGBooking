@@ -203,23 +203,24 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
         client.disconnect();
     }
 
-    public HashMap<Integer, AdapterView.OnItemClickListener> getmListenerAdapter() {
-        HashMap<Integer, AdapterView.OnItemClickListener> listenerHashMap = new HashMap<Integer, AdapterView.OnItemClickListener>();
+    public HashMap<Integer, View.OnClickListener> getmListenerAdapter() {
+        HashMap<Integer, View.OnClickListener> listenerHashMap = new HashMap<Integer, View.OnClickListener>();
         //Listener adapter for Header ;
         listenerHashMap.put(new Integer(0), null);
 
         //Listener adapter for Home screen
-        listenerHashMap.put(new Integer(1), new AdapterView.OnItemClickListener() {
+        listenerHashMap.put(new Integer(1), new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onClick(View view) {
                 mDrawerLayout.closeDrawer(GravityCompat.START);
             }
         });
 
         //listener adapter for add lpg connection
-        listenerHashMap.put(new Integer(2), new AdapterView.OnItemClickListener() {
+        listenerHashMap.put(new Integer(2), new View.OnClickListener() {
+
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onClick(View view) {
                 Intent addLPGIntent = new Intent(getApplicationContext(), AddLPGConnection.class);
                 addLPGIntent.putExtra(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.FIELD_CONNECTION_ID_EDIT, LPG_Utility.LPG_CONNECTION_ID);
                 startActivity(addLPGIntent);
@@ -228,9 +229,9 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
         });
 
         //listerner adapter for Phone booking registration
-        listenerHashMap.put(new Integer(3), new AdapterView.OnItemClickListener() {
+        listenerHashMap.put(new Integer(3), new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onClick(View view) {
                 Intent addLPGIntent = new Intent(getApplicationContext(), PhoneBookingRegistration.class);
                 startActivity(addLPGIntent);
 
@@ -238,18 +239,18 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
         });
 
         //listerner adapter for SMS booking registration
-        listenerHashMap.put(new Integer(4), new AdapterView.OnItemClickListener() {
+        listenerHashMap.put(new Integer(4), new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onClick(View view) {
                 Intent addLPGIntent = new Intent(getApplicationContext(), SMSBookingRegistration.class);
                 startActivity(addLPGIntent);
 
             }
         });
         //listener adapter for FAQs booking registratino
-        listenerHashMap.put(new Integer(5), new AdapterView.OnItemClickListener() {
+        listenerHashMap.put(new Integer(5), new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onClick(View view) {
                 Intent addLPGIntent = new Intent(getApplicationContext(), FAQs.class);
                 startActivity(addLPGIntent);
 

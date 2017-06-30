@@ -43,7 +43,7 @@ public class LPG_AlarmReceiver extends BroadcastReceiver {
 
         //Add the pending intent to notification through builder object
         lpgExpiryNotificationBuilder.setContentIntent(pendingIntentStartActivity);
-        lpgExpiryNotificationBuilder.addAction(R.drawable.ic_date_range_black_36dp,"Book",pendingIntentStartActivity);
+        lpgExpiryNotificationBuilder.addAction(R.drawable.ic_call_black_36dp_book, "Book", pendingIntentStartActivity);
         lpgExpiryNotificationBuilder.setAutoCancel(true);
 
         NotificationManager lpgNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

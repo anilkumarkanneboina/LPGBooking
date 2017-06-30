@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,7 +22,7 @@ public class NavigationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private Context mContext;
     private HashMap<Integer, Integer> mIconMap;
     private HashMap<Integer, String> mMenuNameMap;
-    private HashMap<Integer, AdapterView.OnItemClickListener> mListenerAdapter;
+    private HashMap<Integer, View.OnClickListener> mListenerAdapter;
 
     public NavigationAdapter(final Context context, final ListenerAdapter listenerHashMap) {
         Log.v("Recyclerview", "Constructor");
@@ -109,6 +108,7 @@ public class NavigationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     lineItemName = "Home";
                 }
                 lineItemViewHolder.mMenuItem.setText(lineItemName);
+                lineItemViewHolder.mMenuItem.setOnClickListener(mListenerAdapter.get(Integer.valueOf(position)));
                 //set icon
                 int resIconId;
                 if (mIconMap.containsKey(Integer.valueOf(position))) {
@@ -117,6 +117,7 @@ public class NavigationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     resIconId = R.drawable.ic_home_black_24dp;
                 }
                 lineItemViewHolder.mIcon.setImageResource(resIconId);
+                lineItemViewHolder.mIcon.setOnClickListener(mListenerAdapter.get(Integer.valueOf(position)));
                 //set onclick listener
                 
                 break;
@@ -131,7 +132,7 @@ public class NavigationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     public interface ListenerAdapter {
-        HashMap<Integer, AdapterView.OnItemClickListener> getmListenerAdapter();
+        HashMap<Integer, View.OnClickListener> getmListenerAdapter();
 
     }
 

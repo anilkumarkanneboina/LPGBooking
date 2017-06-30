@@ -10,7 +10,6 @@ import android.util.Log;
 
 import com.aekan.navya.lpgbooking.LPGApplication;
 
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -54,7 +53,27 @@ public class LPGDataAPI extends HandlerThread implements ServiceClientAPIInterfa
         this.start();
     }
 
+    //service call to get all connections
+    public Cursor getAllConnectionDetails() {
+        //initialise cursor
+        Cursor cursor = null;
+        SQLiteDatabase database = mApplication.LPGDB;
 
+        cursor = database.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME, //name of the table
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+
+        if (cursor.moveToFirst()) {
+            return cursor;
+        }
+
+        return null;
+    }
 
     //service call to get cursor for a specific row id
     public Cursor getCylinderRecordForID(String rowID){
@@ -78,12 +97,17 @@ public class LPGDataAPI extends HandlerThread implements ServiceClientAPIInterfa
                     null,
                     null);
             //update the value in HashMap - this acts as a local caching mechanism
-            mApplication.cacheLocalData.put(rowID, c);
+            if (c.moveToFirst()) {
+                mApplication.cacheLocalData.put(rowID, c);
+                return hashCursor.get(rowID);
+
+            }
+
 //            c.close();
 
         }
         //mApplication.cacheLocalData.put(rowID,c);
-        return hashCursor.get(rowID);
+        return null;
 
 
     }
@@ -162,6 +186,17 @@ public class LPGDataAPI extends HandlerThread implements ServiceClientAPIInterfa
         }
         mServiceClientHandler.sendMessage(requestPrimaryKey);
 
+    }
 
+    public void populateAllConnections(Messenger messenger) {
+        Message message = Message.obtain(null, LPG_Utility.MSG_POPULATECONNECTION);
+        message.replyTo = messenger;
+        //send the message only if looper is active
+        if (mServiceClientHandler == null) {
+            mServiceClientHandler = new ServiceClientHandler(getLooper(), this);
+        } else {
+            return;
+        }
+        mServiceClientHandler.sendMessage(message);
     }
 }

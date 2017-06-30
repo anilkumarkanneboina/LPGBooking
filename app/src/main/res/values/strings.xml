@@ -96,7 +96,11 @@
     <string name="navdrawer_close">Drawer Close</string>
     <!--Phone booking registration-->
     <string name="phonebooking_activity_title">Phone Booking Registration</string>
-
+    <string name="registration_desc">You need to register your mobile number to refill via phone booking option.\n\nPlease select your connection.</string>
+    <string name="reg_button">CALL TO REGISTER</string>
+    <string-array name="no_connections">
+        <item>Please add cylinder connection</item>
+    </string-array>
     <!--SMS booking Registration -->
     <string name="smsbooking_activity_title">SMS Booking Registration</string>
 
