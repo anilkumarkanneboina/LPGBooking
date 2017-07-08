@@ -9,6 +9,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.aekan.navya.lpgbooking.ConfirmLPGBookingCompletion;
+import com.aekan.navya.lpgbooking.MainActivity;
 
 /**
  * Created by arunramamurthy on 15/01/17.
@@ -53,10 +54,17 @@ public class LPG_PhoneListener extends PhoneStateListener {
                     setPhoneFlag = PHONELISTENERFLAGONHOOK;
 
                     //start the intent
+                    if( LPGConnectionId.equals(LPG_Utility.PHONELISTENER_FROM_REGISTRATION)){
+                        Intent intentHome = new Intent(applicationContext, MainActivity.class);
+                        applicationContext.startActivity(intentHome);
+                    }
+
+                    else  {
                     Intent intentConfirmLPGBooking = new Intent(applicationContext, ConfirmLPGBookingCompletion.class);
                     intentConfirmLPGBooking.putExtra(LPG_Utility.LPG_CONNECTION_ID, LPGConnectionId);
                     intentConfirmLPGBooking.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     applicationContext.startActivity(intentConfirmLPGBooking);
+                    }
 
                 }
                 break;

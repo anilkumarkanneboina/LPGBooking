@@ -1,14 +1,21 @@
 package com.aekan.navya.lpgbooking.utilities;
 
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.Manifest;
 
 import com.aekan.navya.lpgbooking.LPG_AlarmReceiver;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+
 
 /**
  * Created by aruramam on 1/9/2017.
@@ -60,6 +67,11 @@ public class LPG_Utility {
     public final static int PHONE_BOOKING_REGISTRATION= 34;
     public final static int SMS_BOOKING_REGISTRATIION = 343;
     public final static String REGISTRATION_TYPE = "THIS STRING IDENTIFIES AN ACTIVITY AS PHONE BOOKING OR SMS BOOKING";
+
+    public final static int COMMUNICATE_PHONE = 234;
+    public final static int COMMUNICATE_SMS = 9876;
+
+    public final static String PHONELISTENER_FROM_REGISTRATION = "CALL FROM PHONE BOOKING ACTIVITY";
 
     public static int getDeliveredRefillSms() {
         return DELIVERED_REFILL_SMS;
@@ -199,6 +211,27 @@ public class LPG_Utility {
         if ( provider.equals(LPG_PROVIDER_INDANE)) {textMessage = LPG_REFILL_TEXT_INDANE;}
         if ( provider.equals(LPG_PROVIDER_HP)) {textMessage = LPG_REFILL_TEXT_HP;}
         return textMessage;
+
+    }
+
+    public static void callOrTextUtility(Activity callingActivity, String PhoneNumber, String TextNumber, String Provider,int forCall){
+        //do action based on method purpose - call or sms
+        switch (forCall){
+            case COMMUNICATE_PHONE:
+                //check if app has permission to make call
+                if (ContextCompat.checkSelfPermission(callingActivity.getApplicationContext(), Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+                    Intent callIntent = new Intent();
+                    callIntent.setAction(Intent.ACTION_DIAL);
+                    callIntent.setData(Uri.parse("tel:"+PhoneNumber));
+                    callingActivity.startActivity(callIntent);
+
+                }
+                break;
+            case COMMUNICATE_SMS:
+
+                break;
+
+        }
 
     }
 

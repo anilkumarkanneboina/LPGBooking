@@ -77,6 +77,8 @@
     <string name="permission_revocation_intimation">You can revoke the permission anytime from Settings</string>
     <string name="permission_button_cancel">Cancel</string>
     <string name="permission_button_ok">OK</string>
+    <string name="permission_toast_callpermission_denied">Phone call permission denied</string>
+    <string name="permission_toast_sms_denied">SMS permission denied</string>
 
     <!--progress loader messages-->
     <string name="progress_loader_text">Loading...</string>
