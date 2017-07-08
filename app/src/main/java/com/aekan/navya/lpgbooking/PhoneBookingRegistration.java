@@ -5,8 +5,10 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Messenger;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -18,6 +20,9 @@ import com.aekan.navya.lpgbooking.utilities.LPGDataAPI;
 import com.aekan.navya.lpgbooking.utilities.LPGServiceCallBackHandler;
 import com.aekan.navya.lpgbooking.utilities.LPGServiceResponseCallBack;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
+import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
+
+import org.w3c.dom.Text;
 
 import java.util.HashMap;
 
@@ -33,6 +38,7 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
     private String mConnection;
     private Cursor mCursor;
     private Button mbuttonRegister;
+    private int activityPurpose;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //call super class
@@ -42,7 +48,7 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
         //Configure tool bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.phoneregistration_toolbar);
 
-        toolbar.setTitle(R.string.phonebooking_activity_title);
+
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,6 +62,24 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
         //Disable registration button
         mbuttonRegister = (Button) findViewById(R.id.reg_button);
         mbuttonRegister.setEnabled(false);
+        //verify if the activity is being used for phone booking registration or SMS booking registration.
+        activityPurpose = getIntent().getIntExtra(LPG_Utility.REGISTRATION_TYPE,LPG_Utility.PHONE_BOOKING_REGISTRATION);
+        //set activity title and hint text
+        TextInputLayout numberToRegister = (TextInputLayout) findViewById(R.id.reg_no_textinputlayout) ;
+        switch (activityPurpose){
+            case (LPG_Utility.PHONE_BOOKING_REGISTRATION):
+                numberToRegister.setHint(getResources().getString(R.string.registration_phonebooking_hint_regno));
+                toolbar.setTitle(getResources().getString(R.string.phonebooking_activity_title));
+                break;
+            case (LPG_Utility.SMS_BOOKING_REGISTRATIION):
+                numberToRegister.setHint(getResources().getString(R.string.registration_smsbooking_hint_regno));
+                toolbar.setTitle(getResources().getString(R.string.smsbooking_activity_title));
+                break;
+            default:
+                numberToRegister.setHint(getResources().getString(R.string.registration_phonebooking_hint_regno));
+                toolbar.setTitle(getResources().getString(R.string.phonebooking_activity_title));
+                break;
+        }
 
         //Populate spinner with connection names
         LPGDataAPI lpgDataAPI = new LPGDataAPI((LPGApplication) getApplication(), "Call from Navigation Drawer");
@@ -111,6 +135,7 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
 
         public SpinnerListener(Cursor c) {
             mCursor = c;
+            mCursor.moveToFirst();
 
         }
 
@@ -123,7 +148,7 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
             TextView agency = (TextView) findViewById(R.id.reg_agency);
             TextView phonenumber = (TextView) findViewById(R.id.reg_no_textfield);
 
-
+            parent.setSelection(position);
             // get adapter
             ArrayAdapter<String> parentAdapter = (ArrayAdapter<String>) parent.getAdapter();
             connectionName = parentAdapter.getItem(position);
@@ -133,17 +158,41 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
             for (int i = 0; i < mCursor.getCount(); ++i) {
                 if (mCursor.getString(mCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME)).equals(connectionName)) {
                     provider.setText(mCursor.getString(mCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER)));
-                    provider.setText(mCursor.getString(mCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY)));
-                    provider.setText(mCursor.getString(mCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_SMS_NUMBER)));
+                    agency.setText(mCursor.getString(mCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY)));
+                    phonenumber.setText(mCursor.getString(mCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_SMS_NUMBER)));
+                    String phoneNumberText = phonenumber.getText().toString();
+                    if(phoneNumberText.length() == 0){
+                        // inform user to enter a valid number
+                        TextView notificationText = (TextView) findViewById(R.id.registration_notification_message);
+                        notificationText.setVisibility(View.VISIBLE);
+                        //give notification based on intent type
+                        switch (activityPurpose){
+                            case LPG_Utility.PHONE_BOOKING_REGISTRATION:
+                                notificationText.setText(getResources().getString(R.string.registation_phonebooking_null_number));
+                                break;
+                            case LPG_Utility.SMS_BOOKING_REGISTRATIION:
+                                notificationText.setText(getResources().getString(R.string.registation_smsbooking_null_number));
+                                break;
+                        }
 
+                    } else  {
+                        //enable call booking button
+                        (findViewById(R.id.reg_button)).setEnabled(true);
+                        //disable notification message
+                        findViewById(R.id.registration_notification_message).setVisibility(View.GONE);
+                    }
                 }
+            mCursor.moveToNext();
 
-            }
-
+        }
+            //reset cursor
+            mCursor.moveToFirst();
 
         }
 
         public void onNothingSelected(AdapterView<?> parent) {
+
+            Log.v("Spinner","nothing selected");
         }
 
     }

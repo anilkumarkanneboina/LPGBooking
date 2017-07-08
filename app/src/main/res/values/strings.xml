@@ -96,11 +96,18 @@
     <string name="navdrawer_close">Drawer Close</string>
     <!--Phone booking registration-->
     <string name="phonebooking_activity_title">Phone Booking Registration</string>
-    <string name="registration_desc">You need to register your mobile number to refill via phone booking option.\n\nPlease select your connection.</string>
+    <string name="registration_desc">You need to register your mobile number to refill via phone booking or SMS booking option.\n\nPlease select your connection.</string>
     <string name="reg_button">CALL TO REGISTER</string>
     <string-array name="no_connections">
         <item>Please add cylinder connection</item>
     </string-array>
+    <string name="selectconnection">Select Connection</string>
+    <string name="registation_phonebooking_null_number">Please enter a valid number to call</string>
+    <string name="registation_smsbooking_null_number">Please enter a valid number to text</string>
+    <string name="registration_hint_provider">LPG Provider</string>
+    <string name="registration_hint_agency">LPG Agency name</string>
+    <string name="registration_phonebooking_hint_regno">Validate Phone booking registraion number</string>
+    <string name="registration_smsbooking_hint_regno">Validate SMS booking registration number</string>
     <!--SMS booking Registration -->
     <string name="smsbooking_activity_title">SMS Booking Registration</string>
 

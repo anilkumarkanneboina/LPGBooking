@@ -23,8 +23,13 @@
         android:layout_below="@id/registration_description"
         android:layout_marginBottom="@dimen/reg_desc_marginbotton"
         android:layout_marginTop="@dimen/reg_spinner_margingtop"
-        android:paddingBottom="@dimen/reg_padding_textfield"
-        android:paddingTop="@dimen/reg_padding_textfield" />
+        android:background="@android:color/darker_gray"
+        android:dropDownWidth="match_parent"
+        android:paddingBottom="@dimen/reg_spinner_padding"
+        android:paddingTop="@dimen/reg_spinner_padding"
+        android:prompt="@string/selectconnection"
+        android:spinnerMode="dropdown"
+        android:visibility="visible" />
 
     <LinearLayout
         android:id="@+id/registration_layout_fordetails"
@@ -36,7 +41,10 @@
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/reg_textfield_height">
+            android:layout_height="@dimen/reg_textfield_height"
+            app:hintAnimationEnabled="true"
+            android:hint="@string/registration_hint_provider"
+            >
 
             <EditText
                 android:id="@+id/reg_provider"
@@ -53,7 +61,9 @@
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/reg_textfield_height">
+            android:layout_height="@dimen/reg_textfield_height"
+            android:hint="@string/registration_hint_agency"
+            >
 
             <EditText
                 android:id="@+id/reg_agency"
@@ -72,7 +82,7 @@
             android:id="@+id/reg_no_textinputlayout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/reg_textfield_height"
-            android:hint="Enter phone registration number for your agency"
+            android:hint="@string/registration_phonebooking_hint_regno"
             app:hintAnimationEnabled="true">
 
             <EditText
@@ -92,13 +102,33 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_below="@id/registration_layout_fordetails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        >
+        <TextView
+            android:id="@+id/registration_notification_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            android:textSize="@dimen/reg_textfield_textsize"
+            android:textColor="@color/lpg_expiry_textcolor"
+            android:layout_marginBottom="@dimen/reg_notificationmessage_margintop"
+            android:paddingBottom="@dimen/reg_padding_textfield"
+            android:paddingTop="@dimen/reg_padding_textfield"
+            />
     <Button
         android:id="@+id/reg_button"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/reg_button_height"
         android:layout_below="@id/registration_layout_fordetails"
-        android:layout_gravity="center"
         android:text="@string/reg_button"
-        android:textSize="@dimen/reg_button_textsize" />
+        android:textSize="@dimen/reg_button_textsize"
+        android:background="@drawable/button_state"
+        />
+    </LinearLayout>
 
 </RelativeLayout>

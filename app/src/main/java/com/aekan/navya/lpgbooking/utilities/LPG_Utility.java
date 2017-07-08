@@ -57,8 +57,13 @@ public class LPG_Utility {
     public final static int MSG_POPULATECONNECTION = 234;
 
     public final static int FINAL_NOTIFICATION_BUFFER = 8;
+    public final static int PHONE_BOOKING_REGISTRATION= 34;
+    public final static int SMS_BOOKING_REGISTRATIION = 343;
+    public final static String REGISTRATION_TYPE = "THIS STRING IDENTIFIES AN ACTIVITY AS PHONE BOOKING OR SMS BOOKING";
 
-
+    public static int getDeliveredRefillSms() {
+        return DELIVERED_REFILL_SMS;
+    }
 
     public static int getIndexOfProvider(String Provider) {
         for (int i = 0; i < LPG_PROVIDERS.length; ++i) {

@@ -7,4 +7,5 @@
     <color name="colorWhite">#ffffff</color>
     <color name="lpg_expiry_textcolor">#ED819A</color>
     <color name="confirmbooking_button_no">#FF4571</color>
+    <color name="error_red">#ed0e3a</color>
 </resources>
