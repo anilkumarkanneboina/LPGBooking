@@ -30,10 +30,7 @@ import com.aekan.navya.lpgbooking.utilities.LPG_PhoneListener;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
 
-import org.w3c.dom.Text;
-
 import java.util.HashMap;
-import java.util.jar.Manifest;
 
 /**
  * Created by arunramamurthy on 20/06/17.
@@ -41,6 +38,8 @@ import java.util.jar.Manifest;
 
 public class PhoneBookingRegistration extends AppCompatActivity implements LPGServiceResponseCallBack {
 
+    private final int LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE = 123;
+    private final int LPG_BOOKING_REQUEST_PERMISSION_SMS = 234;
     //Array adapter for spinner
     private ArrayAdapter<CharSequence> mSpinnerAdapter;
     private HashMap<String, String> mMapConnectionNameAndId;
@@ -48,7 +47,6 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
     private Cursor mCursor;
     private Button mbuttonRegister;
     private int activityPurpose;
-    private final int LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE = 123;
     private TelephonyManager telephonyManager;
     private PhoneStateListener phonelistener;
     private String phoneNumber;
@@ -89,35 +87,47 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
 
             @Override
             public void onClick(View v) {
+                //get phone no from text view
+                phoneNumber = ((TextView) findViewById(R.id.reg_no_textfield)).getText().toString();
+
                 switch (activityPurpose){
                     case (LPG_Utility.PHONE_BOOKING_REGISTRATION):
                         //check for permission to call phone
-                        if(ContextCompat.checkSelfPermission(getParent(), android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED){
+                        if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                             //permission not available
                             //check if permission needs to be requested
-                            if(ActivityCompat.shouldShowRequestPermissionRationale(getParent(), android.Manifest.permission.CALL_PHONE)){
+                            if (ActivityCompat.shouldShowRequestPermissionRationale(PhoneBookingRegistration.this, android.Manifest.permission.CALL_PHONE)) {
                                 //need to request permission
                                 Intent permissionIntent = new Intent(getApplicationContext(),PermissionCheckForFeature.class);
                                 permissionIntent.putExtra(LPG_Utility.PERMISSION_INTIMATION_MESSAGE,LPG_Utility.PERMISSION_CALL_INTIMATION);
-                                getParent().startActivityForResult(permissionIntent,LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE);
+                                startActivityForResult(permissionIntent, LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE);
 
                             } else {
                                 //show permission for phonebooking
-                                ActivityCompat.requestPermissions(getParent(),new String[]{android.Manifest.permission.CALL_PHONE, android.Manifest.permission.SEND_SMS},LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE);
+                                ActivityCompat.requestPermissions(PhoneBookingRegistration.this, new String[]{android.Manifest.permission.CALL_PHONE, android.Manifest.permission.SEND_SMS}, LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE);
                             }
                         } else {
                             //call the provider no for registration
-                            LPG_Utility.callOrTextUtility(getParent(),phoneNumber,null,provider,LPG_Utility.COMMUNICATE_PHONE);
+                            LPG_Utility.callOrTextUtility(getApplicationContext(), phoneNumber, null, provider, LPG_Utility.COMMUNICATE_PHONE);
                         }
                         break;
                     case (LPG_Utility.SMS_BOOKING_REGISTRATIION):
                         //check permission for sending sms
-                        if((ContextCompat.checkSelfPermission(getParent(), android.Manifest.permission.SEND_SMS)) != PackageManager.PERMISSION_GRANTED){
+                        if ((ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.SEND_SMS)) != PackageManager.PERMISSION_GRANTED) {
                             // check if user needs tobe intimated about the permission request
-                            if ( ActivityCompat.shouldShowRequestPermissionRationale(getParent(), android.Manifest.permission.SEND_SMS)  ) {
-                                //start permission check activity with
-
+                            if (ActivityCompat.shouldShowRequestPermissionRationale(PhoneBookingRegistration.this, android.Manifest.permission.SEND_SMS)) {
+                                //start permission check activity with SMS Booking
+                                Intent intentSMSPermission = new Intent(getApplicationContext(), PermissionCheckForFeature.class);
+                                intentSMSPermission.putExtra(LPG_Utility.PERMISSION_INTIMATION_MESSAGE, LPG_Utility.PERMISSION_SMS_INTIMATION);
+                                startActivityForResult(intentSMSPermission, LPG_BOOKING_REQUEST_PERMISSION_SMS);
+                            } else {
+                                //request permission from user
+                                ActivityCompat.requestPermissions(PhoneBookingRegistration.this, new String[]{android.Manifest.permission.SEND_SMS, android.Manifest.permission.CALL_PHONE}, LPG_BOOKING_REQUEST_PERMISSION_SMS);
                             }
+                        } else {
+                            // send sms
+                            LPG_Utility.callOrTextUtility(getApplicationContext(), phoneNumber, null, provider, LPG_Utility.COMMUNICATE_SMS);
+                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.smsbooking_smssent), Toast.LENGTH_SHORT).show();
                         }
 
                         break;
@@ -143,6 +153,7 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
             case (LPG_Utility.SMS_BOOKING_REGISTRATIION):
                 numberToRegister.setHint(getResources().getString(R.string.registration_smsbooking_hint_regno));
                 toolbar.setTitle(getResources().getString(R.string.smsbooking_activity_title));
+                ((TextView) findViewById(R.id.reg_button)).setText(getResources().getString(R.string.smsbooking_buttonname));
                 break;
             default:
                 numberToRegister.setHint(getResources().getString(R.string.registration_phonebooking_hint_regno));
@@ -197,6 +208,75 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
     public void updatePrimaryKeyIncrement(String incrementedPrimaryKey) {
     }
 
+    protected void onActivityResult(int requestCode, int resultCode, Intent resultIntent) {
+        //Provide response based on activity request code
+        switch (requestCode) {
+            case (LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE):
+                //check if user is ok to provide phone permission
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        //provide user with permission dialog for call permission
+                        ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.SEND_SMS, android.Manifest.permission.CALL_PHONE}, LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE);
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        //inform user to check again
+                        Toast.makeText(this, R.string.permission_toast_callpermission_denied, Toast.LENGTH_SHORT).show();
+                }
+
+                break;
+            case (LPG_BOOKING_REQUEST_PERMISSION_SMS):
+                //decide if user has given permission
+                switch (resultCode) {
+                    //user did not give permission to send SMS
+                    case Activity.RESULT_CANCELED:
+                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.permission_toast_sms_denied), Toast.LENGTH_SHORT).show();
+                        break;
+                    case Activity.RESULT_OK:
+                        ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.SEND_SMS, android.Manifest.permission.CALL_PHONE}, LPG_BOOKING_REQUEST_PERMISSION_SMS);
+                }
+        }
+    }
+
+    public void onRequestPermissionsResult(int RequestCode, String permissions[], int[] grantResults) {
+        //check permission status for different actions
+        switch (RequestCode) {
+            case (LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE):
+                if ((grantResults.length != 0) && (grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                    //check for permission and call registration number
+                    if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+                        //call lpg booking
+                        LPG_Utility.callOrTextUtility(getApplicationContext(), phoneNumber, null, provider, LPG_Utility.COMMUNICATE_PHONE);
+                    }
+
+                } else {
+                    Toast.makeText(this, R.string.permission_toast_callpermission_denied, Toast.LENGTH_SHORT).show();
+
+                }
+
+                break;
+            case (LPG_BOOKING_REQUEST_PERMISSION_SMS):
+                if ((grantResults.length != 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED) {
+                        LPG_Utility.callOrTextUtility(getApplicationContext(), phoneNumber, null, provider, LPG_Utility.COMMUNICATE_SMS);
+                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.smsbooking_smssent), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+            default:
+                break;
+
+        }
+
+    }
+
+    protected void onDestroy() {
+        super.onDestroy();
+        //unregister telephone listener
+        if (phonelistener != null) {
+            telephonyManager.listen(phonelistener, PhoneStateListener.LISTEN_NONE);
+        }
+    }
+
     public class SpinnerListener implements AdapterView.OnItemSelectedListener {
 
         //cursor to hold variables for cursor
@@ -230,6 +310,7 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
                     agency.setText(mCursor.getString(mCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY)));
                     phonenumber.setText(mCursor.getString(mCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_SMS_NUMBER)));
                     String phoneNumberText = phonenumber.getText().toString();
+                    phoneNumber = phoneNumberText;
                     if(phoneNumberText.length() == 0){
                         // inform user to enter a valid number
                         TextView notificationText = (TextView) findViewById(R.id.registration_notification_message);
@@ -264,56 +345,6 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
             Log.v("Spinner","nothing selected");
         }
 
-    }
-
-    protected void onActivityResult(int requestCode, int resultCode , Intent resultIntent){
-        //Provide response based on activity request code
-        switch (requestCode){
-            case (LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE):
-                //check if user is ok to provide phone permission
-                switch (resultCode){
-                    case Activity.RESULT_OK:
-                        //provide user with permission dialog for call permission
-                        ActivityCompat.requestPermissions(this,new String[]{android.Manifest.permission.SEND_SMS, android.Manifest.permission.CALL_PHONE},LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE);
-                        break;
-                    case Activity.RESULT_CANCELED:
-                        //inform user to check again
-                        Toast.makeText(this,R.string.permission_toast_callpermission_denied,Toast.LENGTH_SHORT).show();
-                }
-
-                break;
-        }
-    }
-
-    public void onRequestPermissionsResult(int RequestCode, String permissions[], int[] grantResults) {
-        //check permission status for different actions
-        switch (RequestCode){
-            case (LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE):
-                if((grantResults.length != 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)){
-                    //check for permission and call registration number
-                    if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.CALL_PHONE)== PackageManager.PERMISSION_GRANTED){
-                        //call lpg booking
-                        LPG_Utility.callOrTextUtility(getParent(),phoneNumber,null,provider,LPG_Utility.COMMUNICATE_PHONE);
-                    }
-
-                } else{
-                    Toast.makeText(this,R.string.permission_toast_callpermission_denied,Toast.LENGTH_SHORT).show();
-
-                }
-
-                break;
-
-            default:
-                break;
-
-        }
-
-    }
-
-    protected void onDestroy(){
-        super.onDestroy();
-        //unregister telephone listener
-        telephonyManager.listen(phonelistener,PhoneStateListener.LISTEN_NONE);
     }
 
 

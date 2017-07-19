@@ -233,6 +233,7 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
             @Override
             public void onClick(View view) {
                 Intent addLPGIntent = new Intent(getApplicationContext(), PhoneBookingRegistration.class);
+                addLPGIntent.putExtra(LPG_Utility.REGISTRATION_TYPE, LPG_Utility.PHONE_BOOKING_REGISTRATION);
                 startActivity(addLPGIntent);
 
             }
@@ -242,7 +243,8 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
         listenerHashMap.put(new Integer(4), new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent addLPGIntent = new Intent(getApplicationContext(), SMSBookingRegistration.class);
+                Intent addLPGIntent = new Intent(getApplicationContext(), PhoneBookingRegistration.class);
+                addLPGIntent.putExtra(LPG_Utility.REGISTRATION_TYPE, LPG_Utility.SMS_BOOKING_REGISTRATIION);
                 startActivity(addLPGIntent);
 
             }

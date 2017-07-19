@@ -1,15 +1,14 @@
 package com.aekan.navya.lpgbooking.utilities;
 
-import android.app.Activity;
+import android.Manifest;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
+import android.telephony.SmsManager;
 import android.util.Log;
-import android.Manifest;
 
 import com.aekan.navya.lpgbooking.LPG_AlarmReceiver;
 
@@ -214,20 +213,24 @@ public class LPG_Utility {
 
     }
 
-    public static void callOrTextUtility(Activity callingActivity, String PhoneNumber, String TextNumber, String Provider,int forCall){
+    public static void callOrTextUtility(Context callingActivity, String PhoneNumber, String TextNumber, String Provider, int forCall) {
         //do action based on method purpose - call or sms
         switch (forCall){
             case COMMUNICATE_PHONE:
                 //check if app has permission to make call
-                if (ContextCompat.checkSelfPermission(callingActivity.getApplicationContext(), Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(callingActivity, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
                     Intent callIntent = new Intent();
                     callIntent.setAction(Intent.ACTION_DIAL);
                     callIntent.setData(Uri.parse("tel:"+PhoneNumber));
+                    callIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     callingActivity.startActivity(callIntent);
 
                 }
                 break;
             case COMMUNICATE_SMS:
+                SmsManager smsManager = SmsManager.getDefault();
+                //send sms message
+                smsManager.sendTextMessage(PhoneNumber, null, getSMSTextMessage(Provider), null, null);
 
                 break;
 

@@ -108,10 +108,13 @@
     <string name="registation_smsbooking_null_number">Please enter a valid number to text</string>
     <string name="registration_hint_provider">LPG Provider</string>
     <string name="registration_hint_agency">LPG Agency name</string>
-    <string name="registration_phonebooking_hint_regno">Validate Phone booking registraion number</string>
+    <string name="registration_phone_button_name">Call to Register</string>
+    <string name="registration_phonebooking_hint_regno">Validate Phone booking registration number</string>
     <string name="registration_smsbooking_hint_regno">Validate SMS booking registration number</string>
     <!--SMS booking Registration -->
     <string name="smsbooking_activity_title">SMS Booking Registration</string>
+    <string name="smsbooking_smssent">SMS Registration message sent</string>
+    <string name="smsbooking_buttonname">Send Registration Message</string>
 
     <!--FAQs activity-->
     <string name="FAQs_title">FAQs</string>
