@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/content_number_registation"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,125 +11,161 @@
 
     <TextView
         android:id="@+id/registration_description"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/reg_desc_margintop"
         android:text="@string/registration_desc"
-        android:textSize="@dimen/reg_desc_textsize" />
+        android:textSize="@dimen/reg_desc_textsize"
+        app:layout_constraintLeft_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/registration_spinner"
+        android:layout_marginTop="@dimen/reg_marginhorizontal"
+        android:layout_marginBottom="@dimen/reg_textfield_margintop"
 
+        />
     <Spinner
         android:id="@+id/registration_spinner"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="@dimen/reg_spinner_height"
-        android:layout_below="@id/registration_description"
-        android:layout_marginBottom="@dimen/reg_desc_marginbotton"
-        android:layout_marginTop="@dimen/reg_spinner_margingtop"
         android:background="@android:color/darker_gray"
-        android:dropDownWidth="match_parent"
+        app:layout_constraintTop_toBottomOf="@+id/registration_description"
+        app:layout_constraintBottom_toTopOf="@+id/reg_provider_textinputlayout"
+        app:layout_constraintStart_toStartOf="@+id/reg_provider_textinputlayout"
+        app:layout_constraintEnd_toEndOf="@+id/reg_provider_textinputlayout"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="@dimen/reg_marginhorizontal"
+        android:layout_marginTop="@dimen/reg_textfield_margintop"
+        android:layout_marginRight="8dp"
+        android:layout_marginEnd="@dimen/reg_marginhorizontal"
+        android:layout_marginStart="@dimen/reg_marginhorizontal"
         android:paddingBottom="@dimen/reg_spinner_padding"
         android:paddingTop="@dimen/reg_spinner_padding"
         android:prompt="@string/selectconnection"
         android:spinnerMode="dropdown"
-        android:visibility="visible" />
+        android:visibility="visible"
 
-    <LinearLayout
-        android:id="@+id/registration_layout_fordetails"
-        android:layout_width="match_parent"
+         />
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/registration_spinner"
-        android:orientation="vertical"
-        android:visibility="visible">
+        android:id="@+id/reg_provider_textinputlayout"
+        android:hint="@string/registration_hint_provider"
+        app:hintAnimationEnabled="true"
+        app:layout_constraintTop_toBottomOf="@+id/registration_spinner"
+        app:layout_constraintBottom_toTopOf="@+id/reg_agency_textinputlayout"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginRight="@dimen/reg_marginhorizontal"
+        android:layout_marginLeft="@dimen/reg_marginhorizontal"
+        android:layout_marginStart="@dimen/reg_marginhorizontal"
+        android:layout_marginEnd="@dimen/reg_marginhorizontal"
+        android:layout_marginTop="@dimen/reg_textfield_margintop"
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/reg_textfield_height"
-            app:hintAnimationEnabled="true"
-            android:hint="@string/registration_hint_provider"
-            >
-
-            <EditText
-                android:id="@+id/reg_provider"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="@dimen/reg_textfield_marginBottom"
-                android:layout_marginTop="@dimen/reg_textfield_margintop"
-                android:inputType="none"
-                android:paddingBottom="@dimen/reg_padding_textfield"
-                android:paddingTop="@dimen/reg_padding_textfield"
-                android:text="Test"
-                android:textSize="@dimen/reg_textfield_textsize" />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/reg_textfield_height"
-            android:hint="@string/registration_hint_agency"
-            >
-
-            <EditText
-                android:id="@+id/reg_agency"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="@dimen/reg_textfield_marginBottom"
-                android:layout_marginTop="@dimen/reg_textfield_margintop"
-                android:inputType="none"
-                android:paddingBottom="@dimen/reg_padding_textfield"
-                android:paddingTop="@dimen/reg_padding_textfield"
-                android:text="Test"
-                android:textSize="@dimen/reg_textfield_textsize" />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/reg_no_textinputlayout"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/reg_textfield_height"
-            android:hint="@string/registration_phonebooking_hint_regno"
-            app:hintAnimationEnabled="true">
-
-            <EditText
-                android:id="@+id/reg_no_textfield"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="@dimen/reg_textfield_marginBottom"
-                android:layout_marginTop="@dimen/reg_textfield_margintop"
-                android:paddingBottom="@dimen/reg_padding_textfield"
-                android:paddingTop="@dimen/reg_padding_textfield"
-                android:text="test"
-                android:textSize="@dimen/reg_textfield_textsize" />
-
-
-        </android.support.design.widget.TextInputLayout>
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_below="@id/registration_layout_fordetails"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
         >
-        <TextView
-            android:id="@+id/registration_notification_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="visible"
-            android:textSize="@dimen/reg_textfield_textsize"
-            android:textColor="@color/lpg_expiry_textcolor"
-            android:layout_marginBottom="@dimen/reg_notificationmessage_margintop"
+
+        <EditText
+            android:id="@+id/reg_provider"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="none"
             android:paddingBottom="@dimen/reg_padding_textfield"
             android:paddingTop="@dimen/reg_padding_textfield"
-            />
+            android:textSize="@dimen/reg_textfield_textsize" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/reg_agency_textinputlayout"
+        android:hint="@string/registration_hint_agency"
+        app:layout_constraintTop_toBottomOf="@+id/reg_provider_textinputlayout"
+        app:layout_constraintBottom_toTopOf="@+id/reg_no_textinputlayout"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginRight="@dimen/reg_marginhorizontal"
+        android:layout_marginLeft="@dimen/reg_marginhorizontal"
+        android:layout_marginStart="@dimen/reg_marginhorizontal"
+        android:layout_marginEnd="@dimen/reg_marginhorizontal"
+        android:layout_marginTop="@dimen/reg_textfield_margintop"
+
+        >
+
+        <EditText
+            android:id="@+id/reg_agency"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+
+            android:inputType="none"
+            android:paddingBottom="@dimen/reg_padding_textfield"
+            android:paddingTop="@dimen/reg_padding_textfield"
+
+            android:textSize="@dimen/reg_textfield_textsize" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/reg_no_textinputlayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/registration_phonebooking_hint_regno"
+        app:hintAnimationEnabled="true"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/registration_notification_message"
+        app:layout_constraintTop_toBottomOf="@+id/reg_agency_textinputlayout"
+        android:layout_marginRight="@dimen/reg_marginhorizontal"
+        android:layout_marginLeft="@dimen/reg_marginhorizontal"
+        android:layout_marginStart="@dimen/reg_marginhorizontal"
+        android:layout_marginEnd="@dimen/reg_marginhorizontal"
+        android:layout_marginTop="@dimen/reg_textfield_margintop"
+        >
+
+        <EditText
+            android:id="@+id/reg_no_textfield"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/reg_textfield_marginBottom"
+            android:layout_marginTop="@dimen/reg_textfield_margintop"
+            android:paddingBottom="@dimen/reg_padding_textfield"
+            android:paddingTop="@dimen/reg_padding_textfield"
+            android:text="@string/Phone_No"
+            android:textSize="@dimen/reg_textfield_textsize" />
+
+
+    </android.support.design.widget.TextInputLayout>
+
+
+    <TextView
+        android:id="@+id/registration_notification_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:textSize="@dimen/reg_textfield_textsize"
+        android:textColor="@color/lpg_expiry_textcolor"
+        android:paddingBottom="@dimen/reg_padding_textfield"
+        android:paddingTop="@dimen/reg_padding_textfield"
+        app:layout_constraintLeft_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/reg_button"
+        app:layout_constraintTop_toBottomOf="@+id/reg_no_textinputlayout"
+        android:layout_marginRight="@dimen/reg_marginhorizontal"
+        android:layout_marginLeft="@dimen/reg_marginhorizontal"
+        android:layout_marginStart="@dimen/reg_marginhorizontal"
+        android:layout_marginEnd="@dimen/reg_marginhorizontal"
+        android:layout_marginTop="@dimen/reg_textfield_margintop"
+
+        />
+
     <Button
         android:id="@+id/reg_button"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/reg_button_height"
-        android:layout_below="@id/registration_layout_fordetails"
+        android:layout_height="48dp"
         android:text="@string/reg_button"
         android:textSize="@dimen/reg_button_textsize"
         android:background="@drawable/button_state"
-        />
-    </LinearLayout>
+        app:layout_constraintLeft_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/registration_notification_message"
+        app:layout_constraintBottom_toTopOf="parent"
+        android:layout_marginBottom="@dimen/reg_textfield_margintop" />
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

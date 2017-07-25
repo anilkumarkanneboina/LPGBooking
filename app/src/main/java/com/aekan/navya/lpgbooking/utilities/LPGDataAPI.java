@@ -58,20 +58,20 @@ public class LPGDataAPI extends HandlerThread implements ServiceClientAPIInterfa
         //initialise cursor
         Cursor cursor = null;
         SQLiteDatabase database = mApplication.LPGDB;
+        if (database!=null) {
+            cursor = database.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME, //name of the table
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null);
 
-        cursor = database.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME, //name of the table
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null);
-
-        if (cursor.moveToFirst()) {
-            return cursor;
+            if (cursor.moveToFirst()) {
+                return cursor;
+            }
         }
-
         return null;
     }
 

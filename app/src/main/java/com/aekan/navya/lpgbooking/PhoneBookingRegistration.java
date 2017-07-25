@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Messenger;
@@ -30,6 +31,8 @@ import com.aekan.navya.lpgbooking.utilities.LPG_PhoneListener;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
 
+import org.w3c.dom.Text;
+
 import java.util.HashMap;
 
 /**
@@ -51,6 +54,13 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
     private PhoneStateListener phonelistener;
     private String phoneNumber;
     private String provider;
+
+    TextView providerTextView;
+    TextView  agencyTextView;
+    TextView phonenumberTextView;
+    TextView registrationNotification;
+    Button regButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //call super class
@@ -76,6 +86,12 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
 
         phoneNumber = ((TextView)findViewById(R.id.reg_no_textfield)).getText().toString();
         provider = ((TextView) findViewById(R.id.reg_provider)).getText().toString();
+
+        providerTextView = (TextView) findViewById(R.id.reg_provider);
+        agencyTextView = (TextView) findViewById(R.id.reg_agency);
+        phonenumberTextView = (TextView) findViewById(R.id.reg_no_textfield);
+        registrationNotification = (TextView) findViewById(R.id.registration_notification_message) ;
+        regButton = (Button) findViewById(R.id.reg_button);
 
         //Disable registration button
         mbuttonRegister = (Button) findViewById(R.id.reg_button);
@@ -291,13 +307,12 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
 
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             //Get selected item
-            String connectionName;
+            String connectionName,providerName=LPG_Utility.PROVIDER_NAME_UNDEFINED;
             //get views from layout which need to be initialised
-            TextView provider = (TextView) findViewById(R.id.reg_provider);
-            TextView agency = (TextView) findViewById(R.id.reg_agency);
-            TextView phonenumber = (TextView) findViewById(R.id.reg_no_textfield);
 
             parent.setSelection(position);
+
+
             // get adapter
             ArrayAdapter<String> parentAdapter = (ArrayAdapter<String>) parent.getAdapter();
             connectionName = parentAdapter.getItem(position);
@@ -306,10 +321,12 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
             // from cursor
             for (int i = 0; i < mCursor.getCount(); ++i) {
                 if (mCursor.getString(mCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME)).equals(connectionName)) {
-                    provider.setText(mCursor.getString(mCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER)));
-                    agency.setText(mCursor.getString(mCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY)));
-                    phonenumber.setText(mCursor.getString(mCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_SMS_NUMBER)));
-                    String phoneNumberText = phonenumber.getText().toString();
+                    providerTextView.setText(mCursor.getString(mCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER)));
+                    agencyTextView.setText(mCursor.getString(mCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY)));
+                    phonenumberTextView.setText(mCursor.getString(mCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_SMS_NUMBER)));
+
+                    String phoneNumberText = phonenumberTextView.getText().toString();
+                    providerName = providerTextView.getText().toString();
                     phoneNumber = phoneNumberText;
                     if(phoneNumberText.length() == 0){
                         // inform user to enter a valid number
@@ -331,10 +348,33 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
                         //disable notification message
                         findViewById(R.id.registration_notification_message).setVisibility(View.GONE);
                     }
+
+
+
+
+
+
                 }
             mCursor.moveToNext();
 
         }
+            //disable SMS notification if provider is not one of major three
+            if (providerName.equals(LPG_Utility.PROVIDER_NAME_UNDEFINED)){
+                registrationNotification.setVisibility(View.VISIBLE);
+                registrationNotification.setText(  getResources().getString(R.string.reg_notification_pristine) );
+                registrationNotification.setTextColor(Color.parseColor(getResources().getString(R.string.reg_notification_text_color)));
+                regButton.setEnabled(true);
+
+
+            } else {
+                registrationNotification.setVisibility(View.VISIBLE);
+                registrationNotification.setText(  getResources().getString(R.string.reg_notification_sms_error) );
+                registrationNotification.setTextColor(Color.parseColor(getResources().getString(R.string.reg_notificiation_text_color_red)));
+                regButton.setEnabled(false);
+
+            }
+
+
             //reset cursor
             mCursor.moveToFirst();
 

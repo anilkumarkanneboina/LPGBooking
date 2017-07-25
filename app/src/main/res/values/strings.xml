@@ -25,6 +25,8 @@
     <string name="Hint_Connection_Name">Enter Connection Name</string>
     <string name="Add_Provider">Provider</string>
     <string name="Hint_Provider">Enter Provider Name</string>
+    <string name="Agency">Agency</string>
+    <string name="Phone_No">Phone Number</string>
     <string name="Add_Agency">Agency Name</string>
     <string name="Hint_Agency">Enter Agency Name</string>
     <string name="Add_Agency_Phone">Agency Phone</string>
@@ -115,7 +117,30 @@
     <string name="smsbooking_activity_title">SMS Booking Registration</string>
     <string name="smsbooking_smssent">SMS Registration message sent</string>
     <string name="smsbooking_buttonname">Send Registration Message</string>
+    <string name="reg_notification_pristine">Please select your provider and click on button below</string>
+    <string name="reg_notification_sms_error">SMS registration not available for this provider</string>
+    <string name="reg_notification_text_color">#343435</string>
+    <string name="reg_notificiation_text_color_red">#ed0e3a</string>
 
     <!--FAQs activity-->
     <string name="FAQs_title">FAQs</string>
+    <string-array name="Questions">
+        <item>What are the LPG providers supported by this app?</item>
+        <item>How do I get phone numbers for my agency?</item>
+        <item>What is the prerequisite to book my refill using phone booking / sms booking?</item>
+        <item>What is registration of my mobile number for refill booking? Why is it necessary</item>
+        <item>How to register my mobile number for phone booking/sms booking?</item>
+        <item>What are pitfalls in SMS booking?</item>
+
+    </string-array>
+    <string-array name="Answers">
+        <item>\nThis app supports phone booking for any LPG provider for which you can get a refill booking number. But, SMS booking can only be done for following three providers - Indane(by Indian Oil Corporation), Bharath Gas(by Bharath Petroleum
+        Corporation Ltd),HP Gas(by Hindusthan Petroleum Corporation Ltd).</item>
+        <item>\nWe can help you with atleast for three among the major players.\n<a href="https://myhpgas.in/myHPGas/HPGas/OtherDistributorInformation.aspx">HP Gas</a>\n
+        <a href="https://indane.co.in/new_distributor.php">Indane</a>\n<a href="https://ebharatgas.com/bharatgas/locate.jsp?siteid=ebharat">Bharath Gas</a>
+        </item>
+        <item>\nAlmost all LPG providers require a registration of phone number with which SMS / Phone booking can be done. So, before you effectively use booking features in this app,
+        you need to register your phone number. Please read on to understand how to register your phone no.</item>
+    </string-array>
+
 </resources>

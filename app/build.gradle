@@ -19,6 +19,7 @@ android {
         versionName "1.0"
         signingConfig signingConfigs.config
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -31,10 +32,16 @@ android {
     productFlavors {
     }
 }
+repositories {
+    maven {
+        url 'https://maven.google.com'
+    }
+}
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
     compile 'com.android.support:recyclerview-v7:23.1.1'

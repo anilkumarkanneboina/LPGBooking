@@ -97,10 +97,11 @@
     <dimen name="reg_content_marginright">16dp</dimen>
     <dimen name="reg_content_margintop">58dp</dimen>
     <dimen name="reg_spinner_margingtop">16dp</dimen>
+    <dimen name="reg_marginhorizontal">8dp</dimen>
     <dimen name="reg_desc_margintop">16dp</dimen>
     <dimen name="reg_desc_marginbotton">8dp</dimen>
     <dimen name="reg_desc_textsize">16sp</dimen>
-    <dimen name="reg_spinner_height">56dp</dimen>
+    <dimen name="reg_spinner_height">38dp</dimen>
     <dimen name="reg_spinner_padding">2dp</dimen>
     <dimen name="reg_padding_textfield">8dp</dimen>
     <dimen name="reg_textfield_height">72dp</dimen>

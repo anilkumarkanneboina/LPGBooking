@@ -66,6 +66,7 @@ public class LPG_Utility {
     public final static int PHONE_BOOKING_REGISTRATION= 34;
     public final static int SMS_BOOKING_REGISTRATIION = 343;
     public final static String REGISTRATION_TYPE = "THIS STRING IDENTIFIES AN ACTIVITY AS PHONE BOOKING OR SMS BOOKING";
+    public final static String PROVIDER_NAME_UNDEFINED = "PROVIDER_NAME_UNDEFINED";
 
     public final static int COMMUNICATE_PHONE = 234;
     public final static int COMMUNICATE_SMS = 9876;
@@ -249,6 +250,18 @@ public class LPG_Utility {
 
         public PendingIntent getRefillCylinder ()  { return RefillCylinder;}
         public GregorianCalendar getGregorialCalendar() { return AlarmTickerTime; }
+    }
+
+    public static boolean isSMSEnabledForProvider(String provider){
+        boolean result=false;
+        for(int i=0;i<LPG_PROVIDERS.length;++i){
+            if ( LPG_PROVIDERS[i] == provider ){
+                result = true;
+            }
+        }
+
+
+        return result;
     }
 
 
