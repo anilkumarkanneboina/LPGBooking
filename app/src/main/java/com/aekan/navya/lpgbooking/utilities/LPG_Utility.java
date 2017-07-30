@@ -7,13 +7,20 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.util.ArrayMap;
 import android.telephony.SmsManager;
+import android.text.Html;
 import android.util.Log;
 
 import com.aekan.navya.lpgbooking.LPG_AlarmReceiver;
+import com.aekan.navya.lpgbooking.R;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -72,6 +79,9 @@ public class LPG_Utility {
     public final static int COMMUNICATE_SMS = 9876;
 
     public final static String PHONELISTENER_FROM_REGISTRATION = "CALL FROM PHONE BOOKING ACTIVITY";
+
+    public final static String EXPN_LIST_QUESTION = "Map for question";
+    public final static String EXPN_LIST_ANSWER = "Map Key for answers";
 
     public static int getDeliveredRefillSms() {
         return DELIVERED_REFILL_SMS;
@@ -239,19 +249,6 @@ public class LPG_Utility {
 
     }
 
-    public static class RefillAlarmNotification {
-        private PendingIntent RefillCylinder;
-        private GregorianCalendar AlarmTickerTime;
-
-        public RefillAlarmNotification(PendingIntent pendingIntent, GregorianCalendar alarmTickerTime){
-            RefillCylinder = pendingIntent;
-            AlarmTickerTime = alarmTickerTime;
-        }
-
-        public PendingIntent getRefillCylinder ()  { return RefillCylinder;}
-        public GregorianCalendar getGregorialCalendar() { return AlarmTickerTime; }
-    }
-
     public static boolean isSMSEnabledForProvider(String provider){
         boolean result=false;
         for(int i=0;i<LPG_PROVIDERS.length;++i){
@@ -264,6 +261,59 @@ public class LPG_Utility {
         return result;
     }
 
+    public static List<Map<String, String>> getExpandableGroupData(Context context) {
+        List<Map<String, String>> expandableGroupData = new ArrayList<Map<String, String>>(20);
+
+        String[] resExpandableGroupData = context.getResources().getStringArray(R.array.Questions);
+
+        for (int i = 0; i < resExpandableGroupData.length; ++i) {
+            Map<String, String> questionMap = new ArrayMap<String, String>();
+            questionMap.put(EXPN_LIST_QUESTION, resExpandableGroupData[i]);
+
+            expandableGroupData.add(i, questionMap);
+        }
+
+        //return quesiton list
+        return expandableGroupData;
+
+    }
+
+    public static List<List<Map<String, CharSequence>>> getExpandableChildData(Context context) {
+        List<List<Map<String, CharSequence>>> resExpandableChildList = new ArrayList<List<Map<String, CharSequence>>>(10);
+        //get string array for answers
+        String[] resAnswers = context.getResources().getStringArray(R.array.Answers);
+        for (int i = 0; i < resAnswers.length; ++i) {
+            ArrayList<Map<String, CharSequence>> AnswerList = new ArrayList<Map<String, CharSequence>>(10);
+            Map<String, CharSequence> answerMap = new ConcurrentHashMap<String, CharSequence>();
+
+            CharSequence answerSpanned = Html.fromHtml(resAnswers[i]);
+            answerMap.put(EXPN_LIST_ANSWER, answerSpanned);
+            AnswerList.add(answerMap);
+            resExpandableChildList.add(i, AnswerList);
+        }
+
+        return resExpandableChildList;
+
+
+    }
+
+    public static class RefillAlarmNotification {
+        private PendingIntent RefillCylinder;
+        private GregorianCalendar AlarmTickerTime;
+
+        public RefillAlarmNotification(PendingIntent pendingIntent, GregorianCalendar alarmTickerTime) {
+            RefillCylinder = pendingIntent;
+            AlarmTickerTime = alarmTickerTime;
+        }
+
+        public PendingIntent getRefillCylinder() {
+            return RefillCylinder;
+        }
+
+        public GregorianCalendar getGregorialCalendar() {
+            return AlarmTickerTime;
+        }
+    }
 
 
 }

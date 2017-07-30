@@ -110,6 +110,16 @@
     <dimen name="reg_textfield_marginBottom">16dp</dimen>
     <dimen name="reg_button_height">40dp</dimen>
     <dimen name="reg_notificationmessage_margintop">4dp</dimen>
-
     <dimen name="reg_button_textsize">16sp</dimen>
+
+    <!--faq page-->
+    <dimen name="faq_question_rightmargin">8dp</dimen>
+    <dimen name="faq_question_topmargin">8dp</dimen>
+    <dimen name="faq_question_paddingright">4dp</dimen>
+    <dimen name="faq_question_paddingtop">4dp</dimen>
+    <dimen name="faq_answer_paddingtop">4dp</dimen>
+    <dimen name="faq_answer_paddingright">4dp</dimen>
+    <dimen name="faq_answer_margintop">8dp</dimen>
+    <dimen name="faq_answer_marginright">8dp</dimen>
+
 </resources>

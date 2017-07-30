@@ -141,6 +141,16 @@
         </item>
         <item>\nAlmost all LPG providers require a registration of phone number with which SMS / Phone booking can be done. So, before you effectively use booking features in this app,
         you need to register your phone number. Please read on to understand how to register your phone no.</item>
+        <item>Please visit options under menu in home screen. You will find detailed documentation about phone registration, with
+        major three providers in links below.
+            <a href="https://indane.co.in/smstarrifs.php">Indane Phone Registration</a>\n
+            <a href="http://www.myhpgas.in/myHPGas/HPGas/BookRefill.aspx">HP Gas Phone Registration</a>
+            <a href="https://ebharatgas.com/ebharat/forHome/MultipleModesBooking.html">Bharath Gas Phone Registration</a>
+        </item>
+        <item>For us to confirm if your SMS booking has been successful, we would need to read your SMS-es. It becomes difficult to
+            confirm success or failure based on SMS for us. Hence, we do start tracking your refill connection even after successful processing
+            of SMS. If your are doing SMS booking, please manually enter your refill book date against your connection in Home page.
+        </item>
     </string-array>
 
 </resources>
