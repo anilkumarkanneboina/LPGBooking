@@ -11,13 +11,17 @@
         android:layout_gravity="center_horizontal|center_vertical"
         android:layout_marginBottom="@dimen/faq_answer_margintop"
         android:layout_marginEnd="@dimen/faq_answer_marginright"
-        android:layout_marginLeft="@dimen/faq_answer_marginright"
+        android:layout_marginLeft="@dimen/faq_answer_marginleft"
         android:layout_marginRight="@dimen/faq_answer_marginright"
-        android:layout_marginStart="@dimen/faq_answer_marginright"
+        android:layout_marginStart="@dimen/faq_answer_marginleft"
         android:layout_marginTop="@dimen/faq_answer_margintop"
+        android:autoLink="web"
         android:paddingEnd="@dimen/faq_answer_paddingright"
         android:paddingLeft="@dimen/faq_answer_paddingright"
         android:paddingRight="@dimen/faq_answer_paddingright"
-        android:paddingStart="@dimen/faq_answer_paddingright" />
+        android:paddingStart="@dimen/faq_answer_paddingright"
+        android:text="Answer"
+        android:textColor="@color/defaultBlack"
+        android:textSize="20sp" />
 
 </LinearLayout>

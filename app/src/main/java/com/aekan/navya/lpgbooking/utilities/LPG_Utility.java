@@ -265,7 +265,7 @@ public class LPG_Utility {
         List<Map<String, String>> expandableGroupData = new ArrayList<Map<String, String>>(20);
 
         String[] resExpandableGroupData = context.getResources().getStringArray(R.array.Questions);
-
+        Log.v("Strength Question ", " = " + resExpandableGroupData.length);
         for (int i = 0; i < resExpandableGroupData.length; ++i) {
             Map<String, String> questionMap = new ArrayMap<String, String>();
             questionMap.put(EXPN_LIST_QUESTION, resExpandableGroupData[i]);
@@ -282,12 +282,13 @@ public class LPG_Utility {
         List<List<Map<String, CharSequence>>> resExpandableChildList = new ArrayList<List<Map<String, CharSequence>>>(10);
         //get string array for answers
         String[] resAnswers = context.getResources().getStringArray(R.array.Answers);
+        Log.v("Strenght ans", "= " + resAnswers.length);
         for (int i = 0; i < resAnswers.length; ++i) {
             ArrayList<Map<String, CharSequence>> AnswerList = new ArrayList<Map<String, CharSequence>>(10);
             Map<String, CharSequence> answerMap = new ConcurrentHashMap<String, CharSequence>();
 
             CharSequence answerSpanned = Html.fromHtml(resAnswers[i]);
-            answerMap.put(EXPN_LIST_ANSWER, answerSpanned);
+            answerMap.put(EXPN_LIST_ANSWER, resAnswers[i]);
             AnswerList.add(answerMap);
             resExpandableChildList.add(i, AnswerList);
         }

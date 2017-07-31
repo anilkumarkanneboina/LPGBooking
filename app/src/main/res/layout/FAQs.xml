@@ -15,6 +15,19 @@
 
         </android.support.v7.widget.Toolbar>
 
+        <ExpandableListView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="540dp"
+            android:layout_marginTop="24dp"
+            android:layout_weight="1"
+            android:background="#f7f8f9"
+
+
+            ></ExpandableListView>
+
     </android.support.design.widget.AppBarLayout>
 
 </android.support.design.widget.CoordinatorLayout>
+
+    <!--android:groupIndicator="@drawable/expandable_arrow"--><!--android:indicatorEnd="54dp"--><!--android:indicatorRight="54dp"--><!--android:indicatorLeft="4dp"--><!--android:indicatorStart="4dp"-->
