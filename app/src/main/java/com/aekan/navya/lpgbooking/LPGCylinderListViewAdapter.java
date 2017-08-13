@@ -229,7 +229,7 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
                         Intent intentLPGBooking = new Intent(v.getContext(), LPGBooking.class);
 
                         intentLPGBooking.putExtra(lpgconnectionparcel.LPG_CONNECTIONRECORD_PARCEL, new lpgconnectionparcel(
-                                CurrentRow.LPG_ROW_ID
+                                CurrentRow.LPG_ROW_ID,false
                         ));
                         v.getContext().startActivity(intentLPGBooking);
                     }

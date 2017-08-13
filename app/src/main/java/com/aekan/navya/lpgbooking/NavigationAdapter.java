@@ -40,7 +40,7 @@ public class NavigationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         mIconMap.put(new Integer(0), new Integer(0));
         mIconMap.put(new Integer(1), new Integer(R.drawable.ic_home_black_24dp));
         mIconMap.put(new Integer(2), new Integer(R.drawable.ic_add_circle_outline_black_24dp));
-        mIconMap.put(new Integer(3), new Integer(R.drawable.ic_call_black_36dp));
+        mIconMap.put(new Integer(3), new Integer(R.drawable.ic_call_black_24dp));
         mIconMap.put(new Integer(4), new Integer(R.drawable.ic_textsms_black_24dp));
         mIconMap.put(new Integer(5), new Integer(R.drawable.ic_collections_bookmark_black_24dp));
         //set listener adapter

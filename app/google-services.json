@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "798853360963",
+    "firebase_url": "https://lpgbooking-af188.firebaseio.com",
+    "project_id": "lpgbooking-af188",
+    "storage_bucket": "lpgbooking-af188.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:798853360963:android:760ab5aa83012eb0",
+        "android_client_info": {
+          "package_name": "com.aekan.navya.lpgbooking"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "798853360963-01hk0fv5tevfmndq5acdjlscgpu4rt4a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aekan.navya.lpgbooking",
+            "certificate_hash": "09cfd51a0956c4867bba4fac63c192320e10c007"
+          }
+        },
+        {
+          "client_id": "798853360963-omkj8jc7j0o7jbs53qlro4kpcsk0coas.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBd6v0T2CZc1oJEx2GYhXl3fZLZoTPgGdQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "798853360963-omkj8jc7j0o7jbs53qlro4kpcsk0coas.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

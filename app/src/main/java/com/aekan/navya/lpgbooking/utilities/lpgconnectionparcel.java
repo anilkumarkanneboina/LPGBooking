@@ -16,7 +16,7 @@ public class lpgconnectionparcel implements Parcelable {
 
     /*declare local variables for the parcel*/
     private String id;
-
+    private boolean isFromNotification ;
     //constant for identifying the parcel
     public final static String  LPG_CONNECTIONRECORD_PARCEL = "LPG Record parcel";
 
@@ -36,11 +36,22 @@ public class lpgconnectionparcel implements Parcelable {
 
     public lpgconnectionparcel(String id){
         this.id = id;
+        this.isFromNotification = false;
     }
+
+    public lpgconnectionparcel(String id, boolean isFromNotification){
+        this.id = id;
+        this.isFromNotification = isFromNotification;
+    }
+
 
     //constructor to set the parcel for the Parcelable object
     public lpgconnectionparcel(Parcel parcel){
+        boolean[] notificationFlag = new boolean[1];
+
         id = parcel.readString();
+        parcel.readBooleanArray(notificationFlag);
+        isFromNotification = notificationFlag[0];
     }
 
     @Override
@@ -52,6 +63,7 @@ public class lpgconnectionparcel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
 
         dest.writeString(id);
+        dest.writeBooleanArray(new boolean[]{isFromNotification});
 
     }
 
@@ -71,6 +83,8 @@ public class lpgconnectionparcel implements Parcelable {
     //getter methods for the object
 
     public String getId(){return this.id;}
+
+    public boolean getNotificationFlag() { return this.isFromNotification ;}
 
     /**
      * Created by arunramamurthy on 14/04/16.

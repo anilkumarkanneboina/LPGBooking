@@ -33,6 +33,7 @@ public class LPG_Utility {
     public final static String LPG_ALARMINTENT_NOTIFICATIONTITLE="NotificationTitle";
     public final static String LPG_ALARMINTENT_NOTIFICATIONID="NotificationID";
     public final static String LPG_ALARMINTENT_NOTIFICATIONCONTENT = "Notification content";
+    public final static String LPG_ALARMINTENT_FLAG_DIDBOOKINGSTARTFROMNOTIFICATION = "Flag to check if LPG Booking started from notification";
     /*Constants to be defined for usage in permission checks*/
     public final static int PERMISSION_SMS_ALLOWED = 0;
     public final static int PERMISSION_SMS_NOT_ALLOWED = 1;

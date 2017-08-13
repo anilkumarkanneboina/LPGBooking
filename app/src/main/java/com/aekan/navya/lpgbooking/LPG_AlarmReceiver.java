@@ -1,5 +1,6 @@
 package com.aekan.navya.lpgbooking;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -34,7 +35,8 @@ public class LPG_AlarmReceiver extends BroadcastReceiver {
 
         //Create an event to start booking activity
         Intent intentStartActivity = new Intent(context, LPGBooking.class);
-        intentStartActivity.putExtra(lpgconnectionparcel.LPG_CONNECTIONRECORD_PARCEL, new lpgconnectionparcel(lpgRowId));
+        intentStartActivity.putExtra(lpgconnectionparcel.LPG_CONNECTIONRECORD_PARCEL, new lpgconnectionparcel(lpgRowId,true));
+
         //Create a stack builder and add the intent to the stack buildeer
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addParentStack(MainActivity.class);
@@ -43,11 +45,14 @@ public class LPG_AlarmReceiver extends BroadcastReceiver {
 
         //Add the pending intent to notification through builder object
         lpgExpiryNotificationBuilder.setContentIntent(pendingIntentStartActivity);
-        lpgExpiryNotificationBuilder.addAction(R.drawable.ic_call_black_36dp_book, "Book", pendingIntentStartActivity);
-        lpgExpiryNotificationBuilder.setAutoCancel(true);
+        lpgExpiryNotificationBuilder.addAction(R.drawable.ic_call_black_36dp_2, "Book", pendingIntentStartActivity);
+        //lpgExpiryNotificationBuilder.setAutoCancel(true);
+
+        Notification lpgExpiryNotification = lpgExpiryNotificationBuilder.build();
+        lpgExpiryNotification.flags |= Notification.FLAG_AUTO_CANCEL;
 
         NotificationManager lpgNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        lpgNotificationManager.notify(Integer.parseInt(intent.getStringExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONID)),lpgExpiryNotificationBuilder.build());
+        lpgNotificationManager.notify(Integer.parseInt(intent.getStringExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONID)),lpgExpiryNotification);
 
 
     }

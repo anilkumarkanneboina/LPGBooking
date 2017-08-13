@@ -2,6 +2,7 @@ package com.aekan.navya.lpgbooking;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -119,6 +120,7 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
                 }
             }
         });
+        setSupportActionBar(toolbar);
         //set null values for Phone and SMS - before binding lPG Connection details
         LPG_CONNECTION_PHONE_NO = null;
         LPG_SMS_REFILL_NO = null;
@@ -126,6 +128,15 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
         //get the connection id from the parcel, which has been added to the intent
         lpgconnectionparcel lpgconnectioninfo = getIntent().getParcelableExtra(lpgconnectionparcel.LPG_CONNECTIONRECORD_PARCEL);
         lpgparcelConnectionId = lpgconnectioninfo.getId();
+        boolean isFromNotification = lpgconnectioninfo.getNotificationFlag();
+
+        //dismiss notification if call to this activity was made from
+        //notification
+        if (isFromNotification == true){
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            notificationManager.cancel(Integer.parseInt(lpgparcelConnectionId));
+        }
+
         Log.v("ClickLPGBooking", lpgparcelConnectionId);
 
         //register phone listener
