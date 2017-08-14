@@ -61,7 +61,7 @@
             android:layout_marginRight="@dimen/fab_margin"
             android:scaleType="center"
             android:src="@drawable/ic_add_connection"
-            app:backgroundTint="@color/colorTertiaryBlue"
+            app:backgroundTint="@color/colorWhite"
             app:elevation="0dp" />
 
     </android.support.design.widget.CoordinatorLayout>
