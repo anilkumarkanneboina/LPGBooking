@@ -194,7 +194,19 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
         // and create array adapter from this array
         mCursor = c;
         String[] connectionNames = new String[c.getCount()];
-        c.moveToFirst();
+        if (!c.moveToFirst()) {
+            findViewById(R.id.registration_spinner).setVisibility(View.GONE);
+            findViewById(R.id.reg_provider_textinputlayout).setVisibility(View.GONE);
+            findViewById(R.id.registration_spinner).setVisibility(View.GONE);
+            findViewById(R.id.reg_agency_textinputlayout).setVisibility(View.GONE);
+            findViewById(R.id.reg_no_textinputlayout).setVisibility(View.GONE);
+            findViewById(R.id.registration_notification_message).setVisibility(View.GONE);
+            findViewById(R.id.reg_button).setVisibility(View.GONE);
+            ((TextView)findViewById(R.id.registration_description)).setText(R.string.registration_noconnection);
+            return;
+        }
+
+
         //get list of connection names in a array
         for (int i = 0; i < (c.getCount() - 1); ++i) {
             connectionNames[i] = (c.getString(c.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME)));
