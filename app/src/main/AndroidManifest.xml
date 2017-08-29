@@ -41,8 +41,8 @@
         </activity>
         <activity
             android:name=".PhoneBookingRegistration"
-            android:label="Phone Booking Registration"
-            android:theme="@style/AppTheme.NoActionBar">
+
+           >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.aekan.navya.lpgbooking.MainActivity" />
@@ -58,7 +58,7 @@
         <activity
             android:name=".FAQs"
             android:label="@string/FAQs_title"
-            android:theme="@style/AppTheme.NoActionBar">
+            >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.aekan.navya.lpgbooking.MainActivity" />

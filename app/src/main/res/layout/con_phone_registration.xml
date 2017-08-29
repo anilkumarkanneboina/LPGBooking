@@ -19,6 +19,7 @@
         app:layout_constraintRight_toLeftOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/registration_spinner"
         android:layout_marginBottom="@dimen/reg_textfield_margintop"
+        android:layout_marginTop="@dimen/reg_desc_margintop"
 
         />
 
@@ -37,11 +38,10 @@
         android:layout_marginTop="@dimen/reg_textfield_margintop"
         android:layout_marginRight="8dp"
         android:layout_marginEnd="@dimen/reg_marginhorizontal"
-        android:paddingBottom="@dimen/reg_spinner_padding"
-        android:paddingTop="@dimen/reg_spinner_padding"
         android:prompt="@string/selectconnection"
         android:spinnerMode="dropdown"
         android:visibility="visible"
+        android:dropDownVerticalOffset="@dimen/reg_spinner_height"
 
          />
     <android.support.design.widget.TextInputLayout

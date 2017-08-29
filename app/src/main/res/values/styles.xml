@@ -22,8 +22,24 @@
 
     <!--style for text input layout-->
     <style name="Appearance.TextInput" parent="TextAppearance.AppCompat">
+    </style>
 
+    <style name="AppTheme.Toolbar">
+        <item name="elevation">4dp</item>
+        <item name="android:layout_height">@dimen/toolbarheight</item>
+    </style>
+    <style name="AppTheme.TextView">
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingRight">4dp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:gravity">center_vertical</item>
 
+    </style>
+
+    <style name="Spinner" parent="AppTheme.TextView">
+        <item name="android:background">@drawable/lpg_textview_spinner_border</item>
     </style>
 
 </resources>

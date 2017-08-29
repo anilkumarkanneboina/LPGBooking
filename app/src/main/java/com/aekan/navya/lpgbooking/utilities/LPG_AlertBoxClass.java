@@ -21,6 +21,7 @@ public class LPG_AlertBoxClass extends DialogFragment {
     public DialogInterface.OnClickListener SETNEGATIVECLICKLISTENER;
 
     public Dialog onCreateDialog(Bundle SavedInstance){
+        super.onCreateDialog(SavedInstance);
         //Create the dialog box
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 

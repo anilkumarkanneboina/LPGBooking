@@ -21,6 +21,7 @@
 
 
     <!--String values for form in Add Connection page-->
+    <string name="Add_connection_activity_title">Add Connection</string>
     <string name="Add_Connection_Name">Connection Name</string>
     <string name="Hint_Connection_Name">Enter Connection Name</string>
     <string name="Add_Provider">Provider</string>

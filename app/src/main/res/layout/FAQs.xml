@@ -6,27 +6,36 @@
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        >
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/faqs_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="56dp">
+            android:layout_height="56dp"
+            android:elevation="4dp"
+            >
 
         </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+
+
+
 
         <ExpandableListView
             android:id="@+id/list"
             android:layout_width="match_parent"
-            android:layout_height="540dp"
-            android:layout_marginTop="24dp"
+            android:layout_height="480dp"
+            android:layout_marginTop="72dp"
             android:layout_weight="1"
             android:background="#f7f8f9"
-
-
             ></ExpandableListView>
 
-    </android.support.design.widget.AppBarLayout>
+
+
 
 </android.support.design.widget.CoordinatorLayout>
 

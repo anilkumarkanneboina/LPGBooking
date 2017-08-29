@@ -92,13 +92,13 @@
     <dimen name="navdrawer_header_fontsize">16sp</dimen>
     <dimen name="navdrawer_header_leftmargin">24dp</dimen>
 
-    phone registration screen
+    <!--phone registration screen-->
     <dimen name="reg_content_marginleft">16dp</dimen>
     <dimen name="reg_content_marginright">16dp</dimen>
-    <dimen name="reg_content_margintop">58dp</dimen>
+    <dimen name="reg_content_margintop">72dp</dimen>
     <dimen name="reg_spinner_margingtop">16dp</dimen>
     <dimen name="reg_marginhorizontal">8dp</dimen>
-    <dimen name="reg_desc_margintop">16dp</dimen>
+    <dimen name="reg_desc_margintop">52dp</dimen>
     <dimen name="reg_desc_marginbotton">8dp</dimen>
     <dimen name="reg_desc_textsize">16sp</dimen>
     <dimen name="reg_spinner_height">38dp</dimen>
@@ -111,6 +111,7 @@
     <dimen name="reg_button_height">40dp</dimen>
     <dimen name="reg_notificationmessage_margintop">4dp</dimen>
     <dimen name="reg_button_textsize">16sp</dimen>
+
 
     <!--faq page-->
     <dimen name="faq_question_marginright">8dp</dimen>
@@ -125,4 +126,7 @@
     <dimen name="faq_answer_marginleft">32dp</dimen>
     <dimen name="faq_answer_marginright">8dp</dimen>
 
+
+    <!--toolbar theme definition-->
+    <dimen name="toolbarheight">56dp</dimen>
 </resources>

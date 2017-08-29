@@ -30,6 +30,8 @@ import com.aekan.navya.lpgbooking.utilities.LPGServiceResponseCallBack;
 import com.aekan.navya.lpgbooking.utilities.LPG_PhoneListener;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
+import com.aekan.navya.lpgbooking.utilities.LPG_SpinnerAdapter;
+
 
 import org.w3c.dom.Text;
 
@@ -83,7 +85,7 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
 
         //verify if the activity is being used for phone booking registration or SMS booking registration.
         activityPurpose = getIntent().getIntExtra(LPG_Utility.REGISTRATION_TYPE,LPG_Utility.PHONE_BOOKING_REGISTRATION);
-
+        Log.v("Registration ",Integer.toString(activityPurpose));
         phoneNumber = ((TextView)findViewById(R.id.reg_no_textfield)).getText().toString();
         provider = ((TextView) findViewById(R.id.reg_provider)).getText().toString();
 
@@ -159,7 +161,8 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
         switch (activityPurpose){
             case (LPG_Utility.PHONE_BOOKING_REGISTRATION):
                 numberToRegister.setHint(getResources().getString(R.string.registration_phonebooking_hint_regno));
-                toolbar.setTitle(getResources().getString(R.string.phonebooking_activity_title));
+//                toolbar.
+                        setTitle(getResources().getString(R.string.phonebooking_activity_title));
                 //initialise telephone state listener
                 telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
                 phonelistener = new LPG_PhoneListener(this,LPG_Utility.PHONELISTENER_FROM_REGISTRATION);
@@ -168,8 +171,9 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
                 break;
             case (LPG_Utility.SMS_BOOKING_REGISTRATIION):
                 numberToRegister.setHint(getResources().getString(R.string.registration_smsbooking_hint_regno));
-                toolbar.setTitle(getResources().getString(R.string.smsbooking_activity_title));
-                ((TextView) findViewById(R.id.reg_button)).setText(getResources().getString(R.string.smsbooking_buttonname));
+//                toolbar.
+                        setTitle(getResources().getString(R.string.smsbooking_activity_title));
+                mbuttonRegister.setText(getResources().getString(R.string.smsbooking_buttonname));
                 break;
             default:
                 numberToRegister.setHint(getResources().getString(R.string.registration_phonebooking_hint_regno));
@@ -188,6 +192,14 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
 
     public void updateAllConnectionData(Cursor c) {
         if (c == null) {
+            findViewById(R.id.registration_spinner).setVisibility(View.GONE);
+            findViewById(R.id.reg_provider_textinputlayout).setVisibility(View.GONE);
+            findViewById(R.id.registration_spinner).setVisibility(View.GONE);
+            findViewById(R.id.reg_agency_textinputlayout).setVisibility(View.GONE);
+            findViewById(R.id.reg_no_textinputlayout).setVisibility(View.GONE);
+            findViewById(R.id.registration_notification_message).setVisibility(View.GONE);
+            findViewById(R.id.reg_button).setVisibility(View.GONE);
+            ((TextView)findViewById(R.id.registration_description)).setText(R.string.registration_noconnection);
             return;
         }
         //get list of row ids into an array
@@ -205,7 +217,7 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
             ((TextView)findViewById(R.id.registration_description)).setText(R.string.registration_noconnection);
             return;
         }
-
+        Log.v("Cursor Count ", Integer.toString(c.getCount()));
 
         //get list of connection names in a array
         for (int i = 0; i < (c.getCount() - 1); ++i) {
@@ -214,11 +226,17 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
 
         }
         connectionNames[c.getCount() - 1] = c.getString(c.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME));
+        //print contents for connectionnames
+        for(String connectionname:connectionNames){
+            Log.v("Connection name ", connectionname);
+        }
+
         //Initialise the spinner now
         Spinner connectionSpinner = (Spinner) findViewById(R.id.registration_spinner);
 
-        ArrayAdapter<String> connectionAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, connectionNames);
+        LPG_SpinnerAdapter connectionAdapter = new LPG_SpinnerAdapter(getApplicationContext(), R.layout.lpg_spinner_view,R.id.spinner_view, connectionNames);
         connectionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        connectionAdapter.setDropDownViewTheme(getTheme());
         connectionSpinner.setAdapter(connectionAdapter);
 
         //set item click listener for spinner
@@ -371,20 +389,25 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
 
         }
             //disable SMS notification if provider is not one of major three
-            if (providerName.equals(LPG_Utility.PROVIDER_NAME_UNDEFINED)){
-                registrationNotification.setVisibility(View.VISIBLE);
-                registrationNotification.setText(  getResources().getString(R.string.reg_notification_pristine) );
-                registrationNotification.setTextColor(Color.parseColor(getResources().getString(R.string.reg_notification_text_color)));
-                regButton.setEnabled(true);
+//            if (providerName.equals(LPG_Utility.PROVIDER_NAME_UNDEFINED)){
+//                registrationNotification.setVisibility(View.VISIBLE);
+//                registrationNotification.setText(  getResources().getString(R.string.reg_notification_pristine) );
+//                registrationNotification.setTextColor(Color.parseColor(getResources().getString(R.string.reg_notification_text_color)));
+//                regButton.setEnabled(true);
+//
+//
+//            } else {
+//                registrationNotification.setVisibility(View.VISIBLE);
+//                registrationNotification.setText(  getResources().getString(R.string.reg_notification_sms_error) );
+//                registrationNotification.setTextColor(Color.parseColor(getResources().getString(R.string.reg_notificiation_text_color_red)));
+//                regButton.setEnabled(false);
+//
+//            }
 
-
-            } else {
-                registrationNotification.setVisibility(View.VISIBLE);
-                registrationNotification.setText(  getResources().getString(R.string.reg_notification_sms_error) );
-                registrationNotification.setTextColor(Color.parseColor(getResources().getString(R.string.reg_notificiation_text_color_red)));
-                regButton.setEnabled(false);
-
-            }
+            //check if sms notification failure message is being displayed
+            //irrespective of being an accepted service provider for
+            //SMS registration service
+            if (activityPurpose == LPG_Utility.SMS_BOOKING_REGISTRATIION){}
 
 
             //reset cursor
