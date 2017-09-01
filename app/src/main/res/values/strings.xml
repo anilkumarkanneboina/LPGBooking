@@ -51,6 +51,7 @@
     <string name="toast_delete_failure">Deletion Failure:Please try later</string>
 
     <!--lpg booking activity-->
+    <string name="lpgbooking_title">Book LPG Connection</string>
     <string name="lpgbooking_activity_description">You can book for your lpg cylinder refill through call or sms option.</string>
     <string name="lpgbooking_connection_name">Connection Name</string>
     <string name="lpgbooking_connection_provider">Connection Provider</string>

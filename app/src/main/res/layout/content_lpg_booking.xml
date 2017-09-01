@@ -27,6 +27,7 @@
         android:paddingLeft="@dimen/lpgbooking_padding_left"
         android:paddingStart="@dimen/lpgbooking_padding_left"
         android:paddingTop="@dimen/lpgbooking_padding_insideview"
+
         android.support.v7.appCompat:hintAnimationEnabled="true"
 
         >
@@ -36,6 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="@string/lpgbooking_connection_name"
+            android:inputType="none"
             android:text="This is a sample connection name"
 
             />
@@ -59,6 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="@string/lpgbooking_connection_provider"
+            android:inputType="none"
             android:text="This is a sample connection name"
 
             />
@@ -82,6 +85,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="@string/lpgbooking_expected_expiry_Dte"
+            android:inputType="none"
             android:text="This is a sample connection name"
 
             />

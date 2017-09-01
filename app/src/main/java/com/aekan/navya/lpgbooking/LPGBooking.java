@@ -19,6 +19,7 @@ import android.provider.Telephony;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -51,7 +52,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by arunramamurthy on 16/10/16.
  */
 
-public class LPGBooking extends AppCompatActivity implements LPGServiceResponseCallBack {
+public class LPGBooking extends AppCompatActivity implements LPGServiceResponseCallBack, ActivityCompat.OnRequestPermissionsResultCallback {
 
     //constants to identify permission requests
     private final static int LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE = 1;
@@ -89,16 +90,20 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
 
         //set content view for the activity
         setContentView(R.layout.lpg_booking);
-        EditText lpgConnectionName = (EditText) findViewById(R.id.lpgbooking_connectionname_edittext);
-        final EditText lpgProvider = (EditText) findViewById(R.id.lpgbooking_provider_edittext);
-        EditText lpgExpiryDate = (EditText) findViewById(R.id.lpgbooking_expected_expiry_date_edittext);
+
+        //Disable editability of fields in the screen
+        //for some reason, inputType is not working from layout file
+        findViewById(R.id.lpgbooking_connectionname_edittext).setEnabled(false);
+        findViewById(R.id.lpgbooking_provider_edittext).setEnabled(false);
+        findViewById(R.id.lpgbooking_expected_expiry_date_edittext).setEnabled(false);
+
+
         final ImageView lpgBookingCall = (ImageView) findViewById(R.id.lpgbooking_call_img);
         final ImageView lpgBookingSMS = (ImageView) findViewById(R.id.lpgbooking_sms_img);
         final TextView smsTipTextView = (TextView) findViewById(R.id.lpgbooking_smsnotification);
         //make the edittext as non clickable
-        lpgConnectionName.setClickable(false);
-        lpgExpiryDate.setClickable(false);
-        lpgProvider.setClickable(false);
+
+
         lpgBookingCall.setEnabled(false);
         lpgBookingSMS.setEnabled(false);
         smsDeliveryReceiver = null;
@@ -115,13 +120,16 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent homeIntent = new Intent(getApplicationContext(),MainActivity.class);
+                Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
                 if (homeIntent.resolveActivity(getPackageManager()) != null) {
                     startActivity(homeIntent);
                 }
             }
         });
+        toolbar.setTitle(R.string.lpgbooking_title);
         setSupportActionBar(toolbar);
+
+
         //set null values for Phone and SMS - before binding lPG Connection details
         LPG_CONNECTION_PHONE_NO = null;
         LPG_SMS_REFILL_NO = null;
@@ -133,18 +141,16 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
 
         //dismiss notification if call to this activity was made from
         //notification
-        if (isFromNotification == true){
+        if (isFromNotification == true) {
             NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             notificationManager.cancel(Integer.parseInt(lpgparcelConnectionId));
         }
 
-        Log.v("ClickLPGBooking", lpgparcelConnectionId);
 
         //register phone listener
         telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
         phoneStateListener = new LPG_PhoneListener(getApplication(), lpgparcelConnectionId);
         telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
-
 
 
         ConcurrentHashMap<String, Cursor> concurrentHash = ((LPGApplication) getApplication()).cacheLocalData;
@@ -156,38 +162,36 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
         }
 
 
-
         // set onclick listener on image
         lpgBookingCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.v("LPGBooking","Inside On Click of Call Booking");
+
                 //startActivity(lpgBookingCallIntent);
                 //check if the app has been given permissions to make a call
                 if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                     //get permission from user to use the phone again
                     //before we inform the user, we need to check if we need user permission
-                    Log.v("LPGBooking","Inside No permission available");
-                    if ((android.support.v4.app.ActivityCompat.shouldShowRequestPermissionRationale(LPGBooking.this, Manifest.permission.CALL_PHONE)) == false ){
-                        Log.v("LPGBooking","Inside Show request permission");
+
+                    if ((android.support.v4.app.ActivityCompat.shouldShowRequestPermissionRationale(LPGBooking.this, Manifest.permission.CALL_PHONE))) {
+                        Log.v("LPGBooking", "Inside Show request permission");
                         // if user permission is needed, inform a message to user through a dialogbox
                         //android.support.v4.app.ActivityCompat.shouldShowRequestPermissionRationale(getParent(), Manifest.permission.CALL_PHONE)
                         // show the dialog box in a seperate thread so as not to stop the current execution
 
-                        Intent permissionRequestor = new Intent(getApplicationContext(),PermissionCheckForFeature.class);
-                        permissionRequestor.putExtra(LPG_Utility.PERMISSION_INTIMATION_MESSAGE,LPG_Utility.PERMISSION_CALL_INTIMATION);
-                        startActivityForResult(permissionRequestor,LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE);
+                        Intent permissionRequestor = new Intent(getApplicationContext(), PermissionCheckForFeature.class);
+                        permissionRequestor.putExtra(LPG_Utility.PERMISSION_INTIMATION_MESSAGE, LPG_Utility.PERMISSION_CALL_INTIMATION);
+                        startActivityForResult(permissionRequestor, LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE);
 
 
-                    }
-                    else{
+                    } else {
                         //need not show intimation to user
-                        ActivityCompat.requestPermissions(getParent(),new String[]{Manifest.permission.CALL_PHONE},LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE);
+                        ActivityCompat.requestPermissions(LPGBooking.this, new String[]{Manifest.permission.CALL_PHONE}, LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE);
                     }
 
                 } else {
                     // call the phone application
-                    Log.v("LPGBooking"," About to call Booking Call Intent");
+                    Log.v("LPGBooking", " About to call Booking Call Intent");
                     startActivity(lpgBookingCallIntent);
                 }
 
@@ -204,15 +208,15 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
 
 
                 //check if application has permission to send sms
-                if ((ContextCompat.checkSelfPermission(v.getContext(),Manifest.permission.SEND_SMS)) != PackageManager.PERMISSION_GRANTED) {
+                if ((ContextCompat.checkSelfPermission(v.getContext(), Manifest.permission.SEND_SMS)) != PackageManager.PERMISSION_GRANTED) {
                     // no permission to send sms
                     // request permission for sending SMS
 
-                    Intent SMSPermissonRequestor = new Intent(getApplicationContext(),PermissionCheckForFeature.class);
-                    SMSPermissonRequestor.putExtra(LPG_Utility.PERMISSION_INTIMATION_MESSAGE,LPG_Utility.PERMISSION_SMS_INTIMATION);
-                    startActivityForResult(SMSPermissonRequestor,LPG_BOOKING_REQUEST_PERMISSION_SMS);
+                    Intent SMSPermissonRequestor = new Intent(getApplicationContext(), PermissionCheckForFeature.class);
+                    SMSPermissonRequestor.putExtra(LPG_Utility.PERMISSION_INTIMATION_MESSAGE, LPG_Utility.PERMISSION_SMS_INTIMATION);
+                    startActivityForResult(SMSPermissonRequestor, LPG_BOOKING_REQUEST_PERMISSION_SMS);
 
-                } else{
+                } else {
                     //the app has permission to send sms
                     Log.v("SMS", "Send SMS - App has SMS permission");
 
@@ -250,36 +254,45 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
                     }
 
 
-
                 } else {
-                    ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper(getResources().getString(R.string.lpgbooking_callpermissiondialog_title),"OK",null,new DialogInterface.OnClickListener() {
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+
+                    if (fragmentManager == null) {
+                        Log.v("LPGBooking ", "fragment manager is null");
+                    } else {
+                        Log.v("LPGBooking ", fragmentManager.toString());
+                    }
+
+                    ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper(getResources().getString(R.string.lpgbooking_callpermissiondialog_title), "OK", null, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
-                            Intent homeIntent = new Intent(getApplicationContext(),MainActivity.class);
+                            Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(homeIntent);
                         }
-                    } ,null).show(getSupportFragmentManager(),"Cancel permission");
+                    }, null).show(getSupportFragmentManager(), "Cancel permission");
                 }
                 break;
             }
 
-            case LPG_BOOKING_REQUEST_PERMISSION_SMS:{
+            case LPG_BOOKING_REQUEST_PERMISSION_SMS: {
                 // check if permission has been granted
 
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED ){
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // send sms
                     Log.v("SMS", "Send SMS after permission grant");
                     sendSMS();
                 } else {
-                    ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper(getResources().getString(R.string.lpgbooking_callpermissiondialog_title),"OK",null,new DialogInterface.OnClickListener() {
+                    FragmentManager supportFragmentManager = getSupportFragmentManager();
+
+                    ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper(getResources().getString(R.string.lpgbooking_callpermissiondialog_title), "OK", null, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
-                            Intent homeIntent = new Intent(getApplicationContext(),MainActivity.class);
+                            Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(homeIntent);
                         }
-                    } ,null).show(getSupportFragmentManager(),"Cancel permission");
+                    }, null).show(getSupportFragmentManager(), "Cancel permission");
                 }
                 break;
             }
@@ -328,12 +341,12 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
         }
     }
 
-    protected void onActivityResult(int requestCode, int resultCode , Intent resultIntent){
+    protected void onActivityResult(int requestCode, int resultCode, Intent resultIntent) {
         // check if the result is for Call or SMS
         switch (requestCode) {
             case LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE:
                 //check if access was granted :
-                switch (resultCode){
+                switch (resultCode) {
                     case Activity.RESULT_CANCELED:
                         //User has not given permission to use call feature of the phone
                         // Present a dialog box and go back to Home screen
@@ -344,11 +357,11 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-                                Intent homeIntent = new Intent(getApplicationContext(),MainActivity.class);
+                                Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
                                 startActivity(homeIntent);
                             }
-                        },null);
-                        alertNoPermission.show(getSupportFragmentManager(),"Permission not granted");
+                        }, null);
+                        alertNoPermission.show(getSupportFragmentManager(), "Permission not granted");
                         break;
                     case Activity.RESULT_OK:
                         //Request for permissions
@@ -423,8 +436,7 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
             lpgBookingCallIntent = new Intent(Intent.ACTION_CALL);
             lpgBookingCallIntent.setData(Uri.parse("tel:" + LPG_CONNECTION_PHONE_NO));
 
-        }
-        else {
+        } else {
             // the given cylinder does not exist anymore.
             //disable call buttons
             ClickToCall.setEnabled(false);
@@ -516,7 +528,12 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
     public void updateAllConnectionData(Cursor c) {
     }
 
-    public  class mSMSBroadcastReceiver extends BroadcastReceiver {
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        //No call for super(). Bug on API Level > 11.
+    }
+
+    public class mSMSBroadcastReceiver extends BroadcastReceiver {
         private Activity lpgBooking;
 
         public mSMSBroadcastReceiver() {
