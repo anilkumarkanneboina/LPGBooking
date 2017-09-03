@@ -123,13 +123,11 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginBottom="@dimen/lpgbooking_margin_bottom_image"
-
             android:layout_marginEnd="@dimen/lpgbooking_margin_right_image"
             android:layout_marginLeft="@dimen/lpgbooking_margin_start_image"
             android:layout_marginRight="@dimen/lpgbooking_margin_right_image"
-
             android:layout_marginTop="16dp"
-            android:background="@drawable/ic_call_black_36dp_2"
+            android:background="@drawable/call_disabled_style"
             android:paddingTop="@dimen/lpgbooking_padding_top" />
 
         <ImageView
@@ -142,7 +140,7 @@
             android:layout_marginRight="@dimen/lpgbooking_margin_right_image"
             android:layout_marginStart="@dimen/lpgbooking_margin_left_image"
             android:layout_marginTop="16dp"
-            android:background="@drawable/ic_message_green"
+            android:background="@drawable/sms_selector_theme"
             android:paddingTop="@dimen/lpgbooking_padding_top" />
     </LinearLayout>
 

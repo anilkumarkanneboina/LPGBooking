@@ -519,6 +519,8 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
             lpgBookingCall.setEnabled(false);
             lpgBookingSMS.setEnabled(false);
 
+            smsSendingNotification.setVisibility(View.GONE);
+
         } else {
             Toast.makeText(getApplicationContext(), "SMS Cound not be sent", Toast.LENGTH_SHORT).show();
         }

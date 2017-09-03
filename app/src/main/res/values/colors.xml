@@ -11,4 +11,5 @@
     <color name="defaultBlack">#343435</color>
     <color name="colorTertiaryBlue">#043e88</color>
     <color name="colorCylinderRed">#B34644</color>
+    <color name="colorGreyScale">#9ea0a3</color>
 </resources>
