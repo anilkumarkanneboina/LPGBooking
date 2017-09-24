@@ -87,7 +87,7 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
 
         //call superclass oncreate function
         super.onCreate(savedInstanceState);
-
+        Log.v("LPGBooking ", "Inside LPG Booking");
         //set content view for the activity
         setContentView(R.layout.lpg_booking);
 

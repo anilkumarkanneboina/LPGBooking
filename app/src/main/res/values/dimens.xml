@@ -6,8 +6,8 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="fab_bottom_margin">42dp</dimen>
     <dimen name="lpg_cylinder_name">28dp</dimen>
-    <dimen name="lpg_cylinder_company_text_height">19sp</dimen>
-    <dimen name="lpg_expiry_textheight">18sp</dimen>
+    <dimen name="lpg_cylinder_company_text_height">16sp</dimen>
+    <dimen name="lpg_expiry_textheight">15sp</dimen>
     <dimen name="add_text_size_lable">20sp</dimen>
     <dimen name="add_edit_text_leftmargin">8dp</dimen>
     <dimen name="add_label_margintop">4dp</dimen>
@@ -29,7 +29,8 @@
     <dimen name="buttonwidth">16dp</dimen>
     <dimen name="buttonpadleft">16dp</dimen>
     <dimen name="buttonpadright">16dp</dimen>
-    
+    <item name="visible" type="id" />
+    <item name="masked" type="id" />
     <!--dimensions for lpg booking-->
     <dimen name="lpgbooking_padding_left">16dp</dimen>
     <dimen name="lpgbookin_padding_right">16dp</dimen>
