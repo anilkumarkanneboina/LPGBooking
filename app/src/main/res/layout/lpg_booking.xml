@@ -17,7 +17,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:navigationIcon="@drawable/ic_arrow_back_black_24dp"
-
             android:title="Book Cylinder"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
@@ -29,7 +28,6 @@
         layout="@layout/content_lpg_booking"
         android:layout_width="match_parent"
         android:layout_height="@dimen/lpgbooking_includelayout_height" />
-
 
 </android.support.design.widget.CoordinatorLayout>
 
