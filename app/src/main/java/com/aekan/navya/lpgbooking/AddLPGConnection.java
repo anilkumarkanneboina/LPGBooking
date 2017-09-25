@@ -24,7 +24,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -98,7 +97,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         toolbar.setTitle("Add Connection");
 
         //set keyboard behaviour
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
         //Create values for edit text
         final EditText lpgConnection = (EditText) findViewById(R.id.add_lpgconnectionnameedittext);
@@ -109,6 +108,9 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         final EditText lpgConnectionId = (EditText) findViewById(R.id.add_connectionid);
         final EditText lpglastdatelabel = (EditText) findViewById(R.id.add_lastbookeddate);
         final EditText lpgconnnectionexpiry = (EditText) findViewById(R.id.add_connectionexpiry);
+
+        //hide soft text pad
+        hideSoftTextPad(lpgConnection);
 
         //Set Autocomplete values for connectino provider
         ArrayAdapter<String> lpgProviderAdapter = new ArrayAdapter<String>(this, R.layout.lpg_provider_autocomplete_layout, R.id.autocompletetextview, LPG_Utility.LPG_PROVIDERS_EXTENDEDLIST);
@@ -394,6 +396,15 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
             }
         });
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+    }
+
+    protected void hideSoftTextPad(View v) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        //check if the key pad is visible
+        if (inputMethodManager.isActive()) {
+            inputMethodManager.hideSoftInputFromInputMethod(v.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+        }
+
     }
 
     @Override
