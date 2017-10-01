@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Messenger;
@@ -29,11 +28,8 @@ import com.aekan.navya.lpgbooking.utilities.LPGServiceCallBackHandler;
 import com.aekan.navya.lpgbooking.utilities.LPGServiceResponseCallBack;
 import com.aekan.navya.lpgbooking.utilities.LPG_PhoneListener;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
-import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
 import com.aekan.navya.lpgbooking.utilities.LPG_SpinnerAdapter;
-
-
-import org.w3c.dom.Text;
+import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
 
 import java.util.HashMap;
 
@@ -45,6 +41,11 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
 
     private final int LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE = 123;
     private final int LPG_BOOKING_REQUEST_PERMISSION_SMS = 234;
+    TextView providerTextView;
+    TextView agencyTextView;
+    TextView phonenumberTextView;
+    TextView registrationNotification;
+    Button regButton;
     //Array adapter for spinner
     private ArrayAdapter<CharSequence> mSpinnerAdapter;
     private HashMap<String, String> mMapConnectionNameAndId;
@@ -56,12 +57,6 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
     private PhoneStateListener phonelistener;
     private String phoneNumber;
     private String provider;
-
-    TextView providerTextView;
-    TextView  agencyTextView;
-    TextView phonenumberTextView;
-    TextView registrationNotification;
-    Button regButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,7 +160,7 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
                         setTitle(getResources().getString(R.string.phonebooking_activity_title));
                 //initialise telephone state listener
                 telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-                phonelistener = new LPG_PhoneListener(this,LPG_Utility.PHONELISTENER_FROM_REGISTRATION);
+                phonelistener = new LPG_PhoneListener(this, LPG_Utility.PHONELISTENER_FROM_REGISTRATION, mConnection);
                 telephonyManager.listen(phonelistener,PhoneStateListener.LISTEN_CALL_STATE);
 
                 break;
@@ -346,6 +341,7 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
             // get adapter
             ArrayAdapter<String> parentAdapter = (ArrayAdapter<String>) parent.getAdapter();
             connectionName = parentAdapter.getItem(position);
+            mConnection = connectionName;
             //update text fields based on the connection name selected
             // by iterating connection name within the cursor and getting connection details
             // from cursor
