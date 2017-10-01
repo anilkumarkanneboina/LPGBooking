@@ -84,7 +84,6 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
-
         //call superclass oncreate function
         super.onCreate(savedInstanceState);
         Log.v("LPGBooking ", "Inside LPG Booking");
@@ -147,10 +146,7 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
         }
 
 
-        //register phone listener
-        telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-        phoneStateListener = new LPG_PhoneListener(getApplication(), lpgparcelConnectionId);
-        telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+
 
 
         ConcurrentHashMap<String, Cursor> concurrentHash = ((LPGApplication) getApplication()).cacheLocalData;
@@ -167,7 +163,7 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
             @Override
             public void onClick(View v) {
 
-                //startActivity(lpgBookingCallIntent);
+
                 //check if the app has been given permissions to make a call
                 if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                     //get permission from user to use the phone again
@@ -396,36 +392,26 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
         EditText lpgExpiryDate = (EditText) findViewById(R.id.lpgbooking_expected_expiry_date_edittext);
         ImageView ClickToCall = (ImageView) findViewById(R.id.lpgbooking_call_img);
         ImageView ClickToSMS = (ImageView) findViewById(R.id.lpgbooking_sms_img);
+        String connectionName;
         if (c.moveToFirst()) {
-            lpgConnectionName.setText(c.getString(c.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME)));
+            connectionName = c.getString(c.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME));
+            lpgConnectionName.setText(connectionName);
             lpgProvider.setText(c.getString(c.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER)));
             LPG_CONNECTION_PHONE_NO = c.getString(c.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_PHONE_NUMBER));
             LPG_SMS_REFILL_NO = c.getString(c.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_SMS_NUMBER));
             lpgparcelConnectionProvider = c.getString(c.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER));
+
             // Set expected expiry date
-            String lpgparcelLastBookedDate = c.getString(c.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.LAST_BOOKED_DATE));
-            String lpgparcelExpectedExpiryDays = c.getString(c.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS));
-
-            String[] lpgStringArrayForLastBookedDate = lpgparcelLastBookedDate.split("/");
-            int lpgLastExpiryDateDay = Integer.valueOf(lpgStringArrayForLastBookedDate[0]);
-            int lpgLastExpiryDateMonth = Integer.valueOf(lpgStringArrayForLastBookedDate[1]);
-            int lpgLastExpiryDateYear = Integer.valueOf(lpgStringArrayForLastBookedDate[2]);
-
-            GregorianCalendar lpgCalendarLastBookedDate = new GregorianCalendar();
-            lpgCalendarLastBookedDate.set(Calendar.DATE, lpgLastExpiryDateDay);
-            lpgCalendarLastBookedDate.set(Calendar.MONTH, lpgLastExpiryDateMonth - 1);
-            lpgCalendarLastBookedDate.set(Calendar.YEAR, lpgLastExpiryDateYear);
-            lpgCalendarLastBookedDate.add(Calendar.DATE, Integer.valueOf(lpgparcelExpectedExpiryDays));
-            //set this value to expected expiry date field
-            // Get the String value of the Date
-            String lpgStringExpiryDate = Integer.toString(lpgCalendarLastBookedDate.get(Calendar.DATE)) + "/" +
-                    Integer.toString(lpgCalendarLastBookedDate.get(Calendar.MONTH) + 1) + "/" +
-                    Integer.toString(lpgCalendarLastBookedDate.get(Calendar.YEAR));
-            lpgExpiryDate.setText(lpgStringExpiryDate);
+            lpgExpiryDate.setText(getExpectedExpiryDate(c));
 
             //Enable command buttons
             ClickToCall.setEnabled(true);
             ClickToSMS.setEnabled(true);
+
+            //register phone listener
+            telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+            phoneStateListener = new LPG_PhoneListener(getApplication(), lpgparcelConnectionId, connectionName);
+            telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
 
             //disable sms sending if provider is not present
             if (LPG_Utility.getIndexOfProvider(lpgparcelConnectionProvider) == LPG_Utility.LPG_PROVIDER_NOT_FOUND) {
@@ -533,6 +519,29 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         //No call for super(). Bug on API Level > 11.
+    }
+
+    private String getExpectedExpiryDate(Cursor c) {
+        String lpgparcelLastBookedDate = c.getString(c.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.LAST_BOOKED_DATE));
+        String lpgparcelExpectedExpiryDays = c.getString(c.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS));
+
+        String[] lpgStringArrayForLastBookedDate = lpgparcelLastBookedDate.split("/");
+        int lpgLastExpiryDateDay = Integer.valueOf(lpgStringArrayForLastBookedDate[0]);
+        int lpgLastExpiryDateMonth = Integer.valueOf(lpgStringArrayForLastBookedDate[1]);
+        int lpgLastExpiryDateYear = Integer.valueOf(lpgStringArrayForLastBookedDate[2]);
+
+        GregorianCalendar lpgCalendarLastBookedDate = new GregorianCalendar();
+        lpgCalendarLastBookedDate.set(Calendar.DATE, lpgLastExpiryDateDay);
+        lpgCalendarLastBookedDate.set(Calendar.MONTH, lpgLastExpiryDateMonth - 1);
+        lpgCalendarLastBookedDate.set(Calendar.YEAR, lpgLastExpiryDateYear);
+        lpgCalendarLastBookedDate.add(Calendar.DATE, Integer.valueOf(lpgparcelExpectedExpiryDays));
+        //set this value to expected expiry date field
+        // Get the String value of the Date
+        String lpgStringExpiryDate = Integer.toString(lpgCalendarLastBookedDate.get(Calendar.DATE)) + "/" +
+                Integer.toString(lpgCalendarLastBookedDate.get(Calendar.MONTH) + 1) + "/" +
+                Integer.toString(lpgCalendarLastBookedDate.get(Calendar.YEAR));
+
+        return lpgStringExpiryDate;
     }
 
     public class mSMSBroadcastReceiver extends BroadcastReceiver {

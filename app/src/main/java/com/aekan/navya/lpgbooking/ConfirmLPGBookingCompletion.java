@@ -1,7 +1,6 @@
 package com.aekan.navya.lpgbooking;
 
 import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -36,17 +35,18 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
     If the attempt was a failure, the app would redirect the user to try boooking one more time. */
     @Override
     protected void onCreate(Bundle savedInstanceState){
-        // Logic to be completed during Activity creation
-
         //Call onCreate from super class
         super.onCreate(savedInstanceState);
 
         // Define the local variables for onCreate method
         //get connection id for the cylinder
         final String LPG_CONNECTION_ID = getIntent().getStringExtra(LPG_Utility.LPG_CONNECTION_ID) ;
-        Log.v("In ConfirmBooking", " LPG Connection Id = " + LPG_CONNECTION_ID);
+        final String LPG_CONNECTION_NAME = getIntent().getStringExtra(LPG_Utility.LPG_CONNECTION_NAME);
+        final int pendingIntentRequestCode = Integer.parseInt(LPG_CONNECTION_ID) * 10 + 1;
         final AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         final String LPGConnectionExpiryDays = getLPGCONNECTIONEXPIRYDAYS(LPG_CONNECTION_ID);
+        final String currentDateString = getCurrentDateString();
+        Log.v("In ConfirmBooking", " LPG Connection Id = " + LPG_CONNECTION_ID);
         //set content for the activity
         setContentView(R.layout.confirm_lpg_submission);
 
@@ -73,80 +73,30 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
         buttonConfirmLPGBookingYes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Set the last booked date for the cylinder to be current date
-
-                //Get current date
-                GregorianCalendar currentCalendar = (GregorianCalendar) Calendar.getInstance();
-                int currentDate = currentCalendar.get(Calendar.DAY_OF_MONTH);
-                int currentMonth = currentCalendar.get(Calendar.MONTH);
-                int currentYear = currentCalendar.get(Calendar.YEAR);
-                String currentDateString = Integer.toString(currentDate) + "/" + Integer.toString(currentMonth + 1) + "/" + Integer.toString(currentYear);
-
                 //Update the current date string in database as the last booked date
-                // for the cyliner in quesion
+                // for the cyliner in question
                 SQLiteDatabase db = ((LPGApplication) getApplication()).LPGDB ;
-                ContentValues updateFieldsList = new ContentValues();
-                updateFieldsList.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.LAST_BOOKED_DATE,currentDateString);
-                String whereClause = LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID + " = ?";
-                String[] whereClauseFilter = { LPG_CONNECTION_ID };
-                try {
-                    db.update(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,
-                            updateFieldsList,
-                            whereClause,
-                            whereClauseFilter
-                    );
-                } catch (Exception e){
-                    //DB update has failed. Print the exception to log, and give an error message to user
-                    ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper(getResources().getString(R.string.confirmbooking_updatefailure), "Ok", null, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    },null).show(getSupportFragmentManager(),"Failure to Update DB");
-                    Log.v("Update failure in DB",e.toString());
+                if (updateConnectionExpiryDate(db, currentDateString, LPG_CONNECTION_ID)) {
+                    //set alarms for new expiry date
+                    LPG_Utility.RefillAlarmNotification[] newRefillAlarmDates = LPG_Utility.getRefillRemainder(ConfirmLPGBookingCompletion.this, currentDateString, LPGConnectionExpiryDays, LPG_CONNECTION_ID, LPG_CONNECTION_NAME, LPG_Utility.LPG_GET_REGULAR_ALARM_NOTIFICATION_DATES);
+                    for (LPG_Utility.RefillAlarmNotification counterRefillAlarmDates : newRefillAlarmDates) {
+                        alarmManager.set(AlarmManager.RTC, counterRefillAlarmDates.getGregorialCalendar().getTimeInMillis(), counterRefillAlarmDates.getRefillCylinder());
+                    }
+                    //Set a success message to user
+                    ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper(getResources().getString(R.string.confirmbooking_success),
+                            "Ok",
+                            null,
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            }, null).show(getSupportFragmentManager(), "Successful Booking");
+
 
                 }
 
 
-                //Set the alarms for the new last booked date.
-
-                //get expected expiry days for the connection
-
-
-
-                //Create an Alarm with updated Connection Expiry String
-                //create the intent
-                Intent intentAlarmForSuccessfulBooking  = new Intent(getApplicationContext(),LPGBooking.class);
-                intentAlarmForSuccessfulBooking.putExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONTITLE,getResources().getString(R.string.confirmbooking_alarm_notificationtitle_yes));
-                intentAlarmForSuccessfulBooking.putExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONID,LPG_CONNECTION_ID);
-                intentAlarmForSuccessfulBooking.putExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONCONTENT, LPG_CONNECTION_ID + getResources().getString(R.string.Notification_MidWayAlarm) );
-
-                Calendar midWayAlarm = Calendar.getInstance();
-                // Log.v("")
-                int intConnectionExpiryDays = Integer.parseInt(LPGConnectionExpiryDays);
-                int pendingIntentRequestCode = Integer.parseInt(LPG_CONNECTION_ID) * 10 + 1;
-
-                midWayAlarm.add(Calendar.DAY_OF_MONTH, Math.round(intConnectionExpiryDays / 2));
-                midWayAlarm.set(Calendar.HOUR_OF_DAY,12);
-                midWayAlarm.set(Calendar.MINUTE,1);
-
-                PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(getApplicationContext(),pendingIntentRequestCode,intentAlarmForSuccessfulBooking,PendingIntent.FLAG_UPDATE_CURRENT);
-                alarmManager.set(AlarmManager.RTC,midWayAlarm.getTimeInMillis(),alarmPendingIntent);
-
-
-                //close db
-                //db.close();
-
-                //Set a success message to user
-                ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper(getResources().getString(R.string.confirmbooking_success),
-                        "Ok",
-                        null,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        },null).show(getSupportFragmentManager(),"Successful Booking");
 
             }
         });
@@ -157,26 +107,8 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //set an alarm to notify user in a day's time
-                Calendar nextNotification = Calendar.getInstance();
-                nextNotification.add(Calendar.DATE,1);
-                nextNotification.set(Calendar.HOUR_OF_DAY,12);
-                nextNotification.set(Calendar.MINUTE,1);
-
-                //set a notification for next day
-                Intent intentAlarmForFailureBooking = new Intent(getApplicationContext(), LPGBooking.class);
-                intentAlarmForFailureBooking.putExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONTITLE, getResources().getString(R.string.confirmbooking_alarm_notificationtitle_yes));
-                intentAlarmForFailureBooking.putExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONID, LPG_CONNECTION_ID);
-                intentAlarmForFailureBooking.putExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONCONTENT, LPG_CONNECTION_ID + getResources().getString(R.string.confirmbooking_failure_notificationmessage));
-
-                int pendingIntentRequestCodeFailure = Integer.parseInt(LPG_CONNECTION_ID) * 10 + 1;
-
-                PendingIntent pendingIntentFailureIntent = PendingIntent.getBroadcast(getApplicationContext(),
-                        pendingIntentRequestCodeFailure,
-                        intentAlarmForFailureBooking,
-                        PendingIntent.FLAG_UPDATE_CURRENT);
-
-                // int pendingIntentRequestCodeFailure = Integer.parseInt(LPG_CONNECTION_ID ) * 10 + 1;
-                alarmManager.set(AlarmManager.RTC, nextNotification.getTimeInMillis(), pendingIntentFailureIntent);
+                LPG_Utility.RefillAlarmNotification[] alarmSnooze = LPG_Utility.getRefillRemainder(ConfirmLPGBookingCompletion.this, currentDateString, LPGConnectionExpiryDays, LPG_CONNECTION_ID, LPG_CONNECTION_NAME, LPG_Utility.LPG_GET_SNOOZE_ALARM_DATES);
+                alarmManager.set(AlarmManager.RTC, alarmSnooze[0].getGregorialCalendar().getTimeInMillis(), alarmSnooze[0].getRefillCylinder());
 
                 //Set a toast message that user can try booking
                 //after some time
@@ -253,6 +185,44 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
 
         //return connection expiry days
         return ConnectionExpiryDays ;
+    }
+
+    public String getCurrentDateString() {
+        GregorianCalendar currentCalendar = (GregorianCalendar) Calendar.getInstance();
+        int currentDate = currentCalendar.get(Calendar.DAY_OF_MONTH);
+        int currentMonth = currentCalendar.get(Calendar.MONTH);
+        int currentYear = currentCalendar.get(Calendar.YEAR);
+        return Integer.toString(currentDate) + "/" + Integer.toString(currentMonth + 1) + "/" + Integer.toString(currentYear);
+    }
+
+    public boolean updateConnectionExpiryDate(SQLiteDatabase db, String currentDateString, String LPG_CONNECTION_ID) {
+        boolean isUpdateSuccessful = true;
+
+        ContentValues updateFieldsList = new ContentValues();
+        updateFieldsList.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.LAST_BOOKED_DATE, currentDateString);
+        String whereClause = LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID + " = ?";
+        String[] whereClauseFilter = {LPG_CONNECTION_ID};
+        try {
+            db.update(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,
+                    updateFieldsList,
+                    whereClause,
+                    whereClauseFilter
+            );
+        } catch (Exception e) {
+            //DB update has failed. Print the exception to log, and give an error message to user
+            ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper(getResources().getString(R.string.confirmbooking_updatefailure), "Ok", null, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            }, null).show(getSupportFragmentManager(), "Failure to Update DB");
+            Log.v("Update failure in DB", e.toString());
+            isUpdateSuccessful = false;
+
+        }
+
+
+        return isUpdateSuccessful;
     }
 
     @Override

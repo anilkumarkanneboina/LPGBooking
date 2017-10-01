@@ -29,12 +29,14 @@ public class LPG_PhoneListener extends PhoneStateListener {
     //fields for application context
     private Context applicationContext;
     private String LPGConnectionId;
+    private String LPGConnectionName;
 
     //constructor to set application context
-    public LPG_PhoneListener(Context context, String connectionid) {
+    public LPG_PhoneListener(Context context, String connectionid, String connectionName) {
         super();
         applicationContext = context;
         LPGConnectionId = connectionid;
+        LPGConnectionName = connectionName;
         setPhoneFlag = PHONELISTENERFLAGONHOOK;
         Log.v("In PhoneListerenr", LPGConnectionId);
 
@@ -62,6 +64,7 @@ public class LPG_PhoneListener extends PhoneStateListener {
                     else  {
                     Intent intentConfirmLPGBooking = new Intent(applicationContext, ConfirmLPGBookingCompletion.class);
                     intentConfirmLPGBooking.putExtra(LPG_Utility.LPG_CONNECTION_ID, LPGConnectionId);
+                        intentConfirmLPGBooking.putExtra(LPG_Utility.LPG_CONNECTION_NAME, LPGConnectionName);
                     intentConfirmLPGBooking.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     applicationContext.startActivity(intentConfirmLPGBooking);
                     }
