@@ -82,7 +82,7 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
                         lpgAgency = sqLiteCursor.getString(2);
                         lpgRowId = sqLiteCursor.getString(3);
 
-                        LPGCylinderList.add( new LPGCylinderListInfo(lpgConnection,lpgProvider,lpgAgency,lpgRowId));
+                        LPGCylinderList.add(new LPGCylinderListInfo(lpgConnection, lpgProvider, lpgAgency, lpgRowId));
 
                         sqLiteCursor.moveToNext();
                     }

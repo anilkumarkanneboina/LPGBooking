@@ -23,8 +23,8 @@
     <dimen name="autocomplete_dropdownheight">100dp</dimen>
     <dimen name="autocomplete_textsize">16sp</dimen>
     <!--dimensions for card view -->
-    <dimen name="buttonrightmargin">24dp</dimen>
-    <dimen name="buttonleftmargin">24dp</dimen>
+    <dimen name="buttonrightmargin">36dp</dimen>
+    <dimen name="buttonleftmargin">36dp</dimen>
     <dimen name="buttonheight">16dp</dimen>
     <dimen name="buttonwidth">16dp</dimen>
     <dimen name="buttonpadleft">16dp</dimen>

@@ -352,7 +352,8 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
                                     lpglastdatelabel.getText().toString() ,// Last booked date entered by user
                                     lpgconnnectionexpiry.getText().toString()  , //Connection expiry time
                                     finalIDCount,
-                                    lpgConnection.getText().toString() // connection name
+                                    lpgConnection.getText().toString(),
+                                    LPG_Utility.LPG_GET_REGULAR_ALARM_NOTIFICATION_DATES  // connection name
                             );
                             //  Set alarms based on alarms returned by getRefillRemainder method
                             AlarmManager alarmManager = (android.app.AlarmManager)getSystemService(Context.ALARM_SERVICE);

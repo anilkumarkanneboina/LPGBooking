@@ -91,7 +91,7 @@
         <activity android:name=".LPGBooking"
 
             android:parentActivityName=".MainActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.aekan.navya.lpgbooking.MainActivity" />
