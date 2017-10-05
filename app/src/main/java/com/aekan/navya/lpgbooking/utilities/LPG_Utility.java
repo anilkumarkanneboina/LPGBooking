@@ -126,6 +126,7 @@ public class LPG_Utility {
         int lpglastbookeddate, lpglastbookedmonth, lpglastbookedyear;
         int pendingIntentRequestCode = Integer.parseInt(rowID) * 10 + 1;
         Calendar sysDate = Calendar.getInstance();
+        String DATE_FORMAT = "dd/MM/yyyy";
 
         GregorianCalendar lpgLastBookedGregCalendar;
         int expiryDays = Integer.parseInt(expiryDaysStr);
@@ -148,14 +149,21 @@ public class LPG_Utility {
                     // add half of expected expiry time to this date, to arrive at mid-way expiry date
                     lpgLastBookedGregCalendar = new GregorianCalendar(lpglastbookedyear, lpglastbookedmonth - 1, lpglastbookeddate);
                     GregorianCalendar midwayExpiryDate = lpgLastBookedGregCalendar;
+//                    Log.v("Alarm","Midway before adding to array " + getDateFromCalendar(midwayExpiryDate));
+//                    Log.v("Alarm", "Expiry days " + Integer.toString(expiryDays));
+//                    Log.v("Alarm", "Half of expiry days " + Integer.toString(Math.round(expiryDays/2)));
                     midwayExpiryDate.add(Calendar.DATE, Math.round(expiryDays / 2));
-
+                    // Log.v("Alarm","Midway after adding expiry days " + getDateFromCalendar(midwayExpiryDate));
                     //compare this midway expiry time with sys date and
                     //create an alarm only if this date is in future
+                    //Log.v("Alarm" ,"Comparison value  " + Integer.toString(midwayExpiryDate.compareTo(sysDate)));
 
-                    if (sysDate.compareTo(midwayExpiryDate) <= 0) {
+
+                    // Log.v("Alarm", "Sys date" + getDateFromCalendar(sysDate));
+                    if (midwayExpiryDate.compareTo(sysDate) <= 0) {
                         //set the alarm for this date with the notification class
                         // Create an intent and use that to create the pending intent for alarm manager
+                        // Log.v("Alarm","Midway expiry before current day " );
                         midwayExpiryDate = (GregorianCalendar) sysDate;
                         midwayExpiryDate.add(Calendar.DAY_OF_MONTH, 1);
                     }
@@ -206,7 +214,7 @@ public class LPG_Utility {
 
                     // If this alarm notification is in the past,
                     // provide alartm notification the next day
-                    if (sysDate.compareTo(calendarNotificationUltimate) <= 0) {
+                    if (calendarNotificationUltimate.compareTo(sysDate) <= 0) {
                         calendarNotificationUltimate = (GregorianCalendar) sysDate;
                         calendarNotificationUltimate.add(Calendar.DAY_OF_MONTH, 1);
                     }
@@ -345,8 +353,52 @@ public class LPG_Utility {
 
     public static String getDateFromCalendar(Calendar c) {
 
-        return Integer.toString(c.get(Calendar.DAY_OF_MONTH)) + "/" + Integer.toString(c.get(Calendar.MONTH))
+        return Integer.toString(c.get(Calendar.DAY_OF_MONTH)) + "/" + Integer.toString(c.get(Calendar.MONTH) + 1)
                 + "/" + Integer.toString(c.get(Calendar.YEAR));
+
+    }
+
+    public static boolean isThisDateInThePast(Calendar c) {
+        boolean RESULT = false;
+        Calendar sysDate = Calendar.getInstance();
+        int sysDay = sysDate.get(Calendar.DAY_OF_MONTH), sysMonth = sysDate.get(Calendar.MONTH), sysYear = sysDate.get(Calendar.YEAR);
+        int argDay = c.get(Calendar.DAY_OF_MONTH), argMonth = c.get(Calendar.MONTH), argYear = c.get(Calendar.YEAR);
+
+        Log.v("Alarm", "sysMonth " + Integer.toString(sysMonth) + " argMonth " + Integer.toString(argMonth));
+        Log.v("Alarm", "sysDay " + Integer.toString(sysDay) + " argDay " + Integer.toString(argDay));
+        Log.v("Alarm", "sysYear " + Integer.toString(sysYear) + " argYear " + Integer.toString(argYear));
+
+        if (sysYear > argYear) {
+            RESULT = true;
+            return RESULT;
+        } else {
+            if (argYear > sysYear) {
+                return RESULT;
+            } else {
+                if (sysMonth > argMonth) {
+                    RESULT = true;
+                    return RESULT;
+                } else {
+                    if (argMonth > sysMonth) {
+                        return RESULT;
+                    } else {
+                        if (sysDay > argDay) {
+                            RESULT = true;
+                            return RESULT;
+                        }
+
+                    }
+
+
+                }
+
+            }
+
+
+        }
+
+
+        return RESULT;
 
     }
 

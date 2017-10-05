@@ -21,7 +21,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -70,7 +69,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         //Get database to do CRUD operations
         SQLiteDatabase db = ((LPGApplication) getApplication()).LPGDB ;
         if (db == null ){
-            Log.v("DB","DB Is null");
+
         }
 
 
@@ -129,11 +128,11 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         scrollView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.v("ScrollTouch","Inside Click event");
+
                 InputMethodManager inputMethodManager = (InputMethodManager) getApplicationContext().getSystemService(INPUT_METHOD_SERVICE);
                 View focusView = getCurrentFocus();
                 if (focusView != null ){
-                    Log.v("ScrollTouch","View not null");
+
                     inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
                 }
             }
@@ -158,12 +157,12 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
 
             if (((LPGApplication) getApplication()).cacheLocalData.containsKey(connectionIdString)) {
                 //logic to bind connection details with activity
-                Log.v("EditConnection", "Not Calling Service");
+
                 updateActivityWithLPGDetailsCursor(((LPGApplication) getApplication()).cacheLocalData.get(connectionIdString));
             } else {
                 //get connection details and bind with Activity elements
                 //create call back messenger
-                Log.v("EditConnection", "Calling Service");
+
                 Messenger callBackMessenger = new Messenger(new Handler(new LPGServiceCallBackHandler(this)));
 
 
@@ -313,9 +312,9 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
 
                     } else {
                         int updateDBCount = sqLiteDatabase.update(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME, contentValuesDB, LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID + " = " + finalIDCount, null);
-                        Log.v("EditConnection "," Update DB Count " + Integer.toString(updateDBCount));
+
                         if (updateDBCount > 0) {
-                            Log.v("EditConnection"," Inside udpate count dialog caller");
+
                             ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper("LPG Connection updated", "Ok", null, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -349,8 +348,8 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
                     // get the last booked date and get the date which would be mid-way till expiry
                     // if the mid-way date is not in the past, then set an alarm on that day
 
-                            Log.v("Save",lpgconnnectionexpiry.getText().toString());
-                            LPG_Utility.RefillAlarmNotification[] alarmNotificationTimers = LPG_Utility.getRefillRemainder(getApplicationContext(),
+
+                    LPG_Utility.RefillAlarmNotification[] alarmNotificationTimers = LPG_Utility.getRefillRemainder(getApplicationContext(),
                                     lpglastdatelabel.getText().toString() ,// Last booked date entered by user
                                     lpgconnnectionexpiry.getText().toString()  , //Connection expiry time
                                     finalIDCount,
@@ -366,13 +365,11 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
                             for ( int i = 0 ; i <2 ; i++) {
 
                                 alarmManager.set(android.app.AlarmManager.RTC_WAKEUP, alarmNotificationTimers[i].getGregorialCalendar().getTimeInMillis(), alarmNotificationTimers[i].getRefillCylinder());
-                                Log.v("Alarm", "Alarm Set for  " + i + " " + alarmNotificationTimers[i].getGregorialCalendar().toString());
+
 
                             }
 
-                    Log.v("Alarm", " Last date : " + lpglastdatelabel.getText().toString() + " with expiry days " + lpgconnnectionexpiry.getText().toString());
-                    Log.v("Alarm", "Midway alarm date is " + LPG_Utility.getDateFromCalendar(test_alarm_midway));
-                    Log.v("Alarm", " Expiry alarm date is " + LPG_Utility.getDateFromCalendar(test_alarm_final_expiry));
+
                 } else {
                     scrollView.scrollTo(0,scrollToError.getBottom());
                 }
@@ -420,11 +417,11 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
     @Override
     public boolean onTouchEvent(MotionEvent event){
         //Close the key board if being shown;
-        Log.v("Touch","Within OnTouchEvent" );
+
         InputMethodManager inputMethodManager =(InputMethodManager) getApplicationContext().getSystemService(INPUT_METHOD_SERVICE);
 
         if (inputMethodManager.isActive()) {
-            Log.v("Touch","Keypad is active");
+
             View view = this.getCurrentFocus();
             if (view != null)
             {  inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
@@ -521,7 +518,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         String connectionID = dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID));
         ((LPGApplication) getApplication()).cacheLocalData.put(connectionID,dataCursor);
         Boolean hasKey = ((LPGApplication) getApplication()).cacheLocalData.containsKey(connectionID);
-        Log.v("ServiceResponse", " contains key " + Boolean.toString(hasKey));
+
 
         //set animation enabled for the text input layout, enabling the animation after binding with activity
         //prevents jarring effect
@@ -584,7 +581,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
 
                 EditText lastBookedDateView = (EditText) getActivity().findViewById(R.id.add_lastbookeddate);
                 String selectedDate = Integer.toString(setDay) +  "/" + Integer.toString(setMonth + 1) + "/" + Integer.toString(setYear);
-                Log.v("DateSelected", selectedDate);
+
                 lastBookedDateView.setText(selectedDate);
 
 
