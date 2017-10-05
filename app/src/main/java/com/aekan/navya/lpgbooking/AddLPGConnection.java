@@ -50,13 +50,15 @@ import java.util.GregorianCalendar;
 
 public class AddLPGConnection extends AppCompatActivity implements LPGServiceResponseCallBack {
 
+    public GregorianCalendar test_alarm_midway;
+    public GregorianCalendar test_alarm_final_expiry;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
-
     private String finalIDCount ;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //Activity creation using the saved bundle
@@ -355,16 +357,23 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
                                     lpgConnection.getText().toString(),
                                     LPG_Utility.LPG_GET_REGULAR_ALARM_NOTIFICATION_DATES  // connection name
                             );
+                    //for espresso test - assign values of calendars in test fields
+                    test_alarm_midway = alarmNotificationTimers[0].getGregorialCalendar();
+                    test_alarm_final_expiry = alarmNotificationTimers[1].getGregorialCalendar();
+
                             //  Set alarms based on alarms returned by getRefillRemainder method
                             AlarmManager alarmManager = (android.app.AlarmManager)getSystemService(Context.ALARM_SERVICE);
                             for ( int i = 0 ; i <2 ; i++) {
 
                                 alarmManager.set(android.app.AlarmManager.RTC_WAKEUP, alarmNotificationTimers[i].getGregorialCalendar().getTimeInMillis(), alarmNotificationTimers[i].getRefillCylinder());
-                                Log.v("Alarm", "Alarm Set for  "+ i+" "+ alarmNotificationTimers[i].getGregorialCalendar().getTimeInMillis());
+                                Log.v("Alarm", "Alarm Set for  " + i + " " + alarmNotificationTimers[i].getGregorialCalendar().toString());
 
                             }
-                }
-                else {
+
+                    Log.v("Alarm", " Last date : " + lpglastdatelabel.getText().toString() + " with expiry days " + lpgconnnectionexpiry.getText().toString());
+                    Log.v("Alarm", "Midway alarm date is " + LPG_Utility.getDateFromCalendar(test_alarm_midway));
+                    Log.v("Alarm", " Expiry alarm date is " + LPG_Utility.getDateFromCalendar(test_alarm_final_expiry));
+                } else {
                     scrollView.scrollTo(0,scrollToError.getBottom());
                 }
 

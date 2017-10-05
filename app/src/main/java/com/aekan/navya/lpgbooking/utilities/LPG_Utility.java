@@ -121,7 +121,7 @@ public class LPG_Utility {
 
     public static RefillAlarmNotification[] getRefillRemainder(Context applicationContext, String lastBookedDate, String expiryDaysStr, String rowID, String connectionName, int notificationType) {
         RefillAlarmNotification[] alarmTimes = new RefillAlarmNotification[2];
-        RefillAlarmNotification[] alarmSnooze = new RefillAlarmNotification[0];
+        RefillAlarmNotification[] alarmSnooze = new RefillAlarmNotification[1];
         String[] strDateFields = lastBookedDate.split("/");
         int lpglastbookeddate, lpglastbookedmonth, lpglastbookedyear;
         int pendingIntentRequestCode = Integer.parseInt(rowID) * 10 + 1;
@@ -138,8 +138,8 @@ public class LPG_Utility {
 
                     // From the split string, get the integer values for date, month and year fields
                     // and create a date object with these values Integer.getInteger
-                    lpglastbookeddate = Integer.parseInt(strDateFields[1]);
-                    lpglastbookedmonth = Integer.parseInt(strDateFields[0]);
+                    lpglastbookeddate = Integer.parseInt(strDateFields[0]);
+                    lpglastbookedmonth = Integer.parseInt(strDateFields[1]);
                     lpglastbookedyear = Integer.parseInt(strDateFields[2]);
                     //Create the AlarmManager object to set alarms
 
@@ -189,8 +189,8 @@ public class LPG_Utility {
 
                     //Midway alarm notification record - will be put in first index of Alarm Notification
                     //test notification banner for now
-                    alarmTimes[0] = new RefillAlarmNotification(notificationPendingIntent, newNotification);
-                    //alarmTimes[0] = new RefillAlarmNotification(notificationPendingIntent,midwayExpiryDate);
+                    //alarmTimes[0] = new RefillAlarmNotification(notificationPendingIntent, newNotification);
+                    alarmTimes[0] = new RefillAlarmNotification(notificationPendingIntent, midwayExpiryDate);
 
                     // Set another alarm before final expiry
                     Intent notificationExpiryUltmate = new Intent(applicationContext, LPG_AlarmReceiver.class);
@@ -219,8 +219,8 @@ public class LPG_Utility {
                     newnotification2.add(Calendar.MINUTE, 3);
 
                     //test notificaiton firing for now
-                    alarmTimes[1] = new RefillAlarmNotification(notificationFinal, newnotification2);
-                    //alarmTimes[1] = new RefillAlarmNotification(notificationFinal,calendarNotificationUltimate);
+                    // alarmTimes[1] = new RefillAlarmNotification(notificationFinal, newnotification2);
+                    alarmTimes[1] = new RefillAlarmNotification(notificationFinal, calendarNotificationUltimate);
                 }
                 return alarmTimes;
 
@@ -340,6 +340,13 @@ public class LPG_Utility {
 
         return resExpandableChildList;
 
+
+    }
+
+    public static String getDateFromCalendar(Calendar c) {
+
+        return Integer.toString(c.get(Calendar.DAY_OF_MONTH)) + "/" + Integer.toString(c.get(Calendar.MONTH))
+                + "/" + Integer.toString(c.get(Calendar.YEAR));
 
     }
 
