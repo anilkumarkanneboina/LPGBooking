@@ -1,7 +1,6 @@
 package com.aekan.navya.lpgbooking;
 
 import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -10,9 +9,9 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.aekan.navya.lpgbooking.utilities.LPG_SQLOpenHelperClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
+import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
 
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 /**
  * Created by arunramamurthy on 15/08/16.
@@ -32,7 +31,12 @@ public class RebootReceiverAlarm extends BroadcastReceiver {
         SQLiteDatabase sqLiteDatabase = (new LPG_SQLOpenHelperClass(context)).getWritableDatabase();
 
         //Query the database with all the information that is needed
-       String[] columnnames = {LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME, LPG_SQL_ContractClass.LPG_CONNECTION_ROW.LAST_BOOKED_DATE, LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS};
+        String[] columnnames = {
+                LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME,
+                LPG_SQL_ContractClass.LPG_CONNECTION_ROW.LAST_BOOKED_DATE,
+                LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS,
+                LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID
+        };
         Cursor cursor = sqLiteDatabase.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,columnnames,null,null,null,null,null);
         //iterate through the cursor to set alarm for every connection made.
         //check if the cursor has any rows before iterating through the cursor
@@ -40,39 +44,30 @@ public class RebootReceiverAlarm extends BroadcastReceiver {
             cursor.moveToFirst();
             int cursorRecordSetCount = cursor.getCount();
             for ( int i = 0;i<cursorRecordSetCount;++i){
-                String[] cursorDateFields = cursor.getString(cursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.LAST_BOOKED_DATE)).split("/");
-                int cylinderExpiryDays = Integer.parseInt( cursor.getString(cursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS)));
+                String cursorDateFields = cursor.getString(cursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.LAST_BOOKED_DATE));
+                String cylinderExpiryDays = (cursor.getString(cursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS)));
                 String cursorConnectionName = cursor.getString(cursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME));
-                int lastBookedDateField = Integer.parseInt( cursorDateFields[1]);
-                int lastBookedYearField = Integer.parseInt(  cursorDateFields[2]);
-                int   lastBookedMonthField = Integer.parseInt( cursorDateFields[0]);
-                GregorianCalendar lastBookedDateInCursor = new GregorianCalendar(lastBookedYearField,lastBookedMonthField - 1,lastBookedDateField,0,0,0);
+                String LPG_Row_ID = cursor.getString(cursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID));
                 Calendar systemDate = Calendar.getInstance();
-              //  int cylinderExpiryDays = Integer.parseInt( cursor.getString(cursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS)));
-                GregorianCalendar midExpiryDate = lastBookedDateInCursor;
-                midExpiryDate.add(Calendar.DAY_OF_MONTH,Math.round( cylinderExpiryDays/2) );
 
-                if ( systemDate.compareTo(lastBookedDateInCursor) <= 0  ) {
-                    AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                    Intent intentCursorAlarm = new Intent(context,LPG_AlarmReceiver.class);
-                    intentCursorAlarm.putExtra("NotificationTitle","Cylinder is half done");
-                    intentCursorAlarm.putExtra("NotificationContent", cursorConnectionName + " is half empty now. Please click on Book icon to book the cylinder now!!");
-                    PendingIntent cursorPendingIntent = PendingIntent.getBroadcast(context,0,intentCursorAlarm,0);
 
-                    alarmManager.set(AlarmManager.ELAPSED_REALTIME,midExpiryDate.getTimeInMillis(),cursorPendingIntent);
-                    cursor.moveToNext();
+                LPG_Utility.RefillAlarmNotification[] alarmNotification = LPG_Utility.getRefillRemainder(context, cursorDateFields, cylinderExpiryDays, LPG_Row_ID, cursorConnectionName, LPG_Utility.LPG_GET_REGULAR_ALARM_NOTIFICATION_DATES);
+                AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
+                //set alarms
+                for (int counter = 0; counter < alarmNotification.length; ++counter) {
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, alarmNotification[counter].getGregorialCalendar().getTimeInMillis(), alarmNotification[counter].getRefillCylinder());
+                }
 
                 }
 
 
 
             }
+        cursor.close();
 
         }
 
-    // Close the DB and cursor
-        // sqLiteDatabase.close();
-        cursor.close();
-    }
+
 }
+

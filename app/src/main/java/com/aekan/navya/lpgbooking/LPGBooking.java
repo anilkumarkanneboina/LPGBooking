@@ -38,7 +38,6 @@ import android.widget.Toast;
 import com.aekan.navya.lpgbooking.utilities.LPGDataAPI;
 import com.aekan.navya.lpgbooking.utilities.LPGServiceCallBackHandler;
 import com.aekan.navya.lpgbooking.utilities.LPGServiceResponseCallBack;
-import com.aekan.navya.lpgbooking.utilities.LPG_AlertBoxClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_PhoneListener;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
@@ -346,35 +345,32 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
                     case Activity.RESULT_CANCELED:
                         //User has not given permission to use call feature of the phone
                         // Present a dialog box and go back to Home screen
-
-                        LPG_AlertBoxClass alertNoPermission = ((LPGApplication) getApplication()).LPG_Alert;
-
-                        alertNoPermission.showDialogHelper(getResources().getString(R.string.lpgbooking_permissioncancellation_request), "OK", null, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
-                                startActivity(homeIntent);
-                            }
-                        }, null);
-                        alertNoPermission.show(getSupportFragmentManager(), "Permission not granted");
+                        Toast.makeText(this, "Permission Denied", Toast.LENGTH_LONG).show();
+                        Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(homeIntent);
                         break;
                     case Activity.RESULT_OK:
                         //Request for permissions
                         ActivityCompat.requestPermissions(LPGBooking.this, new String[]{Manifest.permission.CALL_PHONE}, LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE);
+                        break;
                 }
+                break;
 
             case LPG_BOOKING_REQUEST_PERMISSION_SMS:
                 switch (resultCode) {
                     case Activity.RESULT_CANCELED:
-                        ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper(getResources().getString(R.string.lpgbooking_permissioncancellation_request), "OK", null, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
-                                startActivity(homeIntent);
-                            }
-                        }, null).show(getSupportFragmentManager(), "Permission not granted for SMS");
+//                        ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper(getResources().getString(R.string.lpgbooking_permissioncancellation_request), "OK", null, new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                dialog.dismiss();
+//                                Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
+//                                startActivity(homeIntent);
+//                            }
+//                        }, null).show(getSupportFragmentManager(), "Permission not granted for SMS");
+                        Toast.makeText(getApplicationContext(), "SMS Permission Denied", Toast.LENGTH_LONG).show();
+                        Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(homeIntent);
+
                         break;
                     case Activity.RESULT_OK:
                         //Request for SMS permission

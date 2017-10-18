@@ -28,7 +28,7 @@ public class LPG_AlarmReceiver extends BroadcastReceiver {
         Log.v("Alarm","On Receive");
         //Build the notification
         NotificationCompat.Builder lpgExpiryNotificationBuilder = new NotificationCompat.Builder(context);
-        lpgExpiryNotificationBuilder.setSmallIcon(R.drawable.ic_feedback_black_24dp);
+        lpgExpiryNotificationBuilder.setSmallIcon(R.drawable.ic_lpg_booking);
         lpgExpiryNotificationBuilder.setContentTitle(intent.getStringExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONTITLE));
         lpgExpiryNotificationBuilder.setContentText(intent.getStringExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONCONTENT));
         String lpgRowId = intent.getStringExtra(LPG_Utility.LPG_ALARMINTENT_NOTIFICATIONID);
