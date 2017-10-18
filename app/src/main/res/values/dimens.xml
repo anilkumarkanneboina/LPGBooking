@@ -4,7 +4,7 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
-    <dimen name="fab_bottom_margin">42dp</dimen>
+    <dimen name="fab_bottom_margin">16dp</dimen>
     <dimen name="lpg_cylinder_name">28dp</dimen>
     <dimen name="lpg_cylinder_company_text_height">16sp</dimen>
     <dimen name="lpg_expiry_textheight">15sp</dimen>
