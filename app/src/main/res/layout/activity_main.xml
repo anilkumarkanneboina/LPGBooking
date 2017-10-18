@@ -13,6 +13,8 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         android:fitsSystemWindows="true"
         tools:context=".MainActivity">
 
@@ -55,15 +57,15 @@
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
             android:layout_gravity="bottom|end"
             android:layout_marginBottom="@dimen/fab_bottom_margin"
             android:layout_marginRight="@dimen/fab_margin"
             android:scaleType="center"
-            android:src="@drawable/ic_add_connection"
+            android:src="@drawable/ic_add_connection_blue"
             app:backgroundTint="@color/colorWhite"
-            app:elevation="0dp" />
+            app:elevation="4dp" />
 
     </android.support.design.widget.CoordinatorLayout>
 
@@ -76,3 +78,5 @@
         android:choiceMode="singleChoice" />
 
 </android.support.v4.widget.DrawerLayout>
+
+    <!--app:backgroundTint="@color/colorWhite"-->

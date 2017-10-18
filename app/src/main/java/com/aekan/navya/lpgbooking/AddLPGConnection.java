@@ -21,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -368,6 +369,11 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
 
 
                             }
+
+                    Log.v("Alarm","Last Booked date is " +  lpglastdatelabel.getText().toString() + " and expiry date is " +  lpgconnnectionexpiry.getText().toString() );
+                    Log.v("Alarm", "Midway alarm date is " + LPG_Utility.getDateFromCalendar(alarmNotificationTimers[0].getGregorialCalendar()));
+                    Log.v("Alarm", "Expiry alarm date is " + LPG_Utility.getDateFromCalendar(alarmNotificationTimers[1].getGregorialCalendar()));
+
 
 
                 } else {

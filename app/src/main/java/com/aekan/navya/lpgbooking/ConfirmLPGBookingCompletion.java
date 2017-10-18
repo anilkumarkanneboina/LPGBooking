@@ -84,6 +84,9 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
                     for (LPG_Utility.RefillAlarmNotification counterRefillAlarmDates : newRefillAlarmDates) {
                         alarmManager.set(AlarmManager.RTC, counterRefillAlarmDates.getGregorialCalendar().getTimeInMillis(), counterRefillAlarmDates.getRefillCylinder());
                     }
+                    Log.v("Alarm","Last Booked date is " + currentDateString + " and expiry date is " +  LPGConnectionExpiryDays );
+                    Log.v("Alarm", "Midway alarm date is " + LPG_Utility.getDateFromCalendar(newRefillAlarmDates[0].getGregorialCalendar()));
+                    Log.v("Alarm", "Expiry alarm date is " + LPG_Utility.getDateFromCalendar(newRefillAlarmDates[1].getGregorialCalendar()));
                     //Set a success message to user
                     ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper(getResources().getString(R.string.confirmbooking_success),
                             "Ok",
