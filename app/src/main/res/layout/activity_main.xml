@@ -48,13 +48,37 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <android.support.v7.widget.RecyclerView
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="260dp"
+            android:orientation="vertical">
+
+
+            <com.google.android.gms.ads.AdView
+                android:id="@+id/banner_homescreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="false"
+                android:layout_centerHorizontal="false"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                app:adSize="SMART_BANNER"
+                app:adUnitId="ca-app-pub-3940256099942544/6300978111">
+
+            </com.google.android.gms.ads.AdView>
+
+
+            <android.support.v7.widget.RecyclerView
             android:id="@+id/lpg_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+                android:layout_marginTop="4dp"
             android:scrollbars="vertical"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"></android.support.v7.widget.RecyclerView>
 
+        </LinearLayout>
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="56dp"
@@ -66,6 +90,7 @@
             android:src="@drawable/ic_add_connection_blue"
             app:backgroundTint="@color/colorWhite"
             app:elevation="4dp" />
+
 
     </android.support.design.widget.CoordinatorLayout>
 

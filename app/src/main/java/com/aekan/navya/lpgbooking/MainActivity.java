@@ -22,6 +22,9 @@ import android.widget.AdapterView;
 
 import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -71,6 +74,12 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
         //Set Drawer layout
         mDrawerLayout = (DrawerLayout) findViewById(R.id.navdrawer);
         Log.v("Main", "Drawer layout bar set");
+
+        //request for Ad
+        MobileAds.initialize(this, "ca-app-pub-5882702306298799~5650186004");
+        AdView adViewBanner = (AdView) findViewById(R.id.banner_homescreen);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adViewBanner.loadAd(adRequest);
 
         //Set recycler view, by initialising the adapter
         RecyclerView recyclerViewNavigation = (RecyclerView) findViewById(R.id.nav_recyclerview);
