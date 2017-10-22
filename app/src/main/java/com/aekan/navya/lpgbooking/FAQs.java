@@ -11,6 +11,9 @@ import android.widget.ExpandableListView;
 import android.widget.SimpleExpandableListAdapter;
 
 import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 /**
  * Created by arunramamurthy on 26/07/17.
@@ -34,7 +37,7 @@ public class FAQs extends AppCompatActivity {
                 startActivity(mainActivity);
             }
         });
-        toolbar.setTitle("Test");
+        toolbar.setTitle("FAQs");
         setSupportActionBar(toolbar);
         Log.v("FAQs", " Calling adapterFAQs");
         //create expandable list adapter
@@ -53,5 +56,26 @@ public class FAQs extends AppCompatActivity {
         ExpandableListView faqSection = (ExpandableListView) findViewById(R.id.list);
         faqSection.setAdapter(adapterFAQs);
         //faqSection.setIndicatorBounds(30,36);
+
+        AdView adViewBanner = (AdView) findViewById(R.id.banner_faqs);
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("14B1C04D47670D84DE173A350418C2B4").build();//build();
+        //addTestDevice("14B1C04D47670D84DE173A350418C2B4").build();
+        adViewBanner.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+                Log.i("Ads", "onAdLoaded FAQs");
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                // Code to be executed when an ad request fails.
+                Log.i("Ads", "onAdFailedToLoad FAQs" + Integer.toString(errorCode));
+            }
+        });
+        adViewBanner.loadAd(adRequest);
+
+
+
     }
 }

@@ -22,6 +22,7 @@ import android.widget.AdapterView;
 
 import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
@@ -76,9 +77,23 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
         Log.v("Main", "Drawer layout bar set");
 
         //request for Ad
-        MobileAds.initialize(this, "ca-app-pub-5882702306298799~5650186004");
+        MobileAds.initialize(this, getResources().getString(R.string.AdView_App_ID_Test));
         AdView adViewBanner = (AdView) findViewById(R.id.banner_homescreen);
-        AdRequest adRequest = new AdRequest.Builder().build();
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("14B1C04D47670D84DE173A350418C2B4").build();//build();
+        //addTestDevice("14B1C04D47670D84DE173A350418C2B4").build();
+        adViewBanner.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+                Log.i("Ads", "onAdLoaded");
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                // Code to be executed when an ad request fails.
+                Log.i("Ads", "onAdFailedToLoad + " + Integer.toString(errorCode));
+            }
+        });
         adViewBanner.loadAd(adRequest);
 
         //Set recycler view, by initialising the adapter

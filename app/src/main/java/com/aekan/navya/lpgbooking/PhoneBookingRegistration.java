@@ -30,6 +30,9 @@ import com.aekan.navya.lpgbooking.utilities.LPG_PhoneListener;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_SpinnerAdapter;
 import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import java.util.HashMap;
 
@@ -77,6 +80,25 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
             }
         });
         setSupportActionBar(toolbar);
+
+
+        AdView adViewBanner = (AdView) findViewById(R.id.banner_phoneregistration);
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("14B1C04D47670D84DE173A350418C2B4").build();//build();
+        //addTestDevice("14B1C04D47670D84DE173A350418C2B4").build();
+        adViewBanner.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+                Log.i("Ads", "onAdLoaded Phone Booking");
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                // Code to be executed when an ad request fails.
+                Log.i("Ads", "onAdFailedToLoad  Phone Booking + " + Integer.toString(errorCode));
+            }
+        });
+        adViewBanner.loadAd(adRequest);
 
         //verify if the activity is being used for phone booking registration or SMS booking registration.
         activityPurpose = getIntent().getIntExtra(LPG_Utility.REGISTRATION_TYPE,LPG_Utility.PHONE_BOOKING_REGISTRATION);
