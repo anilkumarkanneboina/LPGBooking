@@ -17,6 +17,7 @@ import android.os.Messenger;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -31,6 +32,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aekan.navya.lpgbooking.utilities.LPGDataAPI;
@@ -43,6 +45,8 @@ import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
+
+import org.w3c.dom.Text;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -110,6 +114,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         final EditText lpgConnectionId = (EditText) findViewById(R.id.add_connectionid);
         final EditText lpglastdatelabel = (EditText) findViewById(R.id.add_lastbookeddate);
         final EditText lpgconnnectionexpiry = (EditText) findViewById(R.id.add_connectionexpiry);
+        TextView lpgUserPrompt = (TextView) findViewById(R.id.add_lpgconnection_userprompt);
 
         //hide soft text pad
         hideSoftTextPad(lpgConnection);
@@ -152,6 +157,10 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
             //get the connection id associated with the bundle
             //display the contents of the retrieved connection record in the fields
 
+            //set text values for edit connection
+            toolbar.setTitle(R.string.Add_LPGBooking_EditMode_Title);
+            lpgUserPrompt.setText(R.string.Add_Connection_User_Prompt_EditMode);
+
             //Check if we have cached details for the connection id
             boolean containsKey = LPG_Utility.hasBeenCached(connectionIdString);
             Log.v("Debug"," Add connection - Key in Cache data");
@@ -180,6 +189,10 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
 
 
         } else {
+            //set user prompts for Add connection
+            toolbar.setTitle(R.string.Add_LPGBooking_AddMode_Title);
+            lpgUserPrompt.setText(R.string.Add_Connection_User_Prompt_AddMode);
+
             //this is a new connection, so increment primary key
             (new LPGDataAPI(getApplicationContext(), "Incremented Primary Key")).updateCylinderIDCursor(new Messenger(new Handler((new LPGServiceCallBackHandler(this)))));
 
