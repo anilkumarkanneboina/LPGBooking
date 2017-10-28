@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
@@ -15,12 +16,15 @@ import android.util.Log;
 import com.aekan.navya.lpgbooking.LPGBooking;
 import com.aekan.navya.lpgbooking.LPG_AlarmReceiver;
 import com.aekan.navya.lpgbooking.R;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -88,6 +92,101 @@ public class LPG_Utility {
 
     public final static int LPG_GET_REGULAR_ALARM_NOTIFICATION_DATES = 34;
     public final static int LPG_GET_SNOOZE_ALARM_DATES = 45;
+
+    private static int COUNTER_INTERSTITIAL = 0;
+    private final static int CAP_INTERSTITIAL_COUNTER = 4;
+
+    private static ConcurrentHashMap<String,Cursor> cacheLocalData;
+
+    public static Cursor getCacheLocalData(String string) {
+        //THIS FUNCTION RETURNS CACHED LPG CONNECTION DETAILS TO REQUESTOR
+
+        if(cacheLocalData == null ){
+            //IF CACHE DOES NOT EXIST, THEN CREATE NEW CACHE OBJECT
+            cacheLocalData = new ConcurrentHashMap<>(LPG_Utility.HASH_CAPACITY,LPG_Utility.HASH_LOAD_FACTOR);
+            return  null;
+        } else {
+            return cacheLocalData.get(string);
+        }
+
+
+    }
+
+    public static boolean setCacheLocalData(String string, Cursor c ) {
+        boolean hasCacheBeenUpdated = true;
+
+        //UPDATE CACHE IF IT DOES NOT EXIST ALREADY
+        if(cacheLocalData == null ){
+            cacheLocalData = new ConcurrentHashMap<>(LPG_Utility.HASH_CAPACITY,LPG_Utility.HASH_LOAD_FACTOR);
+            Cursor updatedCursor = cacheLocalData.put(string, c);
+
+
+        } else {
+            Cursor oldValue = cacheLocalData.get(string);
+            Cursor replacedCursor = cacheLocalData.put(string,c);
+            if (!(replacedCursor == null &&  oldValue == null)){
+                hasCacheBeenUpdated = false;
+            }
+
+        }
+
+        return hasCacheBeenUpdated;
+    }
+
+    public static void removeCacheLocalConnectionDetails(String string){
+        if(cacheLocalData != null ){
+            cacheLocalData.remove(string);
+        }
+
+    }
+
+    public static boolean hasBeenCached (String string){
+        //FIND OUT STATUS OF CACHE FOR THE GIVEN LPG CONNECTION ROW ID
+
+        boolean cacheExists = true;
+
+        if (cacheLocalData == null ){
+            cacheExists = false;
+        } else{
+            cacheExists = cacheLocalData.contains(string );
+        }
+        return cacheExists;
+    }
+
+    public static boolean ifWeCanShowInterstitialAdNow(){
+        boolean showAd = false;
+
+        if (COUNTER_INTERSTITIAL < CAP_INTERSTITIAL_COUNTER){
+            ++COUNTER_INTERSTITIAL;
+        }
+        else {showAd = true;}
+
+        return true;
+
+    }
+
+    public static InterstitialAd loadInterstitialAd (Context context){
+        InterstitialAd mInterstitialAd;
+        //function to load interstial ad
+        mInterstitialAd = new InterstitialAd(context);
+        mInterstitialAd.setAdUnitId(context.getResources().getString(R.string.AdMob_InterstitialAd_Test));
+        mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice("14B1C04D47670D84DE173A350418C2B4").build());
+
+        return  mInterstitialAd;
+
+    }
+
+    public static void showInterStitialAd(InterstitialAd interstitialAd){
+        Log.i("Ads","Interstial Ad loaded : " + interstitialAd.isLoaded());
+        Log.i("Ads","Interstitial can we show : " + ifWeCanShowInterstitialAdNow());
+
+        if(interstitialAd.isLoaded() && ifWeCanShowInterstitialAdNow()){
+            Log.i("Ads","Showing Interstital Ad");
+            interstitialAd.show();
+
+        }
+
+    }
 
     public static int getDeliveredRefillSms() {
         return DELIVERED_REFILL_SMS;

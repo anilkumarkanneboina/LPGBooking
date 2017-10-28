@@ -153,13 +153,13 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
             //display the contents of the retrieved connection record in the fields
 
             //Check if we have cached details for the connection id
-            Boolean containsKey = ((LPGApplication) getApplication()).cacheLocalData.containsKey(connectionIdString);
+            boolean containsKey = LPG_Utility.hasBeenCached(connectionIdString);
+            Log.v("Debug"," Add connection - Key in Cache data");
 
-
-            if (((LPGApplication) getApplication()).cacheLocalData.containsKey(connectionIdString)) {
+            if ((containsKey)) {
                 //logic to bind connection details with activity
 
-                updateActivityWithLPGDetailsCursor(((LPGApplication) getApplication()).cacheLocalData.get(connectionIdString));
+                updateActivityWithLPGDetailsCursor(LPG_Utility.getCacheLocalData(connectionIdString));
             } else {
                 //get connection details and bind with Activity elements
                 //create call back messenger
@@ -168,7 +168,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
 
 
                 //Instantiate service handler
-                LPGServiceAPI serviceAPI = new LPGDataAPI((LPGApplication) getApplication(), "Service Call from Add LPG Connection to cache " + connectionIdString);
+                LPGServiceAPI serviceAPI = new LPGDataAPI(getApplicationContext(), "Service Call from Add LPG Connection to cache " + connectionIdString);
 
                 //send message to API
                 serviceAPI.populateCylinderInfoThroughCursorWithRowID(connectionIdString, callBackMessenger);
@@ -181,7 +181,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
 
         } else {
             //this is a new connection, so increment primary key
-            (new LPGDataAPI((LPGApplication) getApplication(), "Incremented Primary Key")).updateCylinderIDCursor(new Messenger(new Handler((new LPGServiceCallBackHandler(this)))));
+            (new LPGDataAPI(getApplicationContext(), "Incremented Primary Key")).updateCylinderIDCursor(new Messenger(new Handler((new LPGServiceCallBackHandler(this)))));
 
         }
 
@@ -320,7 +320,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     //clear local cache
-                                    ((LPGApplication)getApplication()).cacheLocalData.remove(finalIDCount);
+                                    LPG_Utility.removeCacheLocalConnectionDetails(finalIDCount);
                                     dialog.dismiss();
 
 
@@ -522,8 +522,9 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         }
         //Update cursor values
         String connectionID = dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID));
-        ((LPGApplication) getApplication()).cacheLocalData.put(connectionID,dataCursor);
-        Boolean hasKey = ((LPGApplication) getApplication()).cacheLocalData.containsKey(connectionID);
+
+        LPG_Utility.setCacheLocalData(connectionID,dataCursor);
+
 
 
         //set animation enabled for the text input layout, enabling the animation after binding with activity

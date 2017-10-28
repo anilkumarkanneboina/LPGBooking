@@ -78,7 +78,8 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
                 SQLiteDatabase db = ((LPGApplication) getApplication()).LPGDB ;
                 if (updateConnectionExpiryDate(db, currentDateString, LPG_CONNECTION_ID)) {
                     //remove cached data
-                    ((LPGApplication) getApplication()).cacheLocalData.remove(LPG_CONNECTION_ID);
+
+                    LPG_Utility.removeCacheLocalConnectionDetails(LPG_CONNECTION_ID);
                     //set alarms for new expiry date
                     LPG_Utility.RefillAlarmNotification[] newRefillAlarmDates = LPG_Utility.getRefillRemainder(ConfirmLPGBookingCompletion.this, currentDateString, LPGConnectionExpiryDays, LPG_CONNECTION_ID, LPG_CONNECTION_NAME, LPG_Utility.LPG_GET_REGULAR_ALARM_NOTIFICATION_DATES);
                     for (LPG_Utility.RefillAlarmNotification counterRefillAlarmDates : newRefillAlarmDates) {

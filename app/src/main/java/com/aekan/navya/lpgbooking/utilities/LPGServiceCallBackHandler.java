@@ -10,7 +10,7 @@ import android.os.Message;
  * This handler is the "catcher" - ie., it catches the service response message, and appropriately takes action.
  * Since the service response, as thrown by "worker" , could be one of two activities, the catcher will need methods to take appropriate action
  * for each of the activity.
- * Thuus, the two methods would be - update Activity with LPG details , (or), update primary key of LPG record.
+ * Thus, the two methods would be - update Activity with LPG details , (or), update primary key of LPG record.
  *
  * This catcher object actually use an interface - which we would call as catcher-helper interface. The interface just contains the two methods
  * corresponding to activities. The catcher-helper interface is LPGServiceResponseCallBack

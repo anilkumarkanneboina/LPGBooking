@@ -1,5 +1,6 @@
 package com.aekan.navya.lpgbooking.utilities;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
@@ -42,14 +43,19 @@ public class LPGDataAPI extends HandlerThread implements ServiceClientAPIInterfa
 
     //Instance variable to hold application context
     private LPGApplication mApplication;
+    private Context mContext;
     //Handler to process information
     private Handler mServiceClientHandler;
+    private SQLiteDatabase mDB;
 
     //constructor to instantiate application
-    public LPGDataAPI(LPGApplication application,String name){
+
+
+    public LPGDataAPI(Context context, String name){
         super(name);
-        mApplication = application;
-        //start the handler thread
+        mContext = context;
+        mDB = new LPG_SQLOpenHelperClass(mContext).getWritableDatabase();
+        //start handler thread
         this.start();
     }
 
@@ -57,9 +63,9 @@ public class LPGDataAPI extends HandlerThread implements ServiceClientAPIInterfa
     public Cursor getAllConnectionDetails() {
         //initialise cursor
         Cursor cursor = null;
-        SQLiteDatabase database = mApplication.LPGDB;
-        if (database!=null) {
-            cursor = database.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME, //name of the table
+
+        if (mDB!=null) {
+            cursor = mDB.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME, //name of the table
                     null,
                     null,
                     null,
@@ -78,18 +84,20 @@ public class LPGDataAPI extends HandlerThread implements ServiceClientAPIInterfa
     //service call to get cursor for a specific row id
     public Cursor getCylinderRecordForID(String rowID){
 
-        ConcurrentHashMap<String,Cursor> hashCursor = mApplication.cacheLocalData;
-        SQLiteDatabase lpgDB = mApplication.LPGDB;
-        Cursor c;
 
-        if (!(hashCursor.containsKey(rowID))) {
+
+        Cursor cursor = null;
+
+
+
+        if (!LPG_Utility.hasBeenCached(rowID)) {
             //local cache does not have details for this row id
             //update this cursor record in local cache HashMap
             //query from the database for all columns and put them in a cursor
             String selection = LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID + "= ?";
             String[] selectionArgs = { rowID };
 
-            c=lpgDB.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,
+            Cursor temp=mDB.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,
                     null,
                     selection,
                     selectionArgs,
@@ -97,9 +105,10 @@ public class LPGDataAPI extends HandlerThread implements ServiceClientAPIInterfa
                     null,
                     null);
             //update the value in HashMap - this acts as a local caching mechanism
-            if (c.moveToFirst()) {
-                mApplication.cacheLocalData.put(rowID, c);
-                return hashCursor.get(rowID);
+            if (temp.moveToFirst()) {
+                LPG_Utility.setCacheLocalData(rowID, temp);
+
+                cursor =  LPG_Utility.getCacheLocalData(rowID);
 
             }
 
@@ -107,7 +116,7 @@ public class LPGDataAPI extends HandlerThread implements ServiceClientAPIInterfa
 
         }
         //mApplication.cacheLocalData.put(rowID,c);
-        return null;
+        return cursor;
 
 
     }
@@ -118,7 +127,7 @@ public class LPGDataAPI extends HandlerThread implements ServiceClientAPIInterfa
 
         // set primary key value for connection id
         String[] connectionID = {LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID};
-        Cursor cursorID = mApplication.LPGDB.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,connectionID,null,null,null,null,null);
+        Cursor cursorID = mDB.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,connectionID,null,null,null,null,null);
         Log.v("AddConnnection ", "Cursor count before records creation " + Integer.toString(cursorID.getCount()));
         // Log.v("AddConnection Cursor "," getColumnIndex " + Integer.toString(cursorID.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID)));
         //Log.v("AddConnection Cursor "," getString " + cursorID.getString(0));

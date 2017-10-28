@@ -169,6 +169,7 @@
     <!--String constants for AdView-->
     <string name="AdView_banner">ca-app-pub-3940256099942544/6300978111</string>
     <string name="AdView_App_ID_Test">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="AdMob_InterstitialAd_Test">ca-app-pub-3940256099942544/1033173712</string>
 
 
 </resources>

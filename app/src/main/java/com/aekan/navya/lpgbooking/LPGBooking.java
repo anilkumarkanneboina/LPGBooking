@@ -115,6 +115,7 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
         //set support action bar
         // setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+        setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -125,7 +126,7 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
             }
         });
         toolbar.setTitle(R.string.lpgbooking_title);
-        setSupportActionBar(toolbar);
+
 
 
         //set null values for Phone and SMS - before binding lPG Connection details
@@ -148,12 +149,12 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
 
 
 
-        ConcurrentHashMap<String, Cursor> concurrentHash = ((LPGApplication) getApplication()).cacheLocalData;
-        if (!(concurrentHash.containsKey(lpgparcelConnectionId))) {
-            LPGDataAPI addBookingAPI = new LPGDataAPI((LPGApplication) getApplication(), "Service Call from Add Booking");
+
+        if (!LPG_Utility.hasBeenCached(lpgparcelConnectionId)){
+            LPGDataAPI addBookingAPI = new LPGDataAPI(getApplicationContext(), "Service Call from Add Booking");
             addBookingAPI.populateCylinderInfoThroughCursorWithRowID(lpgparcelConnectionId, new Messenger(new Handler(new LPGServiceCallBackHandler(this))));
         } else {
-            updateActivityWithLPGDetailsCursor(concurrentHash.get(lpgparcelConnectionId));
+            updateActivityWithLPGDetailsCursor(LPG_Utility.getCacheLocalData(lpgparcelConnectionId));
         }
 
 
@@ -389,6 +390,13 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
         ImageView ClickToCall = (ImageView) findViewById(R.id.lpgbooking_call_img);
         ImageView ClickToSMS = (ImageView) findViewById(R.id.lpgbooking_sms_img);
         String connectionName;
+
+        if(c==null){
+            //May the connection is deleted, gracefully move to home screen
+            Toast.makeText(getApplicationContext(),getApplicationContext().getResources().getString(R.string.connection_detail_missing),Toast.LENGTH_LONG).show();
+            startActivity(new Intent(getApplicationContext(),MainActivity.class));
+        }
+
         if (c.moveToFirst()) {
             connectionName = c.getString(c.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME));
             lpgConnectionName.setText(connectionName);

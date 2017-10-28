@@ -33,8 +33,12 @@ import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 
 import java.util.HashMap;
+
+import static com.aekan.navya.lpgbooking.utilities.LPG_Utility.ifWeCanShowInterstitialAdNow;
 
 /**
  * Created by arunramamurthy on 20/06/17.
@@ -60,6 +64,7 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
     private PhoneStateListener phonelistener;
     private String phoneNumber;
     private String provider;
+    private InterstitialAd mInterstitialAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,36 +74,32 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
         setContentView(R.layout.phone_registration);
         //Configure tool bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.phoneregistration_toolbar);
-
+        MobileAds.initialize(this, getResources().getString(R.string.AdView_App_ID_Test));
 
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+        setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.i("Ads","Show Interstitial Ad from Phone Booking + " + mInterstitialAd.isLoaded());
+                //show Interstial Ad
+                //showInterStitialAd(mInterstitialAd);
+                mInterstitialAd.show();
+                //Go to Main Activity
                 Intent homeActivity = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(homeActivity);
             }
         });
-        setSupportActionBar(toolbar);
 
 
-        AdView adViewBanner = (AdView) findViewById(R.id.banner_phoneregistration);
-        AdRequest adRequest = new AdRequest.Builder().addTestDevice("14B1C04D47670D84DE173A350418C2B4").build();//build();
-        //addTestDevice("14B1C04D47670D84DE173A350418C2B4").build();
-        adViewBanner.setAdListener(new AdListener() {
-            @Override
-            public void onAdLoaded() {
-                // Code to be executed when an ad finishes loading.
-                Log.i("Ads", "onAdLoaded Phone Booking");
-            }
+        //Banner Ad
+        showBannerAd();
 
-            @Override
-            public void onAdFailedToLoad(int errorCode) {
-                // Code to be executed when an ad request fails.
-                Log.i("Ads", "onAdFailedToLoad  Phone Booking + " + Integer.toString(errorCode));
-            }
-        });
-        adViewBanner.loadAd(adRequest);
+        //Load Interstial Ad
+        //mInterstitialAd = LPG_Utility.loadInterstitialAd(getApplicationContext());
+        mInterstitialAd = new InterstitialAd(getApplicationContext());
+        mInterstitialAd.setAdUnitId(getResources().getString(R.string.AdMob_InterstitialAd_Test));
+        mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice("14B1C04D47670D84DE173A350418C2B4").build());
 
         //verify if the activity is being used for phone booking registration or SMS booking registration.
         activityPurpose = getIntent().getIntExtra(LPG_Utility.REGISTRATION_TYPE,LPG_Utility.PHONE_BOOKING_REGISTRATION);
@@ -199,7 +200,7 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
         }
 
         //Populate spinner with connection names
-        LPGDataAPI lpgDataAPI = new LPGDataAPI((LPGApplication) getApplication(), "Call from Navigation Drawer");
+        LPGDataAPI lpgDataAPI = new LPGDataAPI(getApplicationContext(), "Call from Navigation Drawer");
         Messenger serviceResponseCallbackMessenger = new Messenger(new Handler(new LPGServiceCallBackHandler(this)));
 
         lpgDataAPI.populateAllConnections(serviceResponseCallbackMessenger);
@@ -358,7 +359,10 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
             //get views from layout which need to be initialised
 
             parent.setSelection(position);
-
+            Log.i("Ads","Show Interstitial Ad from Phone Booking + " + mInterstitialAd.isLoaded());
+            //show Interstial Ad
+            //showInterStitialAd(mInterstitialAd);
+            mInterstitialAd.show();
 
             // get adapter
             ArrayAdapter<String> parentAdapter = (ArrayAdapter<String>) parent.getAdapter();
@@ -439,6 +443,39 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
         }
 
     }
+
+    public void showBannerAd(){
+        AdView adViewBanner = (AdView) findViewById(R.id.banner_phoneregistration);
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("14B1C04D47670D84DE173A350418C2B4").build();//build();
+        //addTestDevice("14B1C04D47670D84DE173A350418C2B4").build();
+        adViewBanner.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+                Log.i("Ads", "onAdLoaded Phone Booking");
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                // Code to be executed when an ad request fails.
+                Log.i("Ads", "onAdFailedToLoad  Phone Booking + " + Integer.toString(errorCode));
+            }
+        });
+        adViewBanner.loadAd(adRequest);
+    }
+
+    public void showInterStitialAd(InterstitialAd interstitialAd){
+        Log.i("Ads","Interstial Ad loaded : " + mInterstitialAd.isLoaded());
+        Log.i("Ads","Interstitial can we show : " + ifWeCanShowInterstitialAdNow());
+
+        if(mInterstitialAd.isLoaded() && ifWeCanShowInterstitialAdNow()){
+            Log.i("Ads","Showing Interstital Ad");
+            mInterstitialAd.show();
+
+        }
+
+    }
+
 
 
 }

@@ -77,24 +77,8 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
         Log.v("Main", "Drawer layout bar set");
 
         //request for Ad
-        MobileAds.initialize(this, getResources().getString(R.string.AdView_App_ID_Test));
-        AdView adViewBanner = (AdView) findViewById(R.id.banner_homescreen);
-        AdRequest adRequest = new AdRequest.Builder().addTestDevice("14B1C04D47670D84DE173A350418C2B4").build();//build();
-        //addTestDevice("14B1C04D47670D84DE173A350418C2B4").build();
-        adViewBanner.setAdListener(new AdListener() {
-            @Override
-            public void onAdLoaded() {
-                // Code to be executed when an ad finishes loading.
-                Log.i("Ads", "onAdLoaded");
-            }
+        showBannerAd();
 
-            @Override
-            public void onAdFailedToLoad(int errorCode) {
-                // Code to be executed when an ad request fails.
-                Log.i("Ads", "onAdFailedToLoad + " + Integer.toString(errorCode));
-            }
-        });
-        adViewBanner.loadAd(adRequest);
 
         //Set recycler view, by initialising the adapter
         RecyclerView recyclerViewNavigation = (RecyclerView) findViewById(R.id.nav_recyclerview);
@@ -186,6 +170,28 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
 
         return super.onOptionsItemSelected(item);
     }*/
+
+   private void showBannerAd(){
+       MobileAds.initialize(this, getResources().getString(R.string.AdView_App_ID_Test));
+       AdView adViewBanner = (AdView) findViewById(R.id.banner_homescreen);
+       AdRequest adRequest = new AdRequest.Builder().addTestDevice("14B1C04D47670D84DE173A350418C2B4").build();//build();
+       //addTestDevice("14B1C04D47670D84DE173A350418C2B4").build();
+       adViewBanner.setAdListener(new AdListener() {
+           @Override
+           public void onAdLoaded() {
+               // Code to be executed when an ad finishes loading.
+               Log.i("Ads", "onAdLoaded");
+           }
+
+           @Override
+           public void onAdFailedToLoad(int errorCode) {
+               // Code to be executed when an ad request fails.
+               Log.i("Ads", "onAdFailedToLoad + " + Integer.toString(errorCode));
+           }
+       });
+       adViewBanner.loadAd(adRequest);
+
+   }
 
     @Override
     public void onStart() {

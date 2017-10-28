@@ -1,5 +1,6 @@
 package com.aekan.navya.lpgbooking.utilities;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.BaseColumns;
@@ -17,6 +18,7 @@ public class lpgconnectionparcel implements Parcelable {
     /*declare local variables for the parcel*/
     private String id;
     private boolean isFromNotification ;
+    private Context mContext;
     //constant for identifying the parcel
     public final static String  LPG_CONNECTIONRECORD_PARCEL = "LPG Record parcel";
 
@@ -44,6 +46,13 @@ public class lpgconnectionparcel implements Parcelable {
         this.isFromNotification = isFromNotification;
     }
 
+    public lpgconnectionparcel(String id,boolean isFromNotification,Context context){
+        this.id = id;
+        this.isFromNotification = isFromNotification;
+        this.mContext = context;
+
+
+    }
 
     //constructor to set the parcel for the Parcelable object
     public lpgconnectionparcel(Parcel parcel){
@@ -65,6 +74,7 @@ public class lpgconnectionparcel implements Parcelable {
         dest.writeString(id);
         dest.writeBooleanArray(new boolean[]{isFromNotification});
 
+
     }
 
     public static final Parcelable.Creator<lpgconnectionparcel> CREATOR = new Parcelable.Creator<lpgconnectionparcel>(){
@@ -85,6 +95,8 @@ public class lpgconnectionparcel implements Parcelable {
     public String getId(){return this.id;}
 
     public boolean getNotificationFlag() { return this.isFromNotification ;}
+
+    public Context getmContext() {return  this.mContext;}
 
     /**
      * Created by arunramamurthy on 14/04/16.

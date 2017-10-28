@@ -57,6 +57,16 @@ public class FAQs extends AppCompatActivity {
         faqSection.setAdapter(adapterFAQs);
         //faqSection.setIndicatorBounds(30,36);
 
+        //Banner Ad
+        showBannerAd();
+
+
+
+
+
+    }
+
+    private void showBannerAd(){
         AdView adViewBanner = (AdView) findViewById(R.id.banner_faqs);
         AdRequest adRequest = new AdRequest.Builder().addTestDevice("14B1C04D47670D84DE173A350418C2B4").build();//build();
         //addTestDevice("14B1C04D47670D84DE173A350418C2B4").build();
@@ -74,8 +84,5 @@ public class FAQs extends AppCompatActivity {
             }
         });
         adViewBanner.loadAd(adRequest);
-
-
-
     }
 }

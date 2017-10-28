@@ -22,7 +22,7 @@ public class LPGApplication extends Application {
     public SQLiteDatabase LPGDB;
     public LPG_AlertBoxClass LPG_Alert ;
 
-    public ConcurrentHashMap<String,Cursor> cacheLocalData;
+
     public Boolean isSingletonRun = false;
 
     public void LPG_AlertBoxInstantiate(){
@@ -38,7 +38,7 @@ public class LPGApplication extends Application {
 
         //instantiate Hashmap
 
-        cacheLocalData = new ConcurrentHashMap<>(LPG_Utility.HASH_CAPACITY,LPG_Utility.HASH_LOAD_FACTOR);
+
 
         //set flag to prevent this singleton method from running again
         isSingletonRun = true;
