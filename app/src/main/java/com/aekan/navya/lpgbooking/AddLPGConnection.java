@@ -40,6 +40,7 @@ import com.aekan.navya.lpgbooking.utilities.LPGServiceAPI;
 import com.aekan.navya.lpgbooking.utilities.LPGServiceCallBackHandler;
 import com.aekan.navya.lpgbooking.utilities.LPGServiceResponseCallBack;
 import com.aekan.navya.lpgbooking.utilities.LPG_AlertBoxClass;
+import com.aekan.navya.lpgbooking.utilities.LPG_SQLOpenHelperClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
 import com.google.android.gms.appindexing.Action;
@@ -56,6 +57,11 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
 
     public GregorianCalendar test_alarm_midway;
     public GregorianCalendar test_alarm_final_expiry;
+
+    // Set REGEX strings for data validation
+    private String mRegexNumber = "[0-9]{5,15}+";
+    private String mRegexSMS = "[0-9]{1,10}+";
+    private String mRegexExpiryDays = "[0-9]+";
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -72,16 +78,12 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         //set content view for the activity
         setContentView(R.layout.activity_add_lpgconnection);
         //Get database to do CRUD operations
-        SQLiteDatabase db = ((LPGApplication) getApplication()).LPGDB ;
-        if (db == null ){
-
-        }
 
 
         // Set REGEX strings for data validation
         final String regexNumber = "[0-9]{5,15}+";
         final String regexExpiryDays = "[0-9]+";
-        final String regexMandatory = "[]+";
+
         //Instantiate the tool bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.addlpg_toolbar);
 
@@ -149,7 +151,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
 
         //Load the page with data, and initialise id counters based on
         // intent filter being passed to the activity
-        final Bundle connectionBundle = getIntent().getExtras();
+
         final String connectionIdString = getIntent().getStringExtra(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.FIELD_CONNECTION_ID_EDIT);
 
 
@@ -163,18 +165,15 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
 
             //Check if we have cached details for the connection id
             boolean containsKey = LPG_Utility.hasBeenCached(connectionIdString);
-            Log.v("Debug"," Add connection - Key in Cache data");
+
 
             if ((containsKey)) {
                 //logic to bind connection details with activity
-
                 updateActivityWithLPGDetailsCursor(LPG_Utility.getCacheLocalData(connectionIdString));
             } else {
                 //get connection details and bind with Activity elements
                 //create call back messenger
-
                 Messenger callBackMessenger = new Messenger(new Handler(new LPGServiceCallBackHandler(this)));
-
 
                 //Instantiate service handler
                 LPGServiceAPI serviceAPI = new LPGDataAPI(getApplicationContext(), "Service Call from Add LPG Connection to cache " + connectionIdString);
@@ -216,7 +215,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
             public void afterTextChanged(Editable s) {
                 String phoneNo = lpgAgencyPhoneNo.getText().toString();
 
-                if (!(phoneNo.matches(regexNumber))){
+                if (!(phoneNo.matches(mRegexNumber))){
                     lpgAgencyPhoneNo.setError(" Please enter a numeral only, without any special characters");
                 }
             }
@@ -245,7 +244,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         });
 
         //Get the database
-        final SQLiteDatabase sqLiteDatabase = ((LPGApplication) getApplication()).LPGDB;
+        final SQLiteDatabase sqLiteDatabase = new LPG_SQLOpenHelperClass(getApplicationContext()).getWritableDatabase();
 
         //Set onclick listener for Save button ;
         buttonSave.setOnClickListener(new View.OnClickListener() {
@@ -255,6 +254,9 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
                 boolean dataEnteredRight = true;
                 EditText scrollToError = lpgConnection;
 
+                //hide key pad
+                hideSoftTextPad(lpgConnection);
+
                 //Validations for connection expiry to be mandatory field
                 String connectionExpiry = lpgconnnectionexpiry.getText().toString();
                 if ( connectionExpiry.length() == 0 ){
@@ -263,7 +265,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
                     scrollToError = lpgconnnectionexpiry;
                 } else {
 
-                    if ( !(connectionExpiry.matches(regexExpiryDays)) ){
+                    if (!(connectionExpiry.matches(regexExpiryDays))){
                         lpgconnnectionexpiry.setError(" Please enter a numeral ");
                         dataEnteredRight = false;
                         scrollToError = lpgconnnectionexpiry;

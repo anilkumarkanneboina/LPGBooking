@@ -377,6 +377,21 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
                     agencyTextView.setText(mCursor.getString(mCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY)));
                     phonenumberTextView.setText(mCursor.getString(mCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_PHONE_NUMBER)));
 
+                    //set phone no or sms no based on activity purpose
+
+                    switch (activityPurpose){
+                        case LPG_Utility.PHONE_BOOKING_REGISTRATION:
+                            phonenumberTextView.setText(mCursor.getString(mCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_PHONE_NUMBER)));
+                            break;
+                        case LPG_Utility.SMS_BOOKING_REGISTRATIION:
+                            phonenumberTextView.setText(mCursor.getString(mCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_SMS_NUMBER)));
+                            break;
+                        default:
+                            phonenumberTextView.setText(mCursor.getString(mCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_PHONE_NUMBER)));
+                            break;
+
+                    }
+
                     String phoneNumberText = phonenumberTextView.getText().toString();
                     providerName = providerTextView.getText().toString();
                     phoneNumber = phoneNumberText;

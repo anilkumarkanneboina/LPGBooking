@@ -40,7 +40,8 @@
     <string name="btn_Submit">Submit</string>
     <string name="btn_Cancel">Cancel</string>
     <string name="Notification_MidWayAlarm">is half done. Click to book your cylinder</string>
-    <string name="Add_Connection_User_Prompt_AddMode">You can add a new LPG connection details here. Make sure you give the right phone numbers for your LPG Dealer / Distributor, which will come in handy when you try to refill.</string>
+    <string name="Add_Connection_User_Prompt_AddMode">You can add a new LPG connection details here. </string>
+    <string name="Add.Connection.User.Instructions">You will get your Agency phone number details from your LPG provider\'s website, please refer to FAQs section in Home screen menu. \nYou will find your connecton id in your LPG connection invoice or your LPG connection document.\nPlease provide correct details to help in easy re-fill.</string>
     <string name="Add_Connection_User_Prompt_EditMode">You can edit your LPG Booking details below.</string>
     <string name="Add_LPGBooking_AddMode_Title">Add Connection</string>
     <string name="Add_LPGBooking_EditMode_Title">Edit Connection</string>

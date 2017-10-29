@@ -3,6 +3,9 @@
     <!--Add LPG connection page-->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="addconnection_user_prompt_textsize">18sp</dimen>
+    <dimen name="addconnection_user_instruction_textsize">16sp</dimen>
+    <dimen name="addconnection_margin_instruction_top">4dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="fab_bottom_margin">16dp</dimen>
     <dimen name="lpg_cylinder_name">28dp</dimen>
@@ -50,6 +53,7 @@
     <dimen name="lpgbooking_margin_bottom_image">16dp</dimen>
     <dimen name="lpgbooking_userprompt_margintop">24dp</dimen>
     <dimen name="lpgbooking_userprompt_marginBottom">8dp</dimen>
+    <dimen name="lpgbooking_instruction_marginBottom">10dp</dimen>
     <dimen name="lpgbooking_smsnotification_paddingleft">16dp</dimen>
     <dimen name="lpgbooking_smsnotification_paddingtop">8dp</dimen>
     <dimen name="lpgbooking_fontsize_smsnotification">8sp</dimen>
