@@ -296,8 +296,8 @@ public class LPG_Utility {
 
                     //Midway alarm notification record - will be put in first index of Alarm Notification
                     //test notification banner for now
-                    alarmTimes[0] = new RefillAlarmNotification(notificationPendingIntent, newNotification);
-                    //alarmTimes[0] = new RefillAlarmNotification(notificationPendingIntent, midwayExpiryDate);
+                    //alarmTimes[0] = new RefillAlarmNotification(notificationPendingIntent, newNotification);
+                    alarmTimes[0] = new RefillAlarmNotification(notificationPendingIntent, midwayExpiryDate);
 
                     // Set another alarm before final expiry
                     Intent notificationExpiryUltmate = new Intent(applicationContext, LPG_AlarmReceiver.class);
@@ -326,8 +326,8 @@ public class LPG_Utility {
                     newnotification2.add(Calendar.MINUTE, 3);
 
                     //test notificaiton firing for now
-                    alarmTimes[1] = new RefillAlarmNotification(notificationFinal, newnotification2);
-                    //alarmTimes[1] = new RefillAlarmNotification(notificationFinal, calendarNotificationUltimate);
+                    //alarmTimes[1] = new RefillAlarmNotification(notificationFinal, newnotification2);
+                    alarmTimes[1] = new RefillAlarmNotification(notificationFinal, calendarNotificationUltimate);
                 }
                 return alarmTimes;
 
