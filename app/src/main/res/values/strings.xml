@@ -138,39 +138,91 @@
 
     </string-array>
     <string-array name="Answers">
-        <item>\nThis app supports phone booking for any LPG provider for which you can get a refill booking number. But, SMS booking can only be done for following three providers - Indane(by Indian Oil Corporation), Bharath Gas(by Bharath Petroleum
-        Corporation Ltd),HP Gas(by Hindusthan Petroleum Corporation Ltd).</item>
-        <item>\nWe can help you with atleast for three among the major players.\n<a href="https://myhpgas.in/myHPGas/HPGas/OtherDistributorInformation.aspx">HP Gas</a>\n
-        <a href="https://indane.co.in/new_distributor.php">Indane</a>\n<a href="https://ebharatgas.com/bharatgas/locate.jsp?siteid=ebharat">Bharath Gas</a>
+        <item>
+            This app supports phone booking for any LPG provider for which you can get a refill booking number. But, SMS booking can only be done for following three providers - Indane(by Indian Oil Corporation), Bharath Gas(by Bharath Petroleum
+            Corporation Ltd),HP Gas(by Hindusthan Petroleum Corporation Ltd).
+        </item>
+        <item>
+            We can help you with atleast for three providers among the major players.\n
+            - HP Gas\n
+            - Indane\n
+            - Bharath Gas
         </item>
         <item>
             You need to register your mobile number with LPG provider. This is a pre-requisite to refill using Phone / SMS option.
         </item>
-        <item>\nAlmost all LPG providers require a registration of phone number with which SMS / Phone booking can be done. This is a process by which your LPG provider would identify
-            your LPG connection by mapping it to your mobile number, and hence, LPG provider is able to book re-fill to
-            correct customer subsequently.  So, before you effectively use booking features in this app,
-        you need to register your phone number. Please read on to understand how to register your phone no.</item>
         <item>
-            Registration of your mobile number with your LPG provider is nothing but associating your preferred mobile number to your connection. This is necessary for
-            your service provider to identify your connection correctly during subsequent booking.
-        </item>
+            Almost all LPG providers require a registration of phone number with which SMS / Phone booking can be done. This is a process by which your LPG provider would identify
+            your LPG connection by mapping it to your mobile number, and hence, LPG provider is able to book re-fill to
+            right customer subsequently.  So, before you effectively use booking features in this app,
+        you need to register your phone number. Please read on to understand how to register your phone no.</item>
 
-        <item>Please visit options under menu in home screen. You will find detailed documentation about phone registration, with
-        major three providers in links below.
-            <a href="https://indane.co.in/smstarrifs.php">Indane Phone Registration</a>\n
-            <a href="http://www.myhpgas.in/myHPGas/HPGas/BookRefill.aspx">HP Gas Phone Registration</a>
-            <a href="https://ebharatgas.com/ebharat/forHome/MultipleModesBooking.html">Bharath Gas Phone Registration</a>
+
+        <item>
+            Please visit options under menu in home screen. You will find detailed documentation about phone registration, with
+            major three providers in links below.\n
+            - Indane Phone Registration\n
+            - HP Gas Phone Registration\n
+            - Bharath Gas Phone Registration
         </item>
-        <item>For us to confirm if your SMS booking has been successful, we would need to read your SMS-es. It becomes difficult to
+        <item>
+            For us to confirm if your SMS booking has been successful, we would need to read your SMS-es. It becomes difficult to
             confirm success or failure based on SMS for us. Hence, we do start tracking your refill connection even after successful processing
             of SMS. If your are doing SMS booking, please manually enter your refill book date against your connection in Home page.
         </item>
     </string-array>
+    <string name="FAQs_Click_Link">You will now be redirected away from the app to a browser</string>
+    <string name="span_identifier_link">links_answer_</string>
+    <string name="span_identifier_startspan">span_start_</string>
+    <string name="span_identifier_endspan">span_end_</string>
+    <string-array name="links_answer_1">
+        <item>null</item>
+    </string-array>
+    <string-array name="links_answer_2">
+        <item>"https://myhpgas.in/myHPGas/HPGas/OtherDistributorInformation.aspx"</item>
+        <item>"https://indane.co.in/new_distributor.php"</item>
+        <item> "https://ebharatgas.com/bharatgas/locate.jsp?siteid=ebharat"</item>
+    </string-array>
+    <string-array name="links_answer_3">
+        <item>null</item>
+    </string-array>
+    <string-array name="links_answer_4">
+        <item>null</item>
+    </string-array>
+    <string-array name="links_answer_5">
+        <item>"https://indane.co.in/smstarrifs.php"</item>
+        <item>"http://www.myhpgas.in/myHPGas/HPGas/BookRefill.aspx"</item>
+        <item>"https://ebharatgas.com/ebharat/forHome/MultipleModesBooking.html"</item>
+    </string-array>
+    <string-array name="links_answer_6">
+        <item>null</item>
+    </string-array>
+    <!--Array to hold start values of span-->
 
+    <string-array name="span_start_2">
+        <item>78</item>
+        <item>84</item>
+        <item>92</item>
+    </string-array>
+    <string-array name="span_start_5">
+        <item>158</item>
+        <item>185</item>
+        <item>208</item>
+    </string-array>
+    <!--Array to hold start values of span-->
+    <string-array name="span_end_2">
+        <item>81</item>
+        <item>89</item>
+        <item>112</item>
+    </string-array>
+    <string-array name="span_end_5">
+        <item>183</item>
+        <item>206</item>
+        <item>248</item>
+    </string-array>
     <!--String constants for AdView-->
     <string name="AdView_banner">ca-app-pub-3940256099942544/6300978111</string>
     <string name="AdView_App_ID_Test">ca-app-pub-3940256099942544~3347511713</string>
     <string name="AdMob_InterstitialAd_Test">ca-app-pub-3940256099942544/1033173712</string>
-
 
 </resources>
