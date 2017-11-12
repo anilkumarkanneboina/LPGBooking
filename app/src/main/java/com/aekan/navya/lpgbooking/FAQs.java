@@ -1,14 +1,21 @@
 package com.aekan.navya.lpgbooking;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.URLSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.SimpleExpandableListAdapter;
+import com.aekan.navya.lpgbooking.utilities.LPG_LinkExpandableAdapter;
+import android.widget.TextView;
 
 import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
 import com.google.android.gms.ads.AdListener;
@@ -41,7 +48,7 @@ public class FAQs extends AppCompatActivity {
         setSupportActionBar(toolbar);
         Log.v("FAQs", " Calling adapterFAQs");
         //create expandable list adapter
-        ExpandableListAdapter adapterFAQs = new SimpleExpandableListAdapter(getApplicationContext(),
+        ExpandableListAdapter adapterFAQs = new LPG_LinkExpandableAdapter(FAQs.this,
                 LPG_Utility.getExpandableGroupData(getApplicationContext()),
                 R.layout.faq_question,
                 new String[]{LPG_Utility.EXPN_LIST_QUESTION},
@@ -49,21 +56,16 @@ public class FAQs extends AppCompatActivity {
                 LPG_Utility.getExpandableChildData(getApplicationContext()),
                 R.layout.faq_answer,
                 new String[]{LPG_Utility.EXPN_LIST_ANSWER},
-                new int[]{R.id.faq_answer}
+                new int[]{R.id.faq_answer},
+                LPG_Utility.getFAQsSpanCollection(FAQs.this)
         );
         //set Adpater
-        // setListAdapter(adapterFAQs);
+
         ExpandableListView faqSection = (ExpandableListView) findViewById(R.id.list);
         faqSection.setAdapter(adapterFAQs);
-        //faqSection.setIndicatorBounds(30,36);
 
         //Banner Ad
         showBannerAd();
-
-
-
-
-
     }
 
     private void showBannerAd(){

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.text.style.URLSpan;
+import android.util.Log;
 import android.view.View;
 
 import com.aekan.navya.lpgbooking.R;
@@ -49,8 +50,11 @@ public class SpanDataBox {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+
                                 Intent redirectToLPGProvider = new Intent(Intent.ACTION_VIEW);
+                                redirectToLPGProvider.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 redirectToLPGProvider.setData(Uri.parse(URL));
+                                mContext.startActivity(redirectToLPGProvider);
                                 dialog.dismiss();
                                 mContext.startActivity(redirectToLPGProvider);
                             }

@@ -1,14 +1,21 @@
 package com.aekan.navya.lpgbooking.utilities;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
+import android.text.style.URLSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 
+
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
@@ -16,12 +23,13 @@ import java.util.Map;
  * Created by arunramamurthy on 19/10/17.
  */
 
-class LPG_LinkExpandableAdapter extends SimpleExpandableListAdapter {
+public class LPG_LinkExpandableAdapter extends SimpleExpandableListAdapter {
 
     private LayoutInflater mInflater;
     private int mChildLayout;
     private int[] mChildID;
     private String[] mChildKey;
+    private Context mContext;
     private List<? extends List<? extends Map<String, ?>>> mChildData;
     private List<? extends List<? extends Map<String, ?>>> mChildUrlSpan;
 
@@ -43,6 +51,7 @@ class LPG_LinkExpandableAdapter extends SimpleExpandableListAdapter {
         mChildLayout = childLayout;
         mChildUrlSpan = childURLSpan;
         mChildKey = childFrom;
+        mContext = context;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -50,15 +59,12 @@ class LPG_LinkExpandableAdapter extends SimpleExpandableListAdapter {
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         View view;
 
-        if (convertView == null) {
-            return convertView;
-        } else {
             //inflate view from child layout
             view = mInflater.inflate(mChildLayout, parent, false);
             //bind values to view, along with data span
             bindChildView(view, groupPosition, childPosition);
             return view;
-        }
+
 
     }
 
@@ -69,27 +75,34 @@ class LPG_LinkExpandableAdapter extends SimpleExpandableListAdapter {
         Map<String, ?> childSpan = mChildUrlSpan.get(groupPosition).get(childPosition);
 
         int countOfChildElements = mChildID.length;
+
         //bind the strings as well as URLs
         for (int i = 0; i < countOfChildElements; ++i) {
+
             TextView textView = (TextView) view.findViewById(mChildID[i]);
             if (textView != null) {
-                List<SpanDataBox> listAttachSpan = (List<SpanDataBox>) childSpan.get(mChildKey[i]);
+
+              List<SpanDataBox> listAttachSpan = (List<SpanDataBox>) childSpan.get(mChildKey[i]);
                 if (listAttachSpan != null) {
 
 
                     SpannableStringBuilder answerSpanBuilder = new SpannableStringBuilder((CharSequence) childElements.get(mChildKey[i]));
                     for (int j = 0; j < listAttachSpan.size(); ++j) {
                         SpanDataBox answerSpanData = listAttachSpan.get(j);
+
                         answerSpanBuilder.setSpan(answerSpanData.getURLSpan(), answerSpanData.getStartOfSpan(), answerSpanData.getEndOfSpan(), SpannableStringBuilder.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
 
 
                     textView.setText(answerSpanBuilder, TextView.BufferType.SPANNABLE);
+
                     textView.setMovementMethod(LinkMovementMethod.getInstance());
                 } else {
                     textView.setText((CharSequence) childElements.get(mChildKey[i]));
+
                     //
                 }
+
             }
 
 

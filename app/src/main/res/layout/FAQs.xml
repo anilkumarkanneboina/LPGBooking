@@ -36,6 +36,8 @@
             android:background="#f7f8f9"
             ></ExpandableListView>
 
+
+
         <com.google.android.gms.ads.AdView
             android:id="@+id/banner_faqs"
             android:layout_width="wrap_content"

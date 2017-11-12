@@ -23,6 +23,6 @@
         android:paddingTop="@dimen/faq_question_paddingtop"
         android:text="Question"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="20sp"></TextView>
+        android:textSize="18sp"></TextView>
 
 </LinearLayout>

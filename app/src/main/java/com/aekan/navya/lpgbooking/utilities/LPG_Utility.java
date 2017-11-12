@@ -442,6 +442,7 @@ public class LPG_Utility {
 
 
             answerMap.put(EXPN_LIST_ANSWER, resAnswers[i]);
+            Log.v("EXCHILD","i = " + i + " Text is " + resAnswers[i]);
             AnswerList.add(answerMap);
             resExpandableChildList.add(i, AnswerList);
         }
@@ -476,7 +477,9 @@ public class LPG_Utility {
                 List<SpanDataBox> listOfSpans = new ArrayList<SpanDataBox>(urlList.length);
                 int[] spanStartList = getStartSpan(context, groupPosition);
                 int[] spanEndList = getEndSpan(context, groupPosition);
+
                 for (int spanCount = 0; spanCount < urlList.length; ++spanCount) {
+                    Log.v("FAQs", " Create Span ; Group id is " + groupPosition + " Start span is " + spanStartList[spanCount] + " End is " + spanEndList [spanCount] );
                     listOfSpans.add(new SpanDataBox(context,
                             urlList[spanCount],
                             spanStartList[spanCount],
@@ -546,7 +549,7 @@ public class LPG_Utility {
                 return context.getResources().getIntArray(R.array.span_end_2);
 
             case 4:
-                return context.getResources().getIntArray(R.array.span_end_2);
+                return context.getResources().getIntArray(R.array.span_end_5);
 
             default:
                 return context.getResources().getIntArray(R.array.span_end_2);
