@@ -128,7 +128,7 @@
     <dimen name="faq_answer_paddingtop">4dp</dimen>
     <dimen name="faq_answer_paddingright">4dp</dimen>
     <dimen name="faq_answer_margintop">8dp</dimen>
-    <dimen name="faq_answer_marginleft">32dp</dimen>
+    <dimen name="faq_answer_marginleft">28dp</dimen>
     <dimen name="faq_answer_marginright">8dp</dimen>
 
 

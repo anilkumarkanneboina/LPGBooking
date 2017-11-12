@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
 import android.telephony.SmsManager;
-import android.text.Html;
 import android.util.Log;
 
 import com.aekan.navya.lpgbooking.LPGBooking;
@@ -22,9 +21,9 @@ import com.google.android.gms.ads.InterstitialAd;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -89,13 +88,13 @@ public class LPG_Utility {
 
     public final static String EXPN_LIST_QUESTION = "Map for question";
     public final static String EXPN_LIST_ANSWER = "Map Key for answers";
+    public final static int FAQ_TEXTVIEWS_IN_ANSWERS = 1;
+    public final static int FAQ_TEXTVIEWS_IN_QUESTIONS = 1;
 
     public final static int LPG_GET_REGULAR_ALARM_NOTIFICATION_DATES = 34;
     public final static int LPG_GET_SNOOZE_ALARM_DATES = 45;
-
-    private static int COUNTER_INTERSTITIAL = 0;
     private final static int CAP_INTERSTITIAL_COUNTER = 4;
-
+    private static int COUNTER_INTERSTITIAL = 0;
     private static ConcurrentHashMap<String,Cursor> cacheLocalData;
 
     public static Cursor getCacheLocalData(String string) {
@@ -414,9 +413,10 @@ public class LPG_Utility {
     }
 
     public static List<Map<String, String>> getExpandableGroupData(Context context) {
-        List<Map<String, String>> expandableGroupData = new ArrayList<Map<String, String>>(20);
+
 
         String[] resExpandableGroupData = context.getResources().getStringArray(R.array.Questions);
+        List<Map<String, String>> expandableGroupData = new ArrayList<Map<String, String>>(resExpandableGroupData.length);
         Log.v("Strength Question ", " = " + resExpandableGroupData.length);
         for (int i = 0; i < resExpandableGroupData.length; ++i) {
             Map<String, String> questionMap = new ArrayMap<String, String>();
@@ -431,23 +431,128 @@ public class LPG_Utility {
     }
 
     public static List<List<Map<String, CharSequence>>> getExpandableChildData(Context context) {
-        List<List<Map<String, CharSequence>>> resExpandableChildList = new ArrayList<List<Map<String, CharSequence>>>(10);
+
         //get string array for answers
         String[] resAnswers = context.getResources().getStringArray(R.array.Answers);
+        List<List<Map<String, CharSequence>>> resExpandableChildList = new ArrayList<List<Map<String, CharSequence>>>(resAnswers.length);
         Log.v("Strenght ans", "= " + resAnswers.length);
         for (int i = 0; i < resAnswers.length; ++i) {
-            ArrayList<Map<String, CharSequence>> AnswerList = new ArrayList<Map<String, CharSequence>>(10);
+            ArrayList<Map<String, CharSequence>> AnswerList = new ArrayList<Map<String, CharSequence>>(FAQ_TEXTVIEWS_IN_ANSWERS);
             Map<String, CharSequence> answerMap = new ConcurrentHashMap<String, CharSequence>();
 
-            CharSequence answerSpanned = Html.fromHtml(resAnswers[i]);
+
             answerMap.put(EXPN_LIST_ANSWER, resAnswers[i]);
             AnswerList.add(answerMap);
             resExpandableChildList.add(i, AnswerList);
         }
 
         return resExpandableChildList;
+    }
+
+    public static List<? extends List<? extends Map<String, ? extends List<SpanDataBox>>>> getFAQsSpanCollection(Context context) {
+
+        ////This function returns the collection which stores span data for every child element
+        ////Span data is stored in a list of ( representing group ) list of (representing answers/ children) map of ( representing
+        ////one text view among list of textview of child) list of spans(representing spans to be associated with every child)
+        int questionCount = context.getResources().getStringArray(R.array.Questions).length;
+        int answerCount = context.getResources().getStringArray(R.array.Answers).length;
+        String id_LinkURL = context.getResources().getString(R.string.span_identifier_link);
+        String id_startSpan = context.getResources().getString(R.string.span_identifier_startspan);
+        String id_endSpan = context.getResources().getString(R.string.span_identifier_endspan);
 
 
+        ArrayList<List<? extends Map<String, ? extends List<SpanDataBox>>>> spanList = new ArrayList<>(questionCount);
+
+        for (int groupPosition = 0; groupPosition < questionCount; ++groupPosition) {
+            //generate group level list
+            List<Map<String, ? extends List<SpanDataBox>>> childSpan = new ArrayList<>();
+
+
+            //generate child level Map object
+            Map<String, List<SpanDataBox>> childMap = new HashMap<String, List<SpanDataBox>>();
+            String[] urlList = getURLSpanArray(context, groupPosition);
+            if (!(urlList[0].equals(new String("null")))) {
+                //create the Map object containing list of Span Data
+                List<SpanDataBox> listOfSpans = new ArrayList<SpanDataBox>(urlList.length);
+                int[] spanStartList = getStartSpan(context, groupPosition);
+                int[] spanEndList = getEndSpan(context, groupPosition);
+                for (int spanCount = 0; spanCount < urlList.length; ++spanCount) {
+                    listOfSpans.add(new SpanDataBox(context,
+                            urlList[spanCount],
+                            spanStartList[spanCount],
+                            spanEndList[spanCount]
+
+                    ));
+                }
+                childMap.put(LPG_Utility.EXPN_LIST_ANSWER, listOfSpans);
+            } else {
+                childMap.put(LPG_Utility.EXPN_LIST_ANSWER, null);
+            }
+            //we do not have multiple child groups, so iteration for child is not necessary
+            childSpan.add(childMap);
+            spanList.add(childSpan);
+
+        }
+        return spanList;
+
+    }
+
+    private static String[] getURLSpanArray(Context context, int childPosition) {
+        switch (childPosition) {
+            case 0:
+                return context.getResources().getStringArray(R.array.links_answer_1);
+
+            case 1:
+                return context.getResources().getStringArray(R.array.links_answer_2);
+
+            case 2:
+                return context.getResources().getStringArray(R.array.links_answer_3);
+
+            case 3:
+                return context.getResources().getStringArray(R.array.links_answer_4);
+
+            case 4:
+                return context.getResources().getStringArray(R.array.links_answer_5);
+
+            case 5:
+                return context.getResources().getStringArray(R.array.links_answer_6);
+
+            default:
+                return context.getResources().getStringArray(R.array.links_answer_1);
+
+
+        }
+
+    }
+
+    private static int[] getStartSpan(Context context, int childPosition) {
+        switch (childPosition) {
+            case 1:
+                return context.getResources().getIntArray(R.array.span_start_2);
+
+            case 4:
+                return context.getResources().getIntArray(R.array.span_start_5);
+
+            default:
+                return context.getResources().getIntArray(R.array.span_start_2);
+
+
+        }
+    }
+
+    private static int[] getEndSpan(Context context, int childPosition) {
+        switch (childPosition) {
+            case 1:
+                return context.getResources().getIntArray(R.array.span_end_2);
+
+            case 4:
+                return context.getResources().getIntArray(R.array.span_end_2);
+
+            default:
+                return context.getResources().getIntArray(R.array.span_end_2);
+
+
+        }
     }
 
     public static String getDateFromCalendar(Calendar c) {

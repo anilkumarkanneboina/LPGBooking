@@ -16,6 +16,7 @@
         android:layout_marginStart="@dimen/faq_answer_marginleft"
         android:layout_marginTop="@dimen/faq_answer_margintop"
         android:autoLink="web"
+        android:bufferType="spannable"
         android:paddingEnd="@dimen/faq_answer_paddingright"
         android:paddingLeft="@dimen/faq_answer_paddingright"
         android:paddingRight="@dimen/faq_answer_paddingright"
