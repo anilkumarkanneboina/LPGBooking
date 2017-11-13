@@ -63,7 +63,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
 
     // Set REGEX strings for data validation
     private String mRegexNumber = "[0-9]{5,15}+";
-    private String mRegexSMS = "[0-9]{1,10}+";
+    private String mRegexSMS = "^[1-9][0-9]{9}$";
     private String mRegexExpiryDays = "[0-9]+";
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -123,12 +123,15 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         final EditText lpgConnection = (EditText) findViewById(R.id.add_lpgconnectionnameedittext);
         final EditText lpgProvider = (EditText) findViewById(R.id.add_provideredittext);
         final EditText lpgAgency = (EditText) findViewById(R.id.add_agencyedittext);
+        final EditText lpgDistributorPhoneNo = (EditText) findViewById(R.id.add_distributorphonenumber_edittext);
         final EditText lpgAgencyPhoneNo = (EditText) findViewById(R.id.add_agencyphoneedittext);
         final EditText lpgAgencySMSNo = (EditText) findViewById(R.id.add_connectionsmsnumber);
         final EditText lpgConnectionId = (EditText) findViewById(R.id.add_connectionid);
         final EditText lpglastdatelabel = (EditText) findViewById(R.id.add_lastbookeddate);
         final EditText lpgconnnectionexpiry = (EditText) findViewById(R.id.add_connectionexpiry);
         TextView lpgUserPrompt = (TextView) findViewById(R.id.add_lpgconnection_userprompt);
+        final ScrollView scrollView = (ScrollView) findViewById(R.id.form_scroll_view);
+        final FloatingActionButton buttonSave = (FloatingActionButton) findViewById(R.id.fab_save_connection);
 
         //hide soft text pad
         hideSoftTextPad(lpgConnection);
@@ -143,21 +146,8 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         TextInputLayout connectionTextInput = (TextInputLayout) findViewById(R.id.add_lpgconnectionnamelabel);
         connectionTextInput.setHintAnimationEnabled(false);
 
+        //set initial state for form
         lpglastdatelabel.setEnabled(false);
-        final ScrollView scrollView = (ScrollView) findViewById(R.id.form_scroll_view);
-        scrollView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                InputMethodManager inputMethodManager = (InputMethodManager) getApplicationContext().getSystemService(INPUT_METHOD_SERVICE);
-                View focusView = getCurrentFocus();
-                if (focusView != null ){
-
-                    inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
-                }
-            }
-        });
-        FloatingActionButton buttonSave = (FloatingActionButton) findViewById(R.id.fab_save_connection);
         buttonSave.setEnabled(false);
 
 
@@ -212,7 +202,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         //Set listener events for Save button and Cancel button.
         // To set listener events, initialize counter value for primary key ID;
         //Set validators for phone no and expiry dates
-        lpgAgencyPhoneNo.addTextChangedListener(new TextWatcher() {
+        lpgAgencySMSNo.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -225,35 +215,15 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
 
             @Override
             public void afterTextChanged(Editable s) {
-                String phoneNo = lpgAgencyPhoneNo.getText().toString();
+                String phoneNo = lpgAgencySMSNo.getText().toString();
 
                 if (!(phoneNo.matches(mRegexNumber))){
-                    lpgAgencyPhoneNo.setError(" Please enter a numeral only, without any special characters");
+                    lpgAgencySMSNo.setError(" Please enter 10 digit,non-zero first digit number");
                 }
             }
         });
 
 
-        lpgconnnectionexpiry.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String phoneNo = lpgconnnectionexpiry.getText().toString();
-
-                if (!(phoneNo.matches(regexExpiryDays))){
-                    lpgconnnectionexpiry.setError(" Please enter a numeral only, without any special characters");
-                }
-            }
-        });
 
         //Get the database
         final SQLiteDatabase sqLiteDatabase = new LPG_SQLOpenHelperClass(getApplicationContext()).getWritableDatabase();
@@ -262,12 +232,15 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //disable button save
+                buttonSave.setEnabled(false);
                 //Get validations for all fields done before submission;
                 boolean dataEnteredRight = true;
                 EditText scrollToError = lpgConnection;
 
                 //hide key pad
                 hideSoftTextPad(lpgConnection);
+
 
                 //Validations for connection expiry to be mandatory field
                 String connectionExpiry = lpgconnnectionexpiry.getText().toString();
@@ -308,7 +281,8 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
                     contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME, lpgConnection.getText().toString());
                     contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER, LPG_Utility.getLPGProvider(lpgProvider.getText().toString()));
                     contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY, lpgAgency.getText().toString());
-                    contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_PHONE_NUMBER, lpgAgencyPhoneNo.getText().toString());
+                    contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_LANDLINE_NUMBER, lpgDistributorPhoneNo.getText().toString());
+                    contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_IVRS_NUMBER, lpgAgencyPhoneNo.getText().toString());
                     contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_SMS_NUMBER, lpgAgencySMSNo.getText().toString());
                     contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_ID, lpgConnectionId.getText().toString());
                     contentValuesDB.put(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.LAST_BOOKED_DATE, lpglastdatelabel.getText().toString());
@@ -322,7 +296,13 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
                             ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper("LPG Connection Created ", "OK", null, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+
                                     dialog.dismiss();
+                                    //take user to home page
+                                    Intent home = new Intent(getApplicationContext(), MainActivity.class);
+                                    if (home.resolveActivity(getPackageManager()) != null) {
+                                        startActivity(home);
+                                    }
 
                                 }
                             }, null);
@@ -348,6 +328,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
                                 public void onClick(DialogInterface dialog, int which) {
                                     //clear local cache
                                     LPG_Utility.removeCacheLocalConnectionDetails(finalIDCount);
+                                    buttonSave.setEnabled(true);
                                     dialog.dismiss();
 
 
@@ -405,6 +386,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
 
                 } else {
                     scrollView.scrollTo(0,scrollToError.getBottom());
+                    buttonSave.setEnabled(true);
                 }
 
 
@@ -414,19 +396,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
 
             }
         });
-      /*  FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
-        // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
 
-//        set onclick listener for image button
         ImageButton lastBookedDate = (ImageButton) findViewById(R.id.btn_calendarimage);
         lastBookedDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -519,7 +489,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         /*lpgConnection.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME)));
         lpgProvider.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER)));
         lpgAgency.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY)));
-        lpgAgencyPhoneNo.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_PHONE_NUMBER)));
+        lpgAgencyPhoneNo.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_IVRS_NUMBER)));
         lpgConnectionId.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_ID)));
         lpglastdatelabel.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.LAST_BOOKED_DATE)));
         lpgconnnectionexpiry.setText(dataCursor.getString(cursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS)));*/
@@ -528,6 +498,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         final EditText lpgProvider = (EditText) findViewById(R.id.add_provideredittext);
         final EditText lpgAgency = (EditText) findViewById(R.id.add_agencyedittext);
         final EditText lpgAgencyPhoneNo = (EditText) findViewById(R.id.add_agencyphoneedittext);
+        final EditText lpgDistributorPhoneNo = (EditText) findViewById(R.id.add_distributorphonenumber_edittext);
         final EditText lpgAgencySMSNo = (EditText) findViewById(R.id.add_connectionsmsnumber);
         final EditText lpgConnectionId = (EditText) findViewById(R.id.add_connectionid);
         final EditText lpglastdatelabel = (EditText) findViewById(R.id.add_lastbookeddate);
@@ -539,7 +510,8 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
             lpgConnection.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME)));
             lpgProvider.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER)));
             lpgAgency.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY)));
-            lpgAgencyPhoneNo.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_PHONE_NUMBER)));
+            lpgDistributorPhoneNo.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_LANDLINE_NUMBER)));
+            lpgAgencyPhoneNo.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_IVRS_NUMBER)));
             lpgAgencySMSNo.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_SMS_NUMBER)));
             lpgConnectionId.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_ID)));
             lpglastdatelabel.setText(dataCursor.getString(dataCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.LAST_BOOKED_DATE)));
