@@ -93,7 +93,7 @@ public class LPG_Utility {
 
     public final static int LPG_GET_REGULAR_ALARM_NOTIFICATION_DATES = 34;
     public final static int LPG_GET_SNOOZE_ALARM_DATES = 45;
-    private final static int CAP_INTERSTITIAL_COUNTER = 4;
+    private final static int CAP_INTERSTITIAL_COUNTER = 3;
     private static int COUNTER_INTERSTITIAL = 0;
     private static ConcurrentHashMap<String,Cursor> cacheLocalData;
 
@@ -154,13 +154,15 @@ public class LPG_Utility {
 
     public static boolean ifWeCanShowInterstitialAdNow(){
         boolean showAd = false;
-
+        Log.v("Ads", " Counter for Interstitial " + COUNTER_INTERSTITIAL);
         if (COUNTER_INTERSTITIAL < CAP_INTERSTITIAL_COUNTER){
             ++COUNTER_INTERSTITIAL;
+        } else {
+            COUNTER_INTERSTITIAL = 0;
+            showAd = true;
         }
-        else {showAd = true;}
 
-        return true;
+        return showAd;
 
     }
 

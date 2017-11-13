@@ -224,5 +224,10 @@
     <string name="AdView_banner">ca-app-pub-3940256099942544/6300978111</string>
     <string name="AdView_App_ID_Test">ca-app-pub-3940256099942544~3347511713</string>
     <string name="AdMob_InterstitialAd_Test">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="AdMob_InterstitialAd_PhoneBooking">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="AdMob_InterstitialAd_FAQs">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="AdMob_InterstitialAd_AddLPGConnection">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="AdMob_InterstitialAd_LPGBooking">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="AdMob_TestDevice">14B1C04D47670D84DE173A350418C2B4</string>
 
 </resources>

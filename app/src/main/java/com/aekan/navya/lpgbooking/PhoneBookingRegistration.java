@@ -59,12 +59,13 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
     private String mConnection;
     private Cursor mCursor;
     private Button mbuttonRegister;
-    private int activityPurpose;
-    private TelephonyManager telephonyManager;
-    private PhoneStateListener phonelistener;
-    private String phoneNumber;
-    private String provider;
+    private int mActivityPurpose;
+    private TelephonyManager mTelephonyManager;
+    private PhoneStateListener mPhonelistener;
+    private String mPhoneNumber;
+    private String mProvider;
     private InterstitialAd mInterstitialAd;
+    private boolean mLoadInterstitialFromNavigation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,36 +77,39 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
         Toolbar toolbar = (Toolbar) findViewById(R.id.phoneregistration_toolbar);
         MobileAds.initialize(this, getResources().getString(R.string.AdView_App_ID_Test));
 
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
         setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("Ads","Show Interstitial Ad from Phone Booking + " + mInterstitialAd.isLoaded());
+                Log.v("Ads", "Show Interstitial Ad from Phone Booking + " + mInterstitialAd.isLoaded());
                 //show Interstial Ad
                 //showInterStitialAd(mInterstitialAd);
-                mInterstitialAd.show();
+                mLoadInterstitialFromNavigation = true;
+                boolean adShown = showInterStitialAd();
                 //Go to Main Activity
-                Intent homeActivity = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(homeActivity);
+                if (adShown == false) {
+                    Intent homeActivity = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(homeActivity);
+
+                }
+               /* Intent homeActivity = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(homeActivity);*/
             }
         });
-
 
         //Banner Ad
         showBannerAd();
 
         //Load Interstial Ad
         //mInterstitialAd = LPG_Utility.loadInterstitialAd(getApplicationContext());
-        mInterstitialAd = new InterstitialAd(getApplicationContext());
-        mInterstitialAd.setAdUnitId(getResources().getString(R.string.AdMob_InterstitialAd_Test));
-        mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice("14B1C04D47670D84DE173A350418C2B4").build());
+        loadInterstitialAd();
 
         //verify if the activity is being used for phone booking registration or SMS booking registration.
-        activityPurpose = getIntent().getIntExtra(LPG_Utility.REGISTRATION_TYPE,LPG_Utility.PHONE_BOOKING_REGISTRATION);
-        Log.v("Registration ",Integer.toString(activityPurpose));
-        phoneNumber = ((TextView)findViewById(R.id.reg_no_textfield)).getText().toString();
-        provider = ((TextView) findViewById(R.id.reg_provider)).getText().toString();
+        mActivityPurpose = getIntent().getIntExtra(LPG_Utility.REGISTRATION_TYPE, LPG_Utility.PHONE_BOOKING_REGISTRATION);
+        Log.v("Registration ", Integer.toString(mActivityPurpose));
+        mPhoneNumber = ((TextView) findViewById(R.id.reg_no_textfield)).getText().toString();
+        mProvider = ((TextView) findViewById(R.id.reg_provider)).getText().toString();
 
         providerTextView = (TextView) findViewById(R.id.reg_provider);
         agencyTextView = (TextView) findViewById(R.id.reg_agency);
@@ -124,9 +128,9 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
             @Override
             public void onClick(View v) {
                 //get phone no from text view
-                phoneNumber = ((TextView) findViewById(R.id.reg_no_textfield)).getText().toString();
+                mPhoneNumber = ((TextView) findViewById(R.id.reg_no_textfield)).getText().toString();
 
-                switch (activityPurpose){
+                switch (mActivityPurpose) {
                     case (LPG_Utility.PHONE_BOOKING_REGISTRATION):
                         //check for permission to call phone
                         if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
@@ -143,8 +147,8 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
                                 ActivityCompat.requestPermissions(PhoneBookingRegistration.this, new String[]{android.Manifest.permission.CALL_PHONE, android.Manifest.permission.SEND_SMS}, LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE);
                             }
                         } else {
-                            //call the provider no for registration
-                            LPG_Utility.callOrTextUtility(getApplicationContext(), phoneNumber, null, provider, LPG_Utility.COMMUNICATE_PHONE);
+                            //call the mProvider no for registration
+                            LPG_Utility.callOrTextUtility(getApplicationContext(), mPhoneNumber, null, mProvider, LPG_Utility.COMMUNICATE_PHONE);
                         }
                         break;
                     case (LPG_Utility.SMS_BOOKING_REGISTRATIION):
@@ -162,7 +166,7 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
                             }
                         } else {
                             // send sms
-                            LPG_Utility.callOrTextUtility(getApplicationContext(), phoneNumber, null, provider, LPG_Utility.COMMUNICATE_SMS);
+                            LPG_Utility.callOrTextUtility(getApplicationContext(), mPhoneNumber, null, mProvider, LPG_Utility.COMMUNICATE_SMS);
                             Toast.makeText(getApplicationContext(), getResources().getString(R.string.smsbooking_smssent), Toast.LENGTH_SHORT).show();
                         }
 
@@ -176,15 +180,15 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
 
         //set activity title and hint text
         TextInputLayout numberToRegister = (TextInputLayout) findViewById(R.id.reg_no_textinputlayout) ;
-        switch (activityPurpose){
+        switch (mActivityPurpose) {
             case (LPG_Utility.PHONE_BOOKING_REGISTRATION):
                 numberToRegister.setHint(getResources().getString(R.string.registration_phonebooking_hint_regno));
 //                toolbar.
                         setTitle(getResources().getString(R.string.phonebooking_activity_title));
                 //initialise telephone state listener
-                telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-                phonelistener = new LPG_PhoneListener(this, LPG_Utility.PHONELISTENER_FROM_REGISTRATION, mConnection);
-                telephonyManager.listen(phonelistener,PhoneStateListener.LISTEN_CALL_STATE);
+                mTelephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+                mPhonelistener = new LPG_PhoneListener(this, LPG_Utility.PHONELISTENER_FROM_REGISTRATION, mConnection);
+                mTelephonyManager.listen(mPhonelistener, PhoneStateListener.LISTEN_CALL_STATE);
 
                 break;
             case (LPG_Utility.SMS_BOOKING_REGISTRATIION):
@@ -309,7 +313,7 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
                     //check for permission and call registration number
                     if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
                         //call lpg booking
-                        LPG_Utility.callOrTextUtility(getApplicationContext(), phoneNumber, null, provider, LPG_Utility.COMMUNICATE_PHONE);
+                        LPG_Utility.callOrTextUtility(getApplicationContext(), mPhoneNumber, null, mProvider, LPG_Utility.COMMUNICATE_PHONE);
                     }
 
                 } else {
@@ -321,7 +325,7 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
             case (LPG_BOOKING_REQUEST_PERMISSION_SMS):
                 if ((grantResults.length != 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED) {
-                        LPG_Utility.callOrTextUtility(getApplicationContext(), phoneNumber, null, provider, LPG_Utility.COMMUNICATE_SMS);
+                        LPG_Utility.callOrTextUtility(getApplicationContext(), mPhoneNumber, null, mProvider, LPG_Utility.COMMUNICATE_SMS);
                         Toast.makeText(getApplicationContext(), getResources().getString(R.string.smsbooking_smssent), Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -336,9 +340,70 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
     protected void onDestroy() {
         super.onDestroy();
         //unregister telephone listener
-        if (phonelistener != null) {
-            telephonyManager.listen(phonelistener, PhoneStateListener.LISTEN_NONE);
+        if (mPhonelistener != null) {
+            mTelephonyManager.listen(mPhonelistener, PhoneStateListener.LISTEN_NONE);
         }
+    }
+
+    public void showBannerAd() {
+        AdView adViewBanner = (AdView) findViewById(R.id.banner_phoneregistration);
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("14B1C04D47670D84DE173A350418C2B4").build();//build();
+        //addTestDevice("14B1C04D47670D84DE173A350418C2B4").build();
+        adViewBanner.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+                Log.i("Ads", "onAdLoaded Phone Booking");
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                // Code to be executed when an ad request fails.
+                Log.i("Ads", "onAdFailedToLoad  Phone Booking + " + Integer.toString(errorCode));
+            }
+        });
+        adViewBanner.loadAd(adRequest);
+    }
+
+    public boolean showInterStitialAd() {
+        boolean flagShowInterstitial = ifWeCanShowInterstitialAdNow();
+        boolean showAd = mInterstitialAd.isLoaded() && flagShowInterstitial;
+
+        if (showAd) {
+
+            mInterstitialAd.show();
+
+        }
+
+        return showAd;
+
+    }
+
+    private void loadInterstitialAd() {
+        mInterstitialAd = new InterstitialAd(getApplicationContext());
+        mInterstitialAd.setAdUnitId(getResources().getString(R.string.AdMob_InterstitialAd_PhoneBooking));
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                Log.v("Ads", " Failed to Load Interstitial error " + errorCode);
+            }
+
+            @Override
+            public void onAdLoaded() {
+                Log.v("Ads", " Interstitial Ad Loaded ");
+            }
+
+            @Override
+            public void onAdClosed() {
+                if (mLoadInterstitialFromNavigation) {
+                    Intent homeActivity = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(homeActivity);
+                }
+            }
+
+
+        });
+        mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice("14B1C04D47670D84DE173A350418C2B4").build());
     }
 
     public class SpinnerListener implements AdapterView.OnItemSelectedListener {
@@ -362,7 +427,8 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
             Log.i("Ads","Show Interstitial Ad from Phone Booking + " + mInterstitialAd.isLoaded());
             //show Interstial Ad
             //showInterStitialAd(mInterstitialAd);
-            mInterstitialAd.show();
+            mLoadInterstitialFromNavigation = false;
+            showInterStitialAd();
 
             // get adapter
             ArrayAdapter<String> parentAdapter = (ArrayAdapter<String>) parent.getAdapter();
@@ -379,7 +445,7 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
 
                     //set phone no or sms no based on activity purpose
 
-                    switch (activityPurpose){
+                    switch (mActivityPurpose) {
                         case LPG_Utility.PHONE_BOOKING_REGISTRATION:
                             phonenumberTextView.setText(mCursor.getString(mCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_PHONE_NUMBER)));
                             break;
@@ -394,13 +460,13 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
 
                     String phoneNumberText = phonenumberTextView.getText().toString();
                     providerName = providerTextView.getText().toString();
-                    phoneNumber = phoneNumberText;
+                    mPhoneNumber = phoneNumberText;
                     if(phoneNumberText.length() == 0){
                         // inform user to enter a valid number
                         TextView notificationText = (TextView) findViewById(R.id.registration_notification_message);
                         notificationText.setVisibility(View.VISIBLE);
                         //give notification based on intent type
-                        switch (activityPurpose){
+                        switch (mActivityPurpose) {
                             case LPG_Utility.PHONE_BOOKING_REGISTRATION:
                                 notificationText.setText(getResources().getString(R.string.registation_phonebooking_null_number));
                                 break;
@@ -415,17 +481,11 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
                         //disable notification message
                         findViewById(R.id.registration_notification_message).setVisibility(View.GONE);
                     }
-
-
-
-
-
-
                 }
             mCursor.moveToNext();
 
         }
-            //disable SMS notification if provider is not one of major three
+            //disable SMS notification if mProvider is not one of major three
 //            if (providerName.equals(LPG_Utility.PROVIDER_NAME_UNDEFINED)){
 //                registrationNotification.setVisibility(View.VISIBLE);
 //                registrationNotification.setText(  getResources().getString(R.string.reg_notification_pristine) );
@@ -442,9 +502,10 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
 //            }
 
             //check if sms notification failure message is being displayed
-            //irrespective of being an accepted service provider for
+            //irrespective of being an accepted service mProvider for
             //SMS registration service
-            if (activityPurpose == LPG_Utility.SMS_BOOKING_REGISTRATIION){}
+            if (mActivityPurpose == LPG_Utility.SMS_BOOKING_REGISTRATIION) {
+            }
 
 
             //reset cursor
@@ -455,38 +516,6 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
         public void onNothingSelected(AdapterView<?> parent) {
 
             Log.v("Spinner","nothing selected");
-        }
-
-    }
-
-    public void showBannerAd(){
-        AdView adViewBanner = (AdView) findViewById(R.id.banner_phoneregistration);
-        AdRequest adRequest = new AdRequest.Builder().addTestDevice("14B1C04D47670D84DE173A350418C2B4").build();//build();
-        //addTestDevice("14B1C04D47670D84DE173A350418C2B4").build();
-        adViewBanner.setAdListener(new AdListener() {
-            @Override
-            public void onAdLoaded() {
-                // Code to be executed when an ad finishes loading.
-                Log.i("Ads", "onAdLoaded Phone Booking");
-            }
-
-            @Override
-            public void onAdFailedToLoad(int errorCode) {
-                // Code to be executed when an ad request fails.
-                Log.i("Ads", "onAdFailedToLoad  Phone Booking + " + Integer.toString(errorCode));
-            }
-        });
-        adViewBanner.loadAd(adRequest);
-    }
-
-    public void showInterStitialAd(InterstitialAd interstitialAd){
-        Log.i("Ads","Interstial Ad loaded : " + mInterstitialAd.isLoaded());
-        Log.i("Ads","Interstitial can we show : " + ifWeCanShowInterstitialAdNow());
-
-        if(mInterstitialAd.isLoaded() && ifWeCanShowInterstitialAdNow()){
-            Log.i("Ads","Showing Interstital Ad");
-            mInterstitialAd.show();
-
         }
 
     }

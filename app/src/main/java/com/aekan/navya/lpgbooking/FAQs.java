@@ -1,52 +1,61 @@
 package com.aekan.navya.lpgbooking;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
-import android.text.style.URLSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
-import android.widget.SimpleExpandableListAdapter;
-import com.aekan.navya.lpgbooking.utilities.LPG_LinkExpandableAdapter;
-import android.widget.TextView;
 
+import com.aekan.navya.lpgbooking.utilities.LPG_LinkExpandableAdapter;
 import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
+
+import static com.aekan.navya.lpgbooking.utilities.LPG_Utility.ifWeCanShowInterstitialAdNow;
 
 /**
  * Created by arunramamurthy on 26/07/17.
  */
 
 public class FAQs extends AppCompatActivity {
+
+    private InterstitialAd mInterstitialAd;
+
     @Override
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
 
         // inflate view
         setContentView(R.layout.faqs);
-        Log.v("FAQs ", " I got inside");
+
         //Set tool bar for the activity
         Toolbar toolbar = (Toolbar) findViewById(R.id.faqs_toolbar);
+        setSupportActionBar(toolbar);
+        //set navigation activities
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mainActivity = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(mainActivity);
+                // show interstitial ad if its time
+                //or move back to Main Activity
+
+                if (!showInterStitialAd()) {
+                    Intent mainActivity = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(mainActivity);
+
+                }
+
+
             }
         });
         toolbar.setTitle("FAQs");
-        setSupportActionBar(toolbar);
-        Log.v("FAQs", " Calling adapterFAQs");
+
+
         //create expandable list adapter
         ExpandableListAdapter adapterFAQs = new LPG_LinkExpandableAdapter(FAQs.this,
                 LPG_Utility.getExpandableGroupData(getApplicationContext()),
@@ -66,6 +75,9 @@ public class FAQs extends AppCompatActivity {
 
         //Banner Ad
         showBannerAd();
+
+        //load interstitial ad
+        loadInterstitialAd();
     }
 
     private void showBannerAd(){
@@ -87,4 +99,44 @@ public class FAQs extends AppCompatActivity {
         });
         adViewBanner.loadAd(adRequest);
     }
+
+    public boolean showInterStitialAd() {
+        boolean flagShowInterstitial = ifWeCanShowInterstitialAdNow();
+        boolean showAd = mInterstitialAd.isLoaded() && flagShowInterstitial;
+
+        if (showAd) {
+
+            mInterstitialAd.show();
+
+        }
+
+        return showAd;
+
+    }
+
+    private void loadInterstitialAd() {
+        mInterstitialAd = new InterstitialAd(getApplicationContext());
+        mInterstitialAd.setAdUnitId(getResources().getString(R.string.AdMob_InterstitialAd_FAQs));
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                Log.v("Ads", " Failed to Load Interstitial error " + errorCode);
+            }
+
+            @Override
+            public void onAdLoaded() {
+                Log.v("Ads", " Interstitial Ad Loaded ");
+            }
+
+            @Override
+            public void onAdClosed() {
+                Intent homeActivity = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(homeActivity);
+            }
+
+
+        });
+        mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice(getResources().getString(R.string.AdMob_TestDevice)).build());
+    }
+
 }

@@ -17,7 +17,6 @@ import android.os.Messenger;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -43,20 +42,24 @@ import com.aekan.navya.lpgbooking.utilities.LPG_AlertBoxClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQLOpenHelperClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
-
-import org.w3c.dom.Text;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import static com.aekan.navya.lpgbooking.utilities.LPG_Utility.ifWeCanShowInterstitialAdNow;
+
 public class AddLPGConnection extends AppCompatActivity implements LPGServiceResponseCallBack {
 
     public GregorianCalendar test_alarm_midway;
     public GregorianCalendar test_alarm_final_expiry;
+    private InterstitialAd mInterstitialAd;
 
     // Set REGEX strings for data validation
     private String mRegexNumber = "[0-9]{5,15}+";
@@ -87,23 +90,32 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         //Instantiate the tool bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.addlpg_toolbar);
 
+        //Set tool bar as action bar
+        setSupportActionBar(toolbar);
         //Set Navigation icon for the toolbar
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intentMainActivity = new Intent(getApplicationContext(), MainActivity.class);
-                //check if intent would resolve to an activity and then start the activity
-                if (intentMainActivity.resolveActivity(getPackageManager()) != null) {
-                    startActivity(intentMainActivity);
+                //show interstitial ad or move to main activity
+                if (!showInterStitialAd()) {
+                    Intent intentMainActivity = new Intent(getApplicationContext(), MainActivity.class);
+                    //check if intent would resolve to an activity and then start the activity
+                    if (intentMainActivity.resolveActivity(getPackageManager()) != null) {
+                        startActivity(intentMainActivity);
+                    }
+
                 }
+
 
             }
 
 
         });
-        toolbar.setTitle("Add Connection");
+        setTitle("Add Connection");
 
+        //load interstitial ad
+        loadInterstitialAd();
         //set keyboard behaviour
         //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
@@ -160,7 +172,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
             //display the contents of the retrieved connection record in the fields
 
             //set text values for edit connection
-            toolbar.setTitle(R.string.Add_LPGBooking_EditMode_Title);
+            setTitle(R.string.Add_LPGBooking_EditMode_Title);
             lpgUserPrompt.setText(R.string.Add_Connection_User_Prompt_EditMode);
 
             //Check if we have cached details for the connection id
@@ -189,7 +201,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
 
         } else {
             //set user prompts for Add connection
-            toolbar.setTitle(R.string.Add_LPGBooking_AddMode_Title);
+            setTitle(R.string.Add_LPGBooking_AddMode_Title);
             lpgUserPrompt.setText(R.string.Add_Connection_User_Prompt_AddMode);
 
             //this is a new connection, so increment primary key
@@ -559,6 +571,48 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
     public void updateAllConnectionData(Cursor c) {
     }
 
+    public boolean showInterStitialAd() {
+        boolean flagShowInterstitial = ifWeCanShowInterstitialAdNow();
+        boolean showAd = mInterstitialAd.isLoaded() && flagShowInterstitial;
+
+        if (showAd) {
+
+            mInterstitialAd.show();
+
+        }
+
+        return showAd;
+
+    }
+
+    private void loadInterstitialAd() {
+        mInterstitialAd = new InterstitialAd(getApplicationContext());
+        mInterstitialAd.setAdUnitId(getResources().getString(R.string.AdMob_InterstitialAd_AddLPGConnection));
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                Log.v("Ads", " Failed to Load Interstitial error " + errorCode);
+            }
+
+            @Override
+            public void onAdLoaded() {
+                Log.v("Ads", " Interstitial Ad Loaded ");
+            }
+
+            @Override
+            public void onAdClosed() {
+                Intent homeActivity = new Intent(getApplicationContext(), MainActivity.class);
+                if (homeActivity.resolveActivity(getPackageManager()) != null) {
+                    startActivity(homeActivity);
+                }
+
+            }
+
+
+        });
+        mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice(getResources().getString(R.string.AdMob_TestDevice)).build());
+    }
+
     public static class BookedDateFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
         // Instantiate an alert box class to give dialog
@@ -611,4 +665,5 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
             }
         }
     }
+
 }

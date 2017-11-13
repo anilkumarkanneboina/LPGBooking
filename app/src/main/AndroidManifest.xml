@@ -32,17 +32,14 @@
 
         <activity
             android:name=".AddLPGConnection"
-            android:label="AddLPGConnection"
+
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.aekan.navya.lpgbooking.MainActivity" />
         </activity>
-        <activity
-            android:name=".PhoneBookingRegistration"
-
-           >
+        <activity android:name=".PhoneBookingRegistration">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.aekan.navya.lpgbooking.MainActivity" />

@@ -42,10 +42,14 @@ import com.aekan.navya.lpgbooking.utilities.LPG_PhoneListener;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
 import com.aekan.navya.lpgbooking.utilities.lpgconnectionparcel;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.concurrent.ConcurrentHashMap;
+
+import static com.aekan.navya.lpgbooking.utilities.LPG_Utility.ifWeCanShowInterstitialAdNow;
 
 /**
  * Created by arunramamurthy on 16/10/16.
@@ -59,7 +63,8 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
     String lpgparcelConnectionProvider;
     String lpgparcelConnectionPhoneNumber;
     Intent lpgBookingCallIntent;
-    private String lpgProviderName;
+
+    private InterstitialAd mInterstitialAd;
     // use a field within this class to store phone no
     // this field would be initialised during onCreate and would
     // be used subsequently during permission response handling
@@ -112,22 +117,29 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
 
         //set back stack for the activity
         Toolbar toolbar = (Toolbar) findViewById(R.id.lpgbooking_toolbar);
+
         //set support action bar
-        // setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
         setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
-                if (homeIntent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(homeIntent);
+                //show interstitial ad or transtion to home activity
+                if (!showInterStitialAd()) {
+                    Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
+                    if (homeIntent.resolveActivity(getPackageManager()) != null) {
+                        startActivity(homeIntent);
+                    }
+
                 }
+
             }
         });
         toolbar.setTitle(R.string.lpgbooking_title);
 
-
+        //load interstitial ad
+        loadInterstitialAd();
 
         //set null values for Phone and SMS - before binding lPG Connection details
         LPG_CONNECTION_PHONE_NO = null;
@@ -548,6 +560,48 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
         return lpgStringExpiryDate;
     }
 
+    public boolean showInterStitialAd() {
+        boolean flagShowInterstitial = ifWeCanShowInterstitialAdNow();
+        boolean showAd = mInterstitialAd.isLoaded() && flagShowInterstitial;
+        Log.v("Ads", "Interstial Ad loaded : " + mInterstitialAd.isLoaded());
+        Log.v("Ads", "Interstitial can we show : " + flagShowInterstitial);
+        Log.v("Ads", " Interstitial showAd " + showAd);
+
+        if (showAd) {
+            Log.v("Ads", "Showing Interstital Ad");
+            mInterstitialAd.show();
+
+        }
+
+        return showAd;
+
+    }
+
+    private void loadInterstitialAd() {
+        mInterstitialAd = new InterstitialAd(getApplicationContext());
+        mInterstitialAd.setAdUnitId(getResources().getString(R.string.AdMob_InterstitialAd_FAQs));
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                Log.v("Ads", " Failed to Load Interstitial error " + errorCode);
+            }
+
+            @Override
+            public void onAdLoaded() {
+                Log.v("Ads", " Interstitial Ad Loaded ");
+            }
+
+            @Override
+            public void onAdClosed() {
+                Intent homeActivity = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(homeActivity);
+            }
+
+
+        });
+        mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice(getResources().getString(R.string.AdMob_TestDevice)).build());
+    }
+
     public class mSMSBroadcastReceiver extends BroadcastReceiver {
         private Activity lpgBooking;
 
@@ -576,4 +630,5 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
         }
 
     }
+
 }
