@@ -405,7 +405,7 @@ public class LPG_Utility {
     public static boolean isSMSEnabledForProvider(String provider) {
         boolean result = false;
         for (int i = 0; i < LPG_PROVIDERS.length; ++i) {
-            if (LPG_PROVIDERS[i] == provider) {
+            if (LPG_PROVIDERS[i].equals(provider)) {
                 result = true;
             }
         }

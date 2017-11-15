@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -67,6 +69,7 @@
         android:layout_marginTop="@dimen/reg_textfield_margintop"
         android:layout_weight="1"
         android:hint="@string/registration_hint_provider"
+        android:visibility="visible"
         app:hintAnimationEnabled="true"
         app:layout_constraintBottom_toTopOf="@+id/reg_agency_textinputlayout"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -96,7 +99,7 @@
         android:layout_marginTop="@dimen/reg_textfield_margintop"
         android:layout_weight="1"
         android:hint="@string/registration_hint_agency"
-        app:layout_constraintBottom_toTopOf="@+id/reg_no_textinputlayout"
+        app:layout_constraintBottom_toTopOf="@+id/reg_agencylandline_textinputlayout"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/reg_provider_textinputlayout"
@@ -107,11 +110,39 @@
             android:id="@+id/reg_agency"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-
-
             android:inputType="none"
             android:paddingBottom="@dimen/reg_padding_textfield"
             android:paddingTop="@dimen/reg_padding_textfield"
+
+            android:textSize="@dimen/reg_textfield_textsize" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/reg_agencylandline_textinputlayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/reg_marginhorizontal"
+        android:layout_marginLeft="@dimen/reg_marginhorizontal"
+        android:layout_marginRight="@dimen/reg_marginhorizontal"
+        android:layout_marginStart="@dimen/reg_marginhorizontal"
+        android:layout_marginTop="@dimen/reg_textfield_margintop"
+        android:layout_weight="1"
+        android:hint="@string/registration_hint_distributornumber"
+        app:layout_constraintBottom_toTopOf="@+id/reg_no_textinputlayout"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/reg_agency_textinputlayout"
+
+        >
+
+        <EditText
+            android:id="@+id/reg_agencylandline"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="number"
+            android:paddingBottom="@dimen/reg_padding_textfield"
+            android:paddingTop="@dimen/reg_padding_textfield"
+            android:text="1212121212"
 
             android:textSize="@dimen/reg_textfield_textsize" />
     </android.support.design.widget.TextInputLayout>
@@ -131,7 +162,7 @@
         app:layout_constraintBottom_toTopOf="@+id/registration_notification_message"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/reg_agency_textinputlayout"
+        app:layout_constraintTop_toBottomOf="@+id/reg_agencylandline_textinputlayout"
         >
 
         <EditText
@@ -196,6 +227,7 @@
 
 
 </android.support.constraint.ConstraintLayout>
+
 
     <!--<com.google.android.gms.ads.AdView--><!--android:id="@+id/banner_phoneregistration"--><!--android:layout_height="wrap_content"--><!--android:layout_width="match_parent"--><!--android:layout_marginBottom="4dp"--><!--android:layout_marginTop="2dp"--><!--android:layout_alignParentBottom="false"--><!--android:layout_centerHorizontal="false"--><!--app:layout_constraintLeft_toRightOf="parent"--><!--app:layout_constraintRight_toLeftOf="parent"--><!--app:layout_constraintTop_toBottomOf="parent"--><!--app:layout_constraintBottom_toTopOf="@+id/registration_description"--><!--app:adSize="SMART_BANNER"--><!--app:adUnitId="@string/AdView_banner"--><!--app:layout_constraintHorizontal_bias="0.6">-->
 

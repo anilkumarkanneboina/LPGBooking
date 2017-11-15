@@ -39,6 +39,7 @@ import com.google.android.gms.ads.MobileAds;
 import java.util.HashMap;
 
 import static com.aekan.navya.lpgbooking.utilities.LPG_Utility.ifWeCanShowInterstitialAdNow;
+import static com.aekan.navya.lpgbooking.utilities.LPG_Utility.isSMSEnabledForProvider;
 
 /**
  * Created by arunramamurthy on 20/06/17.
@@ -52,6 +53,7 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
     TextView agencyTextView;
     TextView phonenumberTextView;
     TextView registrationNotification;
+    TextView distributorTextView;
     Button regButton;
     //Array adapter for spinner
     private ArrayAdapter<CharSequence> mSpinnerAdapter;
@@ -114,6 +116,7 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
         providerTextView = (TextView) findViewById(R.id.reg_provider);
         agencyTextView = (TextView) findViewById(R.id.reg_agency);
         phonenumberTextView = (TextView) findViewById(R.id.reg_no_textfield);
+        distributorTextView = (TextView) findViewById(R.id.reg_agencylandline);
         registrationNotification = (TextView) findViewById(R.id.registration_notification_message) ;
         regButton = (Button) findViewById(R.id.reg_button);
 
@@ -152,6 +155,8 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
                         }
                         break;
                     case (LPG_Utility.SMS_BOOKING_REGISTRATIION):
+
+
                         //check permission for sending sms
                         if ((ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.SEND_SMS)) != PackageManager.PERMISSION_GRANTED) {
                             // check if user needs tobe intimated about the permission request
@@ -406,6 +411,31 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
         mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice("14B1C04D47670D84DE173A350418C2B4").build());
     }
 
+    private void enableRegistration(boolean flag) {
+        TextInputLayout provider = (TextInputLayout) findViewById(R.id.reg_provider_textinputlayout);
+        TextInputLayout agency = (TextInputLayout) findViewById(R.id.reg_agency_textinputlayout);
+        TextInputLayout landline = (TextInputLayout) findViewById(R.id.reg_agencylandline_textinputlayout);
+        TextInputLayout phone = (TextInputLayout) findViewById(R.id.reg_no_textinputlayout);
+
+
+        int visibility;
+        int providervisibility;
+        if (flag == true) {
+            visibility = View.VISIBLE;
+            providervisibility = View.VISIBLE;
+
+        } else {
+            visibility = View.GONE;
+            providervisibility = View.INVISIBLE;
+        }
+
+        //hide or show the fields
+        provider.setVisibility(providervisibility);
+        agency.setVisibility(visibility);
+        landline.setVisibility(visibility);
+        phone.setVisibility(visibility);
+    }
+
     public class SpinnerListener implements AdapterView.OnItemSelectedListener {
 
         //cursor to hold variables for cursor
@@ -441,10 +471,8 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
                 if (mCursor.getString(mCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME)).equals(connectionName)) {
                     providerTextView.setText(mCursor.getString(mCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER)));
                     agencyTextView.setText(mCursor.getString(mCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY)));
-                    phonenumberTextView.setText(mCursor.getString(mCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_IVRS_NUMBER)));
-
+                    distributorTextView.setText(mCursor.getString(mCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_LANDLINE_NUMBER)));
                     //set phone no or sms no based on activity purpose
-
                     switch (mActivityPurpose) {
                         case LPG_Utility.PHONE_BOOKING_REGISTRATION:
                             phonenumberTextView.setText(mCursor.getString(mCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY_IVRS_NUMBER)));
@@ -459,32 +487,41 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
                     }
 
                     String phoneNumberText = phonenumberTextView.getText().toString();
-                    providerName = providerTextView.getText().toString();
+
                     mPhoneNumber = phoneNumberText;
-                    if(phoneNumberText.length() == 0){
+                    /*if(phoneNumberText.length() == 0){
                         // inform user to enter a valid number
                         TextView notificationText = (TextView) findViewById(R.id.registration_notification_message);
                         notificationText.setVisibility(View.VISIBLE);
                         //give notification based on intent type
                         switch (mActivityPurpose) {
                             case LPG_Utility.PHONE_BOOKING_REGISTRATION:
-                                notificationText.setText(getResources().getString(R.string.registation_phonebooking_null_number));
+                                phonenumberTextView.setError(getResources().getString(R.string.registation_phonebooking_null_number));
                                 break;
                             case LPG_Utility.SMS_BOOKING_REGISTRATIION:
-                                notificationText.setText(getResources().getString(R.string.registation_smsbooking_null_number));
+                                phonenumberTextView.setError(getResources().getString(R.string.registation_smsbooking_null_number));
                                 break;
                         }
 
-                    } else  {
+                        */
                         //enable call booking button
                         (findViewById(R.id.reg_button)).setEnabled(true);
                         //disable notification message
-                        findViewById(R.id.registration_notification_message).setVisibility(View.GONE);
-                    }
-                }
-            mCursor.moveToNext();
+                    findViewById(R.id.registration_notification_message).setVisibility(View.GONE);
 
-        }
+                }
+                mCursor.moveToNext();
+
+            }
+            String provider = providerTextView.getText().toString();
+            if (!(provider.equals(null))) {
+                if (!isSMSEnabledForProvider(provider)) {
+                    enableRegistration(false);
+
+                } else {
+                    enableRegistration(true);
+                }
+            }
             //disable SMS notification if mProvider is not one of major three
 //            if (providerName.equals(LPG_Utility.PROVIDER_NAME_UNDEFINED)){
 //                registrationNotification.setVisibility(View.VISIBLE);
@@ -504,8 +541,6 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
             //check if sms notification failure message is being displayed
             //irrespective of being an accepted service mProvider for
             //SMS registration service
-            if (mActivityPurpose == LPG_Utility.SMS_BOOKING_REGISTRATIION) {
-            }
 
 
             //reset cursor

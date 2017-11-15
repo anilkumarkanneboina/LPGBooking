@@ -115,6 +115,7 @@
     <string name="registration_noconnection">You have not added any connection yet. Please add a new connection.</string>
     <string name="registration_hint_provider">LPG Provider</string>
     <string name="registration_hint_agency">LPG Agency name</string>
+    <string name="registration_hint_distributornumber">LPG Agency Landline number</string>
     <string name="registration_phone_button_name">Call to Register</string>
     <string name="registration_phonebooking_hint_regno">Validate Phone booking registration number</string>
     <string name="registration_smsbooking_hint_regno">Validate SMS booking registration number</string>

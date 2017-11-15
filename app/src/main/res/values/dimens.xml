@@ -108,7 +108,7 @@
     <dimen name="reg_desc_textsize">16sp</dimen>
     <dimen name="reg_spinner_height">38dp</dimen>
     <dimen name="reg_spinner_padding">2dp</dimen>
-    <dimen name="reg_padding_textfield">8dp</dimen>
+    <dimen name="reg_padding_textfield">4dp</dimen>
     <dimen name="reg_textfield_height">72dp</dimen>
     <dimen name="reg_textfield_textsize">16sp</dimen>
     <dimen name="reg_textfield_margintop">2dp</dimen>

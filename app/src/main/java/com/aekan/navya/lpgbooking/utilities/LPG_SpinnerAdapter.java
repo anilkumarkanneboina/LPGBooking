@@ -12,8 +12,6 @@ import android.widget.TextView;
 
 import com.aekan.navya.lpgbooking.R;
 
-import org.w3c.dom.Text;
-
 /**
  * Created by arunramamurthy on 26/08/17.
  */
@@ -45,11 +43,9 @@ public class LPG_SpinnerAdapter extends ArrayAdapter<String> {
     public View getDropDownView(int position, @Nullable View convertView,
                                 @NonNull ViewGroup parent){
         View view = new View(mContext);
-        if (convertView != null ){
-            return convertView;
-        }else{
-           view = mInflater.inflate( R.layout.lpg_spinner_dropdown,parent,false);
-        }
+
+        view = mInflater.inflate(R.layout.lpg_spinner_dropdown, parent, false);
+
         TextView text = (TextView) view.findViewById(R.id.dropdown);
         text.setText(mAdapterArray[position]);
 
