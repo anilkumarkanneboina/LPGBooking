@@ -19,8 +19,6 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -62,7 +60,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
     private InterstitialAd mInterstitialAd;
 
     // Set REGEX strings for data validation
-    private String mRegexNumber = "[0-9]{5,15}+";
+    private String mRegexNumber = "^[1-9][0-9]{9}$";
     private String mRegexSMS = "^[1-9][0-9]{9}$";
     private String mRegexExpiryDays = "[0-9]+";
     /**
@@ -202,27 +200,11 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         //Set listener events for Save button and Cancel button.
         // To set listener events, initialize counter value for primary key ID;
         //Set validators for phone no and expiry dates
-        lpgAgencySMSNo.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        lpgAgencySMSNo.addTextChangedListener(new LPG_Utility.validationListenerPhoneNumber(lpgAgencySMSNo));
 
-            }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String phoneNo = lpgAgencySMSNo.getText().toString();
-
-                if (!(phoneNo.matches(mRegexNumber))){
-                    lpgAgencySMSNo.setError(" Please enter 10 digit,non-zero first digit number");
-                }
-            }
-        });
-
+        //set validator for IVRS number
+        lpgAgencyPhoneNo.addTextChangedListener(new LPG_Utility.validationListenerPhoneNumber(lpgAgencyPhoneNo));
 
 
         //Get the database

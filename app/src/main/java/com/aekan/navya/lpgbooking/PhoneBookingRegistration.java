@@ -14,6 +14,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -112,6 +114,7 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
         Log.v("Registration ", Integer.toString(mActivityPurpose));
         mPhoneNumber = ((TextView) findViewById(R.id.reg_no_textfield)).getText().toString();
         mProvider = ((TextView) findViewById(R.id.reg_provider)).getText().toString();
+        final String mRegexNumber = "^[1-9][0-9]{9}$";
 
         providerTextView = (TextView) findViewById(R.id.reg_provider);
         agencyTextView = (TextView) findViewById(R.id.reg_agency);
@@ -119,6 +122,31 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
         distributorTextView = (TextView) findViewById(R.id.reg_agencylandline);
         registrationNotification = (TextView) findViewById(R.id.registration_notification_message) ;
         regButton = (Button) findViewById(R.id.reg_button);
+
+        //add text listener
+        phonenumberTextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                regButton.setEnabled(true);
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String phoneNo = phonenumberTextView.getText().toString();
+
+                if (!(phoneNo.matches(mRegexNumber))) {
+                    phonenumberTextView.setError(" Please enter 10 digit,non-zero first digit number");
+                    regButton.setEnabled(false);
+                }
+
+            }
+        });
 
         //Disable registration button
         mbuttonRegister = (Button) findViewById(R.id.reg_button);
@@ -132,53 +160,62 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
             public void onClick(View v) {
                 //get phone no from text view
                 mPhoneNumber = ((TextView) findViewById(R.id.reg_no_textfield)).getText().toString();
+                boolean validDistributorNumber = true, validPhoneRegistrationnumber = true;
 
-                switch (mActivityPurpose) {
-                    case (LPG_Utility.PHONE_BOOKING_REGISTRATION):
-                        //check for permission to call phone
-                        if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                            //permission not available
-                            //check if permission needs to be requested
-                            if (ActivityCompat.shouldShowRequestPermissionRationale(PhoneBookingRegistration.this, android.Manifest.permission.CALL_PHONE)) {
-                                //need to request permission
-                                Intent permissionIntent = new Intent(getApplicationContext(),PermissionCheckForFeature.class);
-                                permissionIntent.putExtra(LPG_Utility.PERMISSION_INTIMATION_MESSAGE,LPG_Utility.PERMISSION_CALL_INTIMATION);
-                                startActivityForResult(permissionIntent, LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE);
+                if (!(phonenumberTextView.getText().toString().matches(mRegexNumber))) {
+                    validPhoneRegistrationnumber = false;
+                    phonenumberTextView.setError(getResources().getString(R.string.registration_error_phonenumber));
+                }
 
+                if (validPhoneRegistrationnumber) {
+
+                    switch (mActivityPurpose) {
+                        case (LPG_Utility.PHONE_BOOKING_REGISTRATION):
+                            //check for permission to call phone
+                            if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                                //permission not available
+                                //check if permission needs to be requested
+                                if (ActivityCompat.shouldShowRequestPermissionRationale(PhoneBookingRegistration.this, android.Manifest.permission.CALL_PHONE)) {
+                                    //need to request permission
+                                    Intent permissionIntent = new Intent(getApplicationContext(), PermissionCheckForFeature.class);
+                                    permissionIntent.putExtra(LPG_Utility.PERMISSION_INTIMATION_MESSAGE, LPG_Utility.PERMISSION_CALL_INTIMATION);
+                                    startActivityForResult(permissionIntent, LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE);
+
+                                } else {
+                                    //show permission for phonebooking
+                                    ActivityCompat.requestPermissions(PhoneBookingRegistration.this, new String[]{android.Manifest.permission.CALL_PHONE, android.Manifest.permission.SEND_SMS}, LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE);
+                                }
                             } else {
-                                //show permission for phonebooking
-                                ActivityCompat.requestPermissions(PhoneBookingRegistration.this, new String[]{android.Manifest.permission.CALL_PHONE, android.Manifest.permission.SEND_SMS}, LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE);
+                                //call the mProvider no for registration
+                                LPG_Utility.callOrTextUtility(getApplicationContext(), mPhoneNumber, null, mProvider, LPG_Utility.COMMUNICATE_PHONE);
                             }
-                        } else {
-                            //call the mProvider no for registration
-                            LPG_Utility.callOrTextUtility(getApplicationContext(), mPhoneNumber, null, mProvider, LPG_Utility.COMMUNICATE_PHONE);
-                        }
-                        break;
-                    case (LPG_Utility.SMS_BOOKING_REGISTRATIION):
+                            break;
+                        case (LPG_Utility.SMS_BOOKING_REGISTRATIION):
 
 
-                        //check permission for sending sms
-                        if ((ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.SEND_SMS)) != PackageManager.PERMISSION_GRANTED) {
-                            // check if user needs tobe intimated about the permission request
-                            if (ActivityCompat.shouldShowRequestPermissionRationale(PhoneBookingRegistration.this, android.Manifest.permission.SEND_SMS)) {
-                                //start permission check activity with SMS Booking
-                                Intent intentSMSPermission = new Intent(getApplicationContext(), PermissionCheckForFeature.class);
-                                intentSMSPermission.putExtra(LPG_Utility.PERMISSION_INTIMATION_MESSAGE, LPG_Utility.PERMISSION_SMS_INTIMATION);
-                                startActivityForResult(intentSMSPermission, LPG_BOOKING_REQUEST_PERMISSION_SMS);
+                            //check permission for sending sms
+                            if ((ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.SEND_SMS)) != PackageManager.PERMISSION_GRANTED) {
+                                // check if user needs tobe intimated about the permission request
+                                if (ActivityCompat.shouldShowRequestPermissionRationale(PhoneBookingRegistration.this, android.Manifest.permission.SEND_SMS)) {
+                                    //start permission check activity with SMS Booking
+                                    Intent intentSMSPermission = new Intent(getApplicationContext(), PermissionCheckForFeature.class);
+                                    intentSMSPermission.putExtra(LPG_Utility.PERMISSION_INTIMATION_MESSAGE, LPG_Utility.PERMISSION_SMS_INTIMATION);
+                                    startActivityForResult(intentSMSPermission, LPG_BOOKING_REQUEST_PERMISSION_SMS);
+                                } else {
+                                    //request permission from user
+                                    ActivityCompat.requestPermissions(PhoneBookingRegistration.this, new String[]{android.Manifest.permission.SEND_SMS, android.Manifest.permission.CALL_PHONE}, LPG_BOOKING_REQUEST_PERMISSION_SMS);
+                                }
                             } else {
-                                //request permission from user
-                                ActivityCompat.requestPermissions(PhoneBookingRegistration.this, new String[]{android.Manifest.permission.SEND_SMS, android.Manifest.permission.CALL_PHONE}, LPG_BOOKING_REQUEST_PERMISSION_SMS);
+                                // send sms
+                                LPG_Utility.callOrTextUtility(getApplicationContext(), mPhoneNumber, null, mProvider, LPG_Utility.COMMUNICATE_SMS);
+                                Toast.makeText(getApplicationContext(), getResources().getString(R.string.smsbooking_smssent), Toast.LENGTH_SHORT).show();
                             }
-                        } else {
-                            // send sms
-                            LPG_Utility.callOrTextUtility(getApplicationContext(), mPhoneNumber, null, mProvider, LPG_Utility.COMMUNICATE_SMS);
-                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.smsbooking_smssent), Toast.LENGTH_SHORT).show();
-                        }
 
-                        break;
-                    default:
-                        break;
+                            break;
+                        default:
+                            break;
 
+                    }
                 }
             }
         });
@@ -241,6 +278,7 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
             findViewById(R.id.reg_no_textinputlayout).setVisibility(View.GONE);
             findViewById(R.id.registration_notification_message).setVisibility(View.GONE);
             findViewById(R.id.reg_button).setVisibility(View.GONE);
+
             ((TextView)findViewById(R.id.registration_description)).setText(R.string.registration_noconnection);
             return;
         }
@@ -418,15 +456,17 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
         TextInputLayout phone = (TextInputLayout) findViewById(R.id.reg_no_textinputlayout);
 
 
-        int visibility;
-        int providervisibility;
+        int visibility, providervisibility, notificationVisibility;
+
         if (flag == true) {
             visibility = View.VISIBLE;
             providervisibility = View.VISIBLE;
+            notificationVisibility = View.GONE;
 
         } else {
             visibility = View.GONE;
             providervisibility = View.INVISIBLE;
+            notificationVisibility = View.VISIBLE;
         }
 
         //hide or show the fields
@@ -434,6 +474,8 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
         agency.setVisibility(visibility);
         landline.setVisibility(visibility);
         phone.setVisibility(visibility);
+        registrationNotification.setVisibility(notificationVisibility);
+
     }
 
     public class SpinnerListener implements AdapterView.OnItemSelectedListener {

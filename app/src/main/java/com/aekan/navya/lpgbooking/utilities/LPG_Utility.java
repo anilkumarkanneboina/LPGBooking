@@ -10,7 +10,10 @@ import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
 import android.telephony.SmsManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.aekan.navya.lpgbooking.LPGBooking;
 import com.aekan.navya.lpgbooking.LPG_AlarmReceiver;
@@ -38,6 +41,7 @@ public class LPG_Utility {
     public final static String LPG_ALARMINTENT_NOTIFICATIONTITLE = "NotificationTitle";
     public final static String LPG_ALARMINTENT_NOTIFICATIONID = "NotificationID";
     public final static String LPG_ALARMINTENT_NOTIFICATIONCONTENT = "Notification content";
+    public final static String mRegexNumber = "^[1-9][0-9]{9}$";
     public final static String LPG_ALARMINTENT_FLAG_DIDBOOKINGSTARTFROMNOTIFICATION = "Flag to check if LPG Booking started from notification";
     /*Constants to be defined for usage in permission checks*/
     public final static int PERMISSION_SMS_ALLOWED = 0;
@@ -626,6 +630,34 @@ public class LPG_Utility {
 
         public GregorianCalendar getGregorialCalendar() {
             return AlarmTickerTime;
+        }
+    }
+
+    public static class validationListenerPhoneNumber implements TextWatcher {
+        private TextView ValidatedField;
+
+        public validationListenerPhoneNumber(TextView v) {
+            ValidatedField = v;
+
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            String phoneNo = ValidatedField.getText().toString();
+
+            if (!(phoneNo.matches(mRegexNumber))) {
+                ValidatedField.setError(" Please enter 10 digit,non-zero first digit number");
+            }
         }
     }
 

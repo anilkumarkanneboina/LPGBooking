@@ -119,6 +119,8 @@
     <string name="registration_phone_button_name">Call to Register</string>
     <string name="registration_phonebooking_hint_regno">Validate Phone booking registration number</string>
     <string name="registration_smsbooking_hint_regno">Validate SMS booking registration number</string>
+    <string name="registration_error_phonenumber">Please enter valid phone number</string>
+    <string name="registration_notification_sms">Please reach out your distributor for registering your mobile number with this consumer id. Mobile based registration is not available for this LPG provider.</string>
     <!--SMS booking Registration -->
     <string name="smsbooking_activity_title">SMS Booking Registration</string>
     <string name="smsbooking_smssent">SMS Registration message sent</string>
