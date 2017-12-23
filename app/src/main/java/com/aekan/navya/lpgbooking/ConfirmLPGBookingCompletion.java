@@ -28,6 +28,7 @@ import java.util.GregorianCalendar;
 public class ConfirmLPGBookingCompletion extends AppCompatActivity {
 
     public final String LPGCONNECTIONEXPIRYDAYS = "FAILURE TO FETCH CONNECTION EXPIRY DAYS FROM DB";
+    private SQLiteDatabase mdb;
 
     /*Create the activity which would request confirmation from
     user about LPG Booking attempt - the activity will reset the corresponding
@@ -42,7 +43,7 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
         //get connection id for the cylinder
         final String LPG_CONNECTION_ID = getIntent().getStringExtra(LPG_Utility.LPG_CONNECTION_ID) ;
         final String LPG_CONNECTION_NAME = getIntent().getStringExtra(LPG_Utility.LPG_CONNECTION_NAME);
-        final int pendingIntentRequestCode = Integer.parseInt(LPG_CONNECTION_ID) * 10 + 1;
+
         final AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         final String LPGConnectionExpiryDays = getLPGCONNECTIONEXPIRYDAYS(LPG_CONNECTION_ID);
         final String currentDateString = getCurrentDateString();
@@ -55,6 +56,7 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
         Button buttonConfirmLPGBookingYes = (Button) findViewById(R.id.confirmbooking_yes);
         Button buttonConfirmLPGBookingNo = (Button) findViewById(R.id.confirmbooking_no);
         FloatingActionButton floatingActionButtonBack = (FloatingActionButton) findViewById(R.id.fabBack);
+        mdb = new LPG_SQLOpenHelperClass(getApplicationContext()).getWritableDatabase();
 
         floatingActionButtonBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,8 +77,8 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
             public void onClick(View v) {
                 //Update the current date string in database as the last booked date
                 // for the cyliner in question
-                SQLiteDatabase db = ((LPGApplication) getApplication()).LPGDB ;
-                if (updateConnectionExpiryDate(db, currentDateString, LPG_CONNECTION_ID)) {
+
+                if (updateConnectionExpiryDate(mdb, currentDateString, LPG_CONNECTION_ID)) {
                     //remove cached data
 
                     LPG_Utility.removeCacheLocalConnectionDetails(LPG_CONNECTION_ID);
@@ -135,9 +137,9 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
     }
 
     public String getLPGCONNECTIONEXPIRYDAYS (String LPGCONNECTIONID){
-        SQLiteDatabase db = (new LPG_SQLOpenHelperClass(getApplicationContext())).getReadableDatabase();
+        mdb = (new LPG_SQLOpenHelperClass(getApplicationContext())).getReadableDatabase();
         Log.v("In ConfirmBooking ", " getLPGConnectionExpiryDays LPG Connection Id = " + LPGCONNECTIONID);
-        if (db == null) {
+        if (mdb == null) {
             Log.v("In ConfirmBooking ", "DB is null");
 
         } else {
@@ -151,7 +153,7 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
         String ConnectionExpiryDays = new String();
         try {
             Log.v("In ConfirmBoooking", " Before DB Query");
-            SQLiteCursor c = (SQLiteCursor) db.query(
+            SQLiteCursor c = (SQLiteCursor) mdb.query(
                     LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,
                     fieldListExpectedExpiryDate,
                     whereClause,
