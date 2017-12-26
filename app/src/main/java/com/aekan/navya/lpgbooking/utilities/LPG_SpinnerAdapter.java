@@ -45,6 +45,9 @@ public class LPG_SpinnerAdapter extends ArrayAdapter<String> {
                                 @NonNull ViewGroup parent){
         View view = new View(mContext);
 
+
+        if (!(convertView == null)){ return convertView;}
+
         view = mInflater.inflate(R.layout.lpg_spinner_dropdown, parent, false);
 
         TextView text = (TextView) view.findViewById(R.id.dropdown);

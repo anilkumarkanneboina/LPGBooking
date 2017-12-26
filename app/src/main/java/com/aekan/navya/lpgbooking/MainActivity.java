@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 
+import com.aekan.navya.lpgbooking.utilities.LPG_SQLOpenHelperClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
 import com.google.android.gms.ads.AdListener;
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
     private HashMap<Integer, AdapterView.OnItemClickListener> mListenerAdapter;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle navDrawerToggle;
+    private SQLiteDatabase mSQLiteDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,22 +127,22 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
         //Columns for database ;
         String[] sqLiteColumns = {LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME, LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER, LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY, LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID};
         SQLiteCursor sqLiteCursor;
+        mSQLiteDatabase = new LPG_SQLOpenHelperClass(getApplicationContext()).getWritableDatabase();
 
-        SQLiteDatabase sqLiteDatabase = ((LPGApplication) getApplication()).LPGDB;
 
-        if (sqLiteDatabase == null) {
+        if (mSQLiteDatabase == null) {
 
             Log.v("MainActivity", "SQL DB does not exist");
         }
 
-        sqLiteCursor = (SQLiteCursor) ((LPGApplication) getApplication()).LPGDB.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,
+        sqLiteCursor = (SQLiteCursor) (mSQLiteDatabase.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,
                 sqLiteColumns,
                 null,
                 null,
                 null,
                 null,
                 null
-                );
+                ));
 
 
         recyclerView.setAdapter(new LPGCylinderListViewAdapter(sqLiteCursor));
