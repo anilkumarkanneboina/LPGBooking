@@ -9,9 +9,7 @@ import android.os.Message;
 import android.os.Messenger;
 import android.util.Log;
 
-import com.aekan.navya.lpgbooking.LPGApplication;
 
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by aruramam on 3/28/2017.
@@ -42,7 +40,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class LPGDataAPI extends HandlerThread implements ServiceClientAPIInterface,LPGServiceAPI {
 
     //Instance variable to hold application context
-    private LPGApplication mApplication;
+
     private Context mContext;
     //Handler to process information
     private Handler mServiceClientHandler;

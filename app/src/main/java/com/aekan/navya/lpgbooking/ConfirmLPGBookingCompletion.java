@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.aekan.navya.lpgbooking.utilities.LPG_AlertBoxClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQLOpenHelperClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
@@ -29,6 +30,7 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
 
     public final String LPGCONNECTIONEXPIRYDAYS = "FAILURE TO FETCH CONNECTION EXPIRY DAYS FROM DB";
     private SQLiteDatabase mdb;
+    private LPG_AlertBoxClass mAlertBox;
 
     /*Create the activity which would request confirmation from
     user about LPG Booking attempt - the activity will reset the corresponding
@@ -47,6 +49,7 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
         final AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         final String LPGConnectionExpiryDays = getLPGCONNECTIONEXPIRYDAYS(LPG_CONNECTION_ID);
         final String currentDateString = getCurrentDateString();
+        mAlertBox = new LPG_AlertBoxClass();
         Log.v("In ConfirmBooking", " LPG Connection Id = " + LPG_CONNECTION_ID);
         //set content for the activity
         setContentView(R.layout.confirm_lpg_submission);
@@ -91,7 +94,7 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
                     Log.v("Alarm", "Midway alarm date is " + LPG_Utility.getDateFromCalendar(newRefillAlarmDates[0].getGregorialCalendar()));
                     Log.v("Alarm", "Expiry alarm date is " + LPG_Utility.getDateFromCalendar(newRefillAlarmDates[1].getGregorialCalendar()));
                     //Set a success message to user
-                    ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper(getResources().getString(R.string.confirmbooking_success),
+                    mAlertBox.showDialogHelper(getResources().getString(R.string.confirmbooking_success),
                             "Ok",
                             null,
                             new DialogInterface.OnClickListener() {
@@ -120,7 +123,7 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
 
                 //Set a toast message that user can try booking
                 //after some time
-                ((LPGApplication)  getApplication()).LPG_Alert.showDialogHelper(getResources().getString(R.string.confirmbooking_failure),
+                mAlertBox.showDialogHelper(getResources().getString(R.string.confirmbooking_failure),
                         "Ok",
                         null,
                         new DialogInterface.OnClickListener() {
@@ -175,7 +178,7 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
             ConnectionExpiryDays = LPGCONNECTIONEXPIRYDAYS;
             Log.v("Error in Confirm LPG", e.toString());
 
-            ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper(getResources().getString(R.string.confirmbooking_cursorfetchfailure),
+            mAlertBox.showDialogHelper(getResources().getString(R.string.confirmbooking_cursorfetchfailure),
                     "Ok",
                     null,
                     new DialogInterface.OnClickListener() {
@@ -227,7 +230,7 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
 
         } catch (Exception e) {
             //DB update has failed. Print the exception to log, and give an error message to user
-            ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper(getResources().getString(R.string.confirmbooking_updatefailure), "Ok", null, new DialogInterface.OnClickListener() {
+            mAlertBox.showDialogHelper(getResources().getString(R.string.confirmbooking_updatefailure), "Ok", null, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();

@@ -234,4 +234,7 @@
     <string name="AdMob_InterstitialAd_LPGBooking">ca-app-pub-3940256099942544/1033173712</string>
     <string name="AdMob_TestDevice">14B1C04D47670D84DE173A350418C2B4</string>
 
+    <!--String identifiers for purchase API-->
+    <string name="PREMIUM_UPGRADE_STATUS">com.aekan.navya.lpgbooking.PREMIUM_UPGRADE_STATUS</string>
+
 </resources>

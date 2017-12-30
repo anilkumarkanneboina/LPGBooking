@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
         recyclerViewNavigation.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerViewNavigation.setLayoutManager(linearLayoutManager);
-        NavigationAdapter navigationAdapter = new NavigationAdapter(getApplicationContext(), this);
+        NavigationAdapter navigationAdapter = new NavigationAdapter(getApplicationContext(), this, false);
         recyclerViewNavigation.setAdapter(navigationAdapter);
 
 
@@ -121,9 +121,7 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
         //Set view holder adapter
       //  recyclerView.setAdapter(new LPGCylinderListViewAdapter());
 
-        if (!(((LPGApplication) getApplication()).isSingletonRun )) {
-            ((LPGApplication) getApplication()).LPG_AlertBoxInstantiate();
-        }
+
         //Columns for database ;
         String[] sqLiteColumns = {LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME, LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER, LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY, LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID};
         SQLiteCursor sqLiteCursor;

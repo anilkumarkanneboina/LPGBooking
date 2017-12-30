@@ -49,6 +49,7 @@ import com.google.android.gms.ads.InterstitialAd;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import static com.aekan.navya.lpgbooking.utilities.LPG_Utility.Alert;
 import static com.aekan.navya.lpgbooking.utilities.LPG_Utility.ifWeCanShowInterstitialAdNow;
 
 /**
@@ -271,7 +272,7 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
                         Log.v("LPGBooking ", fragmentManager.toString());
                     }
 
-                    ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper(getResources().getString(R.string.lpgbooking_callpermissiondialog_title), "OK", null, new DialogInterface.OnClickListener() {
+                    Alert.showDialogHelper(getResources().getString(R.string.lpgbooking_callpermissiondialog_title), "OK", null, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
@@ -293,7 +294,7 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
                 } else {
                     FragmentManager supportFragmentManager = getSupportFragmentManager();
 
-                    ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper(getResources().getString(R.string.lpgbooking_callpermissiondialog_title), "OK", null, new DialogInterface.OnClickListener() {
+                    Alert.showDialogHelper(getResources().getString(R.string.lpgbooking_callpermissiondialog_title), "OK", null, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();

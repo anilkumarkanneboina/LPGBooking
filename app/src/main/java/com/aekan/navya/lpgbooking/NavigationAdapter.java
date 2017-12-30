@@ -19,9 +19,13 @@ import java.util.HashMap;
 
 public class NavigationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private static final int COLOR_RED = 0xffed0e3a;
+    private static final int COLOR_BLACK = Integer.parseInt("343435", 16);
     private Context mContext;
     private HashMap<Integer, Integer> mIconMap;
     private HashMap<Integer, String> mMenuNameMap;
+    private HashMap<Integer, Integer> mNavItemTextColor;
+    private boolean misPremiumUser = false;
     private HashMap<Integer, View.OnClickListener> mListenerAdapter;
 
     public NavigationAdapter(final Context context, final ListenerAdapter listenerHashMap) {
@@ -48,6 +52,43 @@ public class NavigationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     }
 
+    public NavigationAdapter(final Context context, final ListenerAdapter listenerHashMap, final boolean isPremiumUser) {
+        Log.v("Recyclerview", "Constructor with boolean");
+        mContext = context;
+        misPremiumUser = isPremiumUser;
+        //set String map of menu items
+        String[] menuName = context.getResources().getStringArray(R.array.navigation_menuitems);
+        mMenuNameMap = new HashMap<Integer, String>();
+        for (int i = 0; i < menuName.length; ++i) {
+            mMenuNameMap.put(Integer.valueOf(i), menuName[i]);
+            Log.v("Recyclerview", " Menu Map " + mMenuNameMap.get(Integer.valueOf(i)));
+        }
+
+        //Set icon map for navigation items
+        mIconMap = new HashMap<Integer, Integer>();
+        mIconMap.put(new Integer(0), new Integer(0));
+        mIconMap.put(new Integer(1), new Integer(R.drawable.ic_home_black_24dp));
+        if (isPremiumUser) {
+            mIconMap.put(new Integer(2), new Integer(R.drawable.ic_add_circle_outline_black_24dp));
+        } else {
+            mIconMap.put(new Integer(2), new Integer(R.drawable.ic_add_connection_nav_bar_non_premium));
+        }
+
+        mIconMap.put(new Integer(3), new Integer(R.drawable.ic_call_black_24dp));
+        mIconMap.put(new Integer(4), new Integer(R.drawable.ic_textsms_black_24dp));
+        mIconMap.put(new Integer(5), new Integer(R.drawable.ic_collections_bookmark_black_24dp));
+        //set listener adapter
+        mListenerAdapter = listenerHashMap.getmListenerAdapter();
+
+        //get navigation item text color hashmap;
+        mNavItemTextColor = new HashMap<Integer, Integer>();
+        for (int i = 0; i < mIconMap.size(); ) {
+            mNavItemTextColor.put(new Integer(i++), new Integer(R.color.defaultBlack));
+        }
+        if (!(isPremiumUser)) {
+            mNavItemTextColor.put(new Integer(2), new Integer(R.color.error_red));
+        }
+    }
 
     //override get item view type
     @Override
@@ -117,6 +158,11 @@ public class NavigationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     resIconId = R.drawable.ic_home_black_24dp;
                 }
                 lineItemViewHolder.mIcon.setImageResource(resIconId);
+                //set font color
+                if (!(misPremiumUser) && (position == 2)) {
+                    lineItemViewHolder.mMenuItem.setTextColor(COLOR_RED);
+                }
+//                lineItemViewHolder.mMenuItem.setTextColor(mContext.getResources().getColor( mNavItemTextColor.get(Integer.valueOf(position)).intValue(),null));
                 lineItemViewHolder.mIcon.setOnClickListener(mListenerAdapter.get(Integer.valueOf(position)));
                 //set onclick listener
                 

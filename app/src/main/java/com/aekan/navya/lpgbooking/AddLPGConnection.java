@@ -51,6 +51,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import static com.aekan.navya.lpgbooking.utilities.LPG_Utility.Alert;
 import static com.aekan.navya.lpgbooking.utilities.LPG_Utility.ifWeCanShowInterstitialAdNow;
 
 public class AddLPGConnection extends AppCompatActivity implements LPGServiceResponseCallBack {
@@ -275,7 +276,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
                         long insertRow = sqLiteDatabase.insert(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME, null, contentValuesDB);
                         if (insertRow != -1) {
 
-                            ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper("LPG Connection Created ", "OK", null, new DialogInterface.OnClickListener() {
+                            Alert.showDialogHelper("LPG Connection Created ", "OK", null, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
 
@@ -288,16 +289,16 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
 
                                 }
                             }, null);
-                            ((LPGApplication) getApplication()).LPG_Alert.show(getSupportFragmentManager(), "DB");
+                            Alert.show(getSupportFragmentManager(), "DB");
                         } else {
-                            ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper("LPG Connection update failed. Please try later", "Ok", null, new DialogInterface.OnClickListener() {
+                            Alert.showDialogHelper("LPG Connection update failed. Please try later", "Ok", null, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
 
                                 }
                             }, null);
-                            ((LPGApplication)getApplication()).LPG_Alert.show(getSupportFragmentManager(),"DB");
+                            Alert.show(getSupportFragmentManager(), "DB");
                         }
 
                     } else {
@@ -305,7 +306,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
 
                         if (updateDBCount > 0) {
 
-                            ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper("LPG Connection updated", "Ok", null, new DialogInterface.OnClickListener() {
+                            Alert.showDialogHelper("LPG Connection updated", "Ok", null, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     //clear local cache
@@ -316,19 +317,19 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
 
                                 }
                             }, null);
-                            ((LPGApplication)getApplication()).LPG_Alert.show(getSupportFragmentManager(),"DB");
+                            Alert.show(getSupportFragmentManager(), "DB");
 
 
 
                         } else {
-                            ((LPGApplication) getApplication()).LPG_Alert.showDialogHelper("LPG Connection update failed. Please try later", "Ok", null, new DialogInterface.OnClickListener() {
+                            Alert.showDialogHelper("LPG Connection update failed. Please try later", "Ok", null, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
 
                                 }
                             }, null);
-                            ((LPGApplication)getApplication()).LPG_Alert.show(getSupportFragmentManager(),"DB");
+                            Alert.show(getSupportFragmentManager(), "DB");
                         }
 
                     }
