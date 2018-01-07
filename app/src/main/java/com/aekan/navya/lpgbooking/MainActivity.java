@@ -1,5 +1,6 @@
 package com.aekan.navya.lpgbooking;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteCursor;
@@ -20,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 
+import com.aekan.navya.lpgbooking.utilities.LPG_AlertBoxClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQLOpenHelperClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
@@ -288,6 +290,70 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
 
             }
         });
+
+        listenerHashMap.put(new Integer(6), new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent  tellAFriend = new Intent(Intent.ACTION_SEND);
+                Log.v("Share","Message is " + v.getContext().getResources().getString( R.string.tellafriend_desc));
+                final Intent intent = tellAFriend.putExtra(Intent.EXTRA_TEXT, LPG_Utility.TELLAFRIEND_DESC);
+                tellAFriend.setType("text/plain");
+                startActivity(Intent.createChooser(tellAFriend, LPG_Utility.TELLAFRIEND_WITH));
+
+            }
+        });
+
+        listenerHashMap.put(new Integer(7), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        LPG_AlertBoxClass alertBoxClass = new LPG_AlertBoxClass();
+                        alertBoxClass.showDialogHelper(LPG_Utility.NOTIFICATION_APP_TRANSCEND,
+                                "OK",
+                                "Cancel",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent contactUs = new Intent(Intent.ACTION_VIEW, Uri.parse(LPG_Utility.CONTACTUS_URL));
+                                        startActivity(contactUs);
+                                    }
+                                }, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                }
+                        ).show(getSupportFragmentManager(),"Contact Us");
+
+                    }
+                }
+
+        );
+
+        listenerHashMap.put(new Integer(8), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        LPG_AlertBoxClass alertBoxClass = new LPG_AlertBoxClass();
+                        alertBoxClass.showDialogHelper(LPG_Utility.NOTIFICATION_APP_TRANSCEND,
+                                "OK",
+                                "Cancel",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent contactUs = new Intent(Intent.ACTION_VIEW, Uri.parse(LPG_Utility.PRIVACYPOLICY_URL));
+                                        startActivity(contactUs);
+                                    }
+                                }, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                }
+                        ).show(getSupportFragmentManager(),"Privacy Policy");
+
+                    }
+                }
+
+        );
 
         return listenerHashMap;
     }

@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.CALL_PHONE"    />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="com.android.vending.BILLING"/>
     <application
         android:name=".LPGApplication"
         android:allowBackup="true"
@@ -40,6 +41,11 @@
                 android:value="com.aekan.navya.lpgbooking.MainActivity" />
         </activity>
         <activity android:name=".PhoneBookingRegistration">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.aekan.navya.lpgbooking.MainActivity" />
+        </activity>
+        <activity android:name=".LPG_Purchase_Notification">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.aekan.navya.lpgbooking.MainActivity" />

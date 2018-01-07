@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:id="@+id/con_purchase"
+    android:gravity="center_vertical|center_horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/purchase_notification"
+
+        android:gravity="center_vertical|center_horizontal"
+        android:text="@string/purchase_notification"
+        android:textSize="@dimen/confirmbooking_description_fontsize"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/sku_details"
+        android:layout_marginStart="@dimen/purchase_rightmrgin"
+        android:layout_marginLeft="@dimen/purchase_rightmrgin"
+        android:layout_marginEnd="@dimen/purchase_rightmrgin"
+        android:layout_marginRight="@dimen/purchase_rightmrgin"
+        android:layout_below="@id/purchase_notification"
+        android:layout_marginTop="@dimen/purchase_margin_top"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="@string/billing_sku_default"
+        android:textSize="@dimen/confirmbooking_description_fontsize"
+
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+
+        android:paddingTop="@dimen/add_edittext_margintop"
+        android:layout_below="@id/sku_details"
+        >
+        <Button
+            android:id="@+id/purchase_ok"
+            android:layout_width="@dimen/confirmbooking_button_width"
+            android:layout_height="@dimen/confirmbooking_button_height"
+            android:layout_marginEnd="@dimen/confirmbooking_button_margin"
+            android:layout_marginRight="@dimen/confirmbooking_button_margin"
+            android:background="@color/colorPrimary"
+            android:minHeight="48dp"
+            android:paddingEnd="@dimen/confirmbooking_button_internalpadding"
+            android:paddingLeft="@dimen/confirmbooking_button_internalpadding"
+            android:paddingRight="@dimen/confirmbooking_button_internalpadding"
+            android:paddingStart="@dimen/confirmbooking_button_internalpadding"
+            android:text="@string/confirmbooking_button_yes"
+
+            />
+
+        <Button
+            android:id="@+id/purchase_not_ok"
+            android:layout_width="@dimen/confirmbooking_button_width"
+            android:layout_height="@dimen/confirmbooking_button_height"
+              android:background="@color/confirmbooking_button_no"
+              android:minHeight="48dp"
+              android:paddingEnd="@dimen/confirmbooking_button_internalpadding"
+              android:paddingLeft="@dimen/confirmbooking_button_internalpadding"
+              android:paddingRight="@dimen/confirmbooking_button_internalpadding"
+              android:paddingStart="@dimen/confirmbooking_button_internalpadding"
+              android:text="@string/confirmbooking_button_no" />
+
+      </LinearLayout>
+
+  </RelativeLayout>

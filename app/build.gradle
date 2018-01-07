@@ -64,6 +64,7 @@ dependencies {
     androidTestCompile 'com.android.support.test.espresso:espresso-web:3.0.0'
     androidTestCompile 'com.android.support.test.espresso.idling:idling-concurrent:3.0.0'
     androidTestCompile 'com.android.support.test.espresso:espresso-idling-resource:3.0.0'
+    compile 'com.android.billingclient:billing:1.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

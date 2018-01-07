@@ -74,14 +74,14 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
     private TelephonyManager telephonyManager;
     private LPG_PhoneListener phoneStateListener;
     private String lpgparcelConnectionId; // connection id of record being booked
-    private mSMSBroadcastReceiver mSMSBroadcast;
+   // private mSMSBroadcastReceiver mSMSBroadcast;
     //handle progress loader for SMS sending
     private Intent smsSentActionIntent;
     private Intent smsDeliveredActionIntent;
     //broadcast receiver objects for sms sent and delivered actions
-    private mSMSBroadcastReceiver smsSentReceiver;
+    private LPGBooking.mSMSBroadcastReceiver smsSentReceiver;
     private boolean isSmsSentReceiverRegistered;
-    private mSMSBroadcastReceiver smsDeliveryReceiver;
+    private LPGBooking.mSMSBroadcastReceiver smsDeliveryReceiver;
     private boolean isSmsDeliveredReceiverRegistered;
 
     @Override
@@ -484,7 +484,7 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
             smsSentActionPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, smsSentActionIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
             //register sms send broadcast
-            smsSentReceiver = new mSMSBroadcastReceiver();
+            smsSentReceiver = new LPGBooking.mSMSBroadcastReceiver(this);
             registerReceiver(smsSentReceiver, new IntentFilter(Telephony.Sms.Intents.SMS_DELIVER_ACTION));
             //isSmsSentReceiverRegistered = true;
         } catch (Exception e) {
@@ -499,7 +499,7 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
             smsDeliveredActionPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 1, smsDeliveredActionIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
             //register sms delivery broadcast
-            smsDeliveryReceiver = new mSMSBroadcastReceiver();
+            smsDeliveryReceiver = new LPGBooking.mSMSBroadcastReceiver(this);
             registerReceiver(smsDeliveryReceiver, new IntentFilter(Telephony.Sms.Intents.SMS_DELIVER_ACTION));
             // isSmsDeliveredReceiverRegistered = true;
         } catch (Exception e) {
@@ -603,18 +603,24 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
         mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice(getResources().getString(R.string.AdMob_TestDevice)).build());
     }
 
-    public class mSMSBroadcastReceiver extends BroadcastReceiver {
+    public static class mSMSBroadcastReceiver extends BroadcastReceiver {
         private Activity lpgBooking;
+        private Activity mContext;
 
-        public mSMSBroadcastReceiver() {
+        public mSMSBroadcastReceiver()
+        {
             super();
+        }
+        public  mSMSBroadcastReceiver(Activity context) {
+            super();
+            mContext = context;
         }
 
         @Override
         public void onReceive(Context context, Intent intent) {
             //get nature of intent from extras value
             int intentAction = intent.getIntExtra(LPG_Utility.SMS_DELIVERY_MILESTONE, 1);
-            TextView progressText = (TextView) findViewById(R.id.progresstext);
+            TextView progressText = (TextView) mContext.findViewById(R.id.progresstext);
             switch (intentAction) {
                 case (LPG_Utility.SENT_REFILL_SMS):
                     progressText.setText(LPG_Utility.PROGRESS_SMS_SENT);

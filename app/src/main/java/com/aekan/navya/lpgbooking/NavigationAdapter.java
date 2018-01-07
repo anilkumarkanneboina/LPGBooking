@@ -47,6 +47,9 @@ public class NavigationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         mIconMap.put(new Integer(3), new Integer(R.drawable.ic_call_black_24dp));
         mIconMap.put(new Integer(4), new Integer(R.drawable.ic_textsms_black_24dp));
         mIconMap.put(new Integer(5), new Integer(R.drawable.ic_collections_bookmark_black_24dp));
+        mIconMap.put(new Integer(6), new Integer(R.drawable.ic_share_black_48dp));
+        mIconMap.put(new Integer(8 ),new Integer(R.drawable.ic_privacy_policy));
+        mIconMap.put(new Integer(7),new Integer(R.drawable.ic_inbox_black_24dp));
         //set listener adapter
         mListenerAdapter = listenerHashMap.getmListenerAdapter();
 
@@ -77,6 +80,10 @@ public class NavigationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         mIconMap.put(new Integer(3), new Integer(R.drawable.ic_call_black_24dp));
         mIconMap.put(new Integer(4), new Integer(R.drawable.ic_textsms_black_24dp));
         mIconMap.put(new Integer(5), new Integer(R.drawable.ic_collections_bookmark_black_24dp));
+        mIconMap.put(new Integer(6), new Integer(R.drawable.ic_share_black_48dp));
+        mIconMap.put(new Integer(7),new Integer(R.drawable.ic_inbox_black_24dp));
+        mIconMap.put(new Integer(8 ),new Integer(R.drawable.ic_privacy_policy));
+
         //set listener adapter
         mListenerAdapter = listenerHashMap.getmListenerAdapter();
 

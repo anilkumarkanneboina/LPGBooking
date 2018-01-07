@@ -74,6 +74,11 @@ public class LPG_Utility {
     public final static int NAVDRAWER_LINEITEM = 12;
     public final static int HASH_CAPACITY = 4;
     public final static float HASH_LOAD_FACTOR = 0.8f;
+    public final static String TELLAFRIEND_DESC = "This LPG booking app is going to help you a lot. You can try!!!";
+    public final static String TELLAFRIEND_WITH = "Share with your Friend through";
+    public final static String CONTACTUS_URL = "https://lpgbookingapp.wordpress.com/contact/";
+    public final static String PRIVACYPOLICY_URL = "https://lpgbookingapp.wordpress.com/privacy-policy/";
+    public final static String NOTIFICATION_APP_TRANSCEND="You will be moved out of app to browser";
 
     public final static int MSG_GETALLCYLINDERS = 0;
     public final static int MSG_INCREMENTPRIMARYKEY = 1243;
