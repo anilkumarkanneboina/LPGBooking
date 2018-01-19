@@ -8,6 +8,10 @@ import com.android.billingclient.api.PurchasesUpdatedListener;
 
 public interface BillingManager  {
     public void getSKUDetails(String SKUID);
+    public boolean isSKUPurchased(String SKUID);
+    public boolean isReady();
+    public void closeConnection();
+
 
 
 }

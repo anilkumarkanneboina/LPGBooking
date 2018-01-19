@@ -24,7 +24,7 @@ import java.util.List;
 
 public class LPG_BillingManager implements BillingManager,SkuDetailsResponseListener,BillingClientStateListener{
     private BillingClient mBillingClient;
-    private ArrayList<Purchase> mPurchases;
+
     private String mSKUID;
     private Activity mActivity;
     private boolean mIsServiceActive;
@@ -122,5 +122,65 @@ public class LPG_BillingManager implements BillingManager,SkuDetailsResponseList
 
     }
 
+    @Override
+    public boolean isSKUPurchased(String SKUID){
+        //Update whether user had already purchased the SKU item
+        //this is preferably to be done only once when the app loads
+        boolean purchaseAvailable = false;
+        if(mBillingClient.isReady()){
+            Purchase.PurchasesResult purchasesResult = mBillingClient.queryPurchases(BillingClient.SkuType.INAPP);
+            LPG_Purchase_Utility.isPurchaseChecked = true;
+            switch (purchasesResult.getResponseCode()){
+                default:
+                    Toast.makeText(mActivity.getApplicationContext(),mActivity.getResources().getString(R.string.billing_error_gathering_purchasedetails),Toast.LENGTH_LONG);
+                    return false;
+
+                case BillingClient.BillingResponse.OK:
+                    for(Purchase counter:purchasesResult.getPurchasesList()){
+                        if(counter.getSku().equals(mSKUID)){
+                            purchaseAvailable = true;
+                            break;
+                        }
+                    }
+                    break;
+            }
+
+        } else {
+            mRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    Purchase.PurchasesResult purchasesResult = mBillingClient.queryPurchases(BillingClient.SkuType.INAPP);
+                    LPG_Purchase_Utility.isPurchaseChecked = true;
+                    switch (purchasesResult.getResponseCode()) {
+                        default:
+                            Toast.makeText(mActivity.getApplicationContext(), mActivity.getResources().getString(R.string.billing_error_gathering_purchasedetails), Toast.LENGTH_LONG);
+                            break;
+                        case BillingClient.BillingResponse.OK:
+
+                            for (Purchase counter : purchasesResult.getPurchasesList()) {
+
+                                if (counter.getSku().equals(mSKUID)) {
+                                    mBillingConsumer.updatePurchaseInfo();
+                                    break;
+                                }
+                            }
+                            break;
+                    }
+                }
+            };
+
+        }
+
+
+        return purchaseAvailable;
+    }
+
+    @Override
+    public boolean isReady(){ return mBillingClient.isReady(); }
+
+    @Override
+    public  void  closeConnection(){
+        mBillingClient.endConnection();
+    }
 
 }

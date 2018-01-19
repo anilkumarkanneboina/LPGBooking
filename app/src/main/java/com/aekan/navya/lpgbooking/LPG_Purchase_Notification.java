@@ -32,7 +32,7 @@ import java.util.List;
 
 public class LPG_Purchase_Notification extends AppCompatActivity implements BillingConsumer,PurchasesUpdatedListener {
 
-    private BillingClient mBillingClient;
+
     private boolean mIsServiceConnected;
     private BillingManager mBillingManager;
 
@@ -91,7 +91,7 @@ public class LPG_Purchase_Notification extends AppCompatActivity implements Bill
         //call super method first
         super.onDestroy();
         //disconnect billing connection if still valid
-        if(mIsServiceConnected || mBillingClient.isReady()){ mBillingClient.endConnection(); }
+        if(mIsServiceConnected || mBillingManager.isReady()){ mBillingManager.closeConnection(); }
     }
     @Override
     public void updateSKUInfo(List<SkuDetails> skuDetails){
@@ -159,6 +159,8 @@ public class LPG_Purchase_Notification extends AppCompatActivity implements Bill
         }
 
     }
+    @Override
+    public void updatePurchaseInfo(){}
 
 
 

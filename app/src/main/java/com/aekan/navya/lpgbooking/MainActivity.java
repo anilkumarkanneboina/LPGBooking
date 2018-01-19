@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
@@ -21,10 +22,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 
+import com.aekan.navya.lpgbooking.purchase.BillingConsumer;
+import com.aekan.navya.lpgbooking.purchase.BillingManager;
+import com.aekan.navya.lpgbooking.purchase.LPG_BillingManager;
+import com.aekan.navya.lpgbooking.purchase.LPG_Purchase_Utility;
 import com.aekan.navya.lpgbooking.utilities.LPG_AlertBoxClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQLOpenHelperClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.PurchasesUpdatedListener;
+import com.android.billingclient.api.SkuDetails;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -34,8 +43,9 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.HashMap;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements NavigationAdapter.ListenerAdapter {
+public class MainActivity extends AppCompatActivity implements NavigationAdapter.ListenerAdapter,PurchasesUpdatedListener,BillingConsumer {
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -46,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle navDrawerToggle;
     private SQLiteDatabase mSQLiteDatabase;
+    private BillingManager mBillingManager;
+    private boolean isPremiumUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +95,6 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
         //request for Ad
         showBannerAd();
 
-
         //Set recycler view, by initialising the adapter
         RecyclerView recyclerViewNavigation = (RecyclerView) findViewById(R.id.nav_recyclerview);
         recyclerViewNavigation.setHasFixedSize(true);
@@ -91,7 +102,6 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
         recyclerViewNavigation.setLayoutManager(linearLayoutManager);
         NavigationAdapter navigationAdapter = new NavigationAdapter(getApplicationContext(), this, false);
         recyclerViewNavigation.setAdapter(navigationAdapter);
-
 
         //Enable toggle action button for drawer layout
         //toolbar.setNavigationIcon(R.drawable.ic_menu_48);
@@ -120,21 +130,14 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
         //set layout manager
         LinearLayoutManager LPGLinearLayoutMgr = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(LPGLinearLayoutMgr);
-        //Set view holder adapter
-      //  recyclerView.setAdapter(new LPGCylinderListViewAdapter());
-
 
         //Columns for database ;
         String[] sqLiteColumns = {LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME, LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER, LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY, LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID};
         SQLiteCursor sqLiteCursor;
         mSQLiteDatabase = new LPG_SQLOpenHelperClass(getApplicationContext()).getWritableDatabase();
-
-
         if (mSQLiteDatabase == null) {
-
             Log.v("MainActivity", "SQL DB does not exist");
         }
-
         sqLiteCursor = (SQLiteCursor) (mSQLiteDatabase.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,
                 sqLiteColumns,
                 null,
@@ -144,34 +147,27 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
                 null
                 ));
 
-
         recyclerView.setAdapter(new LPGCylinderListViewAdapter(sqLiteCursor));
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
+
+
+        boolean isPremium = true;
+        if(!(LPG_Purchase_Utility.getSKUStatus(this,LPG_Purchase_Utility.PREMIUM_USER_SKU))){
+            if (LPG_Purchase_Utility.isPurchaseChecked == false){
+                //check for purchases
+                mBillingManager = new LPG_BillingManager(LPG_Purchase_Utility.PREMIUM_USER_SKU,
+                        this,
+                        this,
+                        this
+                );
+                ///TO-DO
+            }
+        }
+
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
-   /* @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }*/
-
-    /*@Override*/
-   /* public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }*/
 
    private void showBannerAd(){
        MobileAds.initialize(this, getResources().getString(R.string.AdView_App_ID_Test));
@@ -385,4 +381,65 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
     }
 
 
+    @Override
+    public void onPurchasesUpdated(int responseCode, @Nullable List<Purchase> purchases) {
+    }
+
+    @Override
+    public void updateSKUInfo(List<SkuDetails> skuDetails) {
+
+    }
+
+    @Override
+    public void updatePurchaseInfo(){
+
+    }
+
+    @Override
+    protected void onDestroy(){
+        //call super method first
+        super.onDestroy();
+        //disconnect billing connection if still valid
+        if(mBillingManager.isReady()){ mBillingManager.closeConnection(); }
+    }
+
+    private void setPremiumUserFAB(boolean userStatus){
+        //set FAB click listeners and image based on user status
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        if(userStatus == true){
+
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Snackbar.make(view, "Add details for LPG Connection", Snackbar.LENGTH_LONG)
+                            .setAction("+", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                    //create an intent for add lpg connection activity
+                                    Intent intentLPGAdd = new Intent(getApplicationContext(), AddLPGConnection.class);
+                                    intentLPGAdd.putExtra(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.FIELD_CONNECTION_ID_EDIT, LPG_Utility.LPG_CONNECTION_ID);
+                                    startActivity(intentLPGAdd);
+                                }
+
+
+                            }).show();
+                }
+
+                //Test commit - dummy comment
+            });
+
+        } else{
+            
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getApplicationContext(),LPG_Purchase_Notification.class);
+                    startActivity(intent);
+                }
+            });
+
+        }
+    }
 }
