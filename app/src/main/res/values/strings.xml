@@ -245,12 +245,18 @@
 
     <!--String identifiers for purchase API-->
     <string name="PREMIUM_UPGRADE_STATUS">com.aekan.navya.lpgbooking.PREMIUM_UPGRADE_STATUS</string>
-    <string name="purchase_notification">You will be able to add more connections by registering as a premium user. Please buy premium version to add unlimited connections and ad-free experience. </string>
+    <string name="purchase_notification">You will be able to add more connections by registering as a premium user. Please buy premium version to add unlimited connections and ad-free experience.\nPlease ensure that you are connected to a network to purchase. </string>
     <string name="purchase_activity_title">Go Premium</string>
     <string name="billing_conn_error">Purchase error - please try again later</string>
     <string name="billing_conn_service_disconnected">Service error - please try again later</string>
+    <string name="billing_conn_developer_error">DEVELOPER_ERROR for Billing Service</string>
     <string name="billing_conn_network_down">Network error - please connect to a network</string>
     <string name="billing_sku_default">Please ensure that you are connected to a network to purchase.</string>
+    <string name="billing_user_cancelled">Purchase cancelled!!</string>
+    <string name="billing_purchase_default">Please try later</string>
     <string name="billing_sharedpref_filename">userpurchasestatus</string>
     <string name="billing_sharedpref_key">sharedprefkey</string>
+    <string name="billing_SKU_cost">Cost for premium :</string>
+    <string name="billing_purchase_success_dialogtitle">Thank You!!</string>
+    <string name="billing_purchase_success_dialogdesc">You are a premium user now. Thanks for your patronage, and we assure you a satisfying experience </string>
 </resources>

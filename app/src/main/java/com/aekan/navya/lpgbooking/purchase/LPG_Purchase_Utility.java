@@ -32,7 +32,7 @@ public class LPG_Purchase_Utility {
         editor.putString(context.getResources().getString(R.string.billing_sharedpref_key),skuID);
         editor.commit();
 
-        //update user status in app utility
+
 
     }
 

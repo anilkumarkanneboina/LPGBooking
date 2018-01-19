@@ -26,11 +26,12 @@
         android:layout_marginRight="@dimen/purchase_rightmrgin"
         android:layout_below="@id/purchase_notification"
         android:layout_marginTop="@dimen/purchase_margin_top"
+        android:visibility="invisible"
         android:gravity="center_vertical|center_horizontal"
         android:text="@string/billing_sku_default"
         android:textSize="@dimen/confirmbooking_description_fontsize"
-
         />
+
 
     <LinearLayout
         android:layout_width="match_parent"

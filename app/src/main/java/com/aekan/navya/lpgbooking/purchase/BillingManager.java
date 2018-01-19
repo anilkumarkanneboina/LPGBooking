@@ -7,7 +7,7 @@ import com.android.billingclient.api.PurchasesUpdatedListener;
  */
 
 public interface BillingManager  {
-    public String getSKUDescription(String SKUID);
+    public void getSKUDetails(String SKUID);
 
 
 }
