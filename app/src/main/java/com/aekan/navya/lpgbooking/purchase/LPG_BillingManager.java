@@ -10,6 +10,7 @@ import com.aekan.navya.lpgbooking.R;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.PurchaseHistoryResponseListener;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetails;
 import com.android.billingclient.api.SkuDetailsParams;
@@ -22,7 +23,7 @@ import java.util.List;
  * Created by arunramamurthy on 01/01/18.
  */
 
-public class LPG_BillingManager implements BillingManager,SkuDetailsResponseListener,BillingClientStateListener{
+public class LPG_BillingManager implements BillingManager,SkuDetailsResponseListener,BillingClientStateListener,PurchaseHistoryResponseListener{
     private BillingClient mBillingClient;
 
     private String mSKUID;
@@ -117,28 +118,52 @@ public class LPG_BillingManager implements BillingManager,SkuDetailsResponseList
             case BillingClient.BillingResponse.OK:
                 if(mRunnable != null){
                     mRunnable.run();
+                } else {
+                    //query for purchases
+                    if (LPG_Purchase_Utility.cachePurchaseList == null){
+                        //create SKU Details param list
+                        mBillingClient.queryPurchaseHistoryAsync(mSKUID, new PurchaseHistoryResponseListener() {
+                            @Override
+                            public void onPurchaseHistoryResponse(int responseCode, List<Purchase> purchasesList) {
+                                switch (responseCode){
+                                    case BillingClient.BillingResponse.OK:
+                                        LPG_Purchase_Utility.cachePurchaseList = purchasesList;
+                                        break;
+                                    default:
+                                        break;
+                                }
+
+                            }
+                        });
+                    }
                 }
+
         }
 
     }
 
     @Override
-    public boolean isSKUPurchased(String SKUID){
+    public int isSKUPurchased(String SKUID){
         //Update whether user had already purchased the SKU item
         //this is preferably to be done only once when the app loads
-        boolean purchaseAvailable = false;
+        int purchaseAvailable =LPG_Purchase_Utility.PREMIUM_USER;
         if(mBillingClient.isReady()){
             Purchase.PurchasesResult purchasesResult = mBillingClient.queryPurchases(BillingClient.SkuType.INAPP);
             LPG_Purchase_Utility.isPurchaseChecked = true;
             switch (purchasesResult.getResponseCode()){
+                case BillingClient.BillingResponse.FEATURE_NOT_SUPPORTED:
+                    Toast.makeText(mActivity.getApplicationContext(),mActivity.getResources().getString(R.string.billing_featurenotsupported),Toast.LENGTH_LONG);
+                    return LPG_Purchase_Utility.REGULAR_USER;
+
+                case BillingClient.BillingResponse.ERROR:
                 default:
                     Toast.makeText(mActivity.getApplicationContext(),mActivity.getResources().getString(R.string.billing_error_gathering_purchasedetails),Toast.LENGTH_LONG);
-                    return false;
+                    return LPG_Purchase_Utility.REGULAR_USER;
 
                 case BillingClient.BillingResponse.OK:
                     for(Purchase counter:purchasesResult.getPurchasesList()){
                         if(counter.getSku().equals(mSKUID)){
-                            purchaseAvailable = true;
+                            purchaseAvailable = LPG_Purchase_Utility.PREMIUM_USER;
                             break;
                         }
                     }
@@ -160,18 +185,19 @@ public class LPG_BillingManager implements BillingManager,SkuDetailsResponseList
                             for (Purchase counter : purchasesResult.getPurchasesList()) {
 
                                 if (counter.getSku().equals(mSKUID)) {
-                                    mBillingConsumer.updatePurchaseInfo();
-                                    break;
+                                    if (mBillingConsumer != null) {
+                                        mBillingConsumer.updatePurchaseInfo(true);
+                                    }break;
                                 }
                             }
                             break;
                     }
                 }
             };
+            mBillingClient.startConnection(this);
+            purchaseAvailable = LPG_Purchase_Utility.USER_DETAILS_FETCHED_ASYNCHRONOUS;
 
         }
-
-
         return purchaseAvailable;
     }
 
@@ -179,8 +205,20 @@ public class LPG_BillingManager implements BillingManager,SkuDetailsResponseList
     public boolean isReady(){ return mBillingClient.isReady(); }
 
     @Override
-    public  void  closeConnection(){
+    public void closeConnection(){
         mBillingClient.endConnection();
+    }
+
+    @Override
+    public void onPurchaseHistoryResponse(int responseCode, List<Purchase> purchasesList){
+        switch (responseCode){
+            case BillingClient.BillingResponse.OK:
+                LPG_Purchase_Utility.cachePurchaseList = purchasesList;
+                break;
+            default:
+                break;
+
+        }
     }
 
 }

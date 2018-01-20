@@ -52,12 +52,13 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
-    private HashMap<Integer, AdapterView.OnItemClickListener> mListenerAdapter;
+
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle navDrawerToggle;
     private SQLiteDatabase mSQLiteDatabase;
     private BillingManager mBillingManager;
-    private boolean isPremiumUser;
+    private boolean mIsPremiumUser;
+    private int noOfConnections;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,12 +89,38 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
             //Test commit - dummy comment
         });
 
-        //Set Drawer layout
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.navdrawer);
-        Log.v("Main", "Drawer layout bar set");
+
 
         //request for Ad
         showBannerAd();
+
+        //set premium user status and define user interaction accordingly
+        int isPremium;
+        if(!(LPG_Purchase_Utility.getSKUStatus(this,LPG_Purchase_Utility.PREMIUM_USER_SKU))){
+            if (LPG_Purchase_Utility.isPurchaseChecked == false){
+                //check for purchases
+                mBillingManager = new LPG_BillingManager(LPG_Purchase_Utility.PREMIUM_USER_SKU,
+                        this,
+                        this,
+                        this
+                );
+                isPremium = mBillingManager.isSKUPurchased(LPG_Purchase_Utility.PREMIUM_USER_SKU);
+                switch (isPremium){
+                    case LPG_Purchase_Utility.PREMIUM_USER:
+                        setPremiumUserFAB(true);
+                        mIsPremiumUser = true;
+                        setPremiumNavigationDrawer(mIsPremiumUser);
+                        break;
+                    case LPG_Purchase_Utility.REGULAR_USER:
+                        setPremiumUserFAB(false);
+                        break;
+                    default:
+                        break;
+
+                }
+                ///TO-DO
+            }
+        }
 
         //Set recycler view, by initialising the adapter
         RecyclerView recyclerViewNavigation = (RecyclerView) findViewById(R.id.nav_recyclerview);
@@ -107,6 +134,10 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
         //toolbar.setNavigationIcon(R.drawable.ic_menu_48);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+
+        //Set Drawer layout
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.navdrawer);
+        Log.v("Main", "Drawer layout bar set");
         //set Drawer shadow
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
@@ -146,24 +177,16 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
                 null,
                 null
                 ));
-
+        //set recycler view connections
         recyclerView.setAdapter(new LPGCylinderListViewAdapter(sqLiteCursor));
+        //set no of connections
+        noOfConnections = sqLiteCursor.getCount();
+
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
 
 
-        boolean isPremium = true;
-        if(!(LPG_Purchase_Utility.getSKUStatus(this,LPG_Purchase_Utility.PREMIUM_USER_SKU))){
-            if (LPG_Purchase_Utility.isPurchaseChecked == false){
-                //check for purchases
-                mBillingManager = new LPG_BillingManager(LPG_Purchase_Utility.PREMIUM_USER_SKU,
-                        this,
-                        this,
-                        this
-                );
-                ///TO-DO
-            }
-        }
+
 
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
@@ -245,6 +268,7 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
         });
 
         //listener adapter for add lpg connection
+        if(mIsPremiumUser){
         listenerHashMap.put(new Integer(2), new View.OnClickListener() {
 
             @Override
@@ -255,6 +279,16 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
 
             }
         });
+        } else {
+            listenerHashMap.put(new Integer(2), new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent showPremiumUser = new Intent(getApplicationContext(),LPG_Purchase_Notification.class);
+                    startActivity(showPremiumUser);
+                }
+            });
+        }
+
 
         //listerner adapter for Phone booking registration
         listenerHashMap.put(new Integer(3), new View.OnClickListener() {
@@ -391,7 +425,11 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
     }
 
     @Override
-    public void updatePurchaseInfo(){
+    public void updatePurchaseInfo(boolean premiumUserInfo){
+      // premiumUserInfo = true;
+       mIsPremiumUser = premiumUserInfo;
+       setPremiumUserFAB(mIsPremiumUser);
+       setPremiumNavigationDrawer(mIsPremiumUser);
 
     }
 
@@ -405,9 +443,9 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
 
     private void setPremiumUserFAB(boolean userStatus){
         //set FAB click listeners and image based on user status
-
+        boolean allowConnections = LPG_Purchase_Utility.returnPremiumUserStatus(userStatus,noOfConnections);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        if(userStatus == true){
+        if(allowConnections == true){
 
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -431,7 +469,7 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
             });
 
         } else{
-            
+            fab.setBackgroundResource(R.drawable.ic_add_connection_red);
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -441,5 +479,16 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
             });
 
         }
+    }
+
+    private void setPremiumNavigationDrawer(boolean premiumUser){
+        //Set recycler view, by initialising the adapter
+        RecyclerView recyclerViewNavigation = (RecyclerView) findViewById(R.id.nav_recyclerview);
+        recyclerViewNavigation.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerViewNavigation.setLayoutManager(linearLayoutManager);
+        NavigationAdapter navigationAdapter = new NavigationAdapter(getApplicationContext(), this, LPG_Purchase_Utility.returnPremiumUserStatus(premiumUser,noOfConnections));
+        recyclerViewNavigation.setAdapter(navigationAdapter);
+
     }
 }

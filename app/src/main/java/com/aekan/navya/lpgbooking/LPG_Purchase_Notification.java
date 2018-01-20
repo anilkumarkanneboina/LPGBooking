@@ -115,6 +115,7 @@ public class LPG_Purchase_Notification extends AppCompatActivity implements Bill
     @Override
     public void onPurchasesUpdated(int responseCode, List<Purchase> purchases){
         String SKUID = LPG_Purchase_Utility.PREMIUM_USER_SKU;
+        LPG_AlertBoxClass alertBoxClass = new LPG_AlertBoxClass();
         switch (responseCode){
             case BillingClient.BillingResponse.DEVELOPER_ERROR:
                 Toast.makeText(getApplicationContext(),getResources().getString(R.string.billing_conn_developer_error),Toast.LENGTH_LONG);
@@ -130,8 +131,27 @@ public class LPG_Purchase_Notification extends AppCompatActivity implements Bill
             case BillingClient.BillingResponse.SERVICE_UNAVAILABLE:
 
                 Toast.makeText(getApplicationContext(),getResources().getString(R.string.billing_conn_network_down),Toast.LENGTH_LONG);
+                break;
             case BillingClient.BillingResponse.USER_CANCELED:
                 Toast.makeText(getApplicationContext(),getResources().getString(R.string.billing_user_cancelled),Toast.LENGTH_LONG);
+                break;
+            case BillingClient.BillingResponse.ITEM_UNAVAILABLE:
+                Toast.makeText(getApplicationContext(),getResources().getString(R.string.billing_item_unavailable),Toast.LENGTH_LONG);
+                break;
+            case BillingClient.BillingResponse.ITEM_ALREADY_OWNED:
+            { LPG_Purchase_Utility.setPremiumUserSku(this,SKUID); }
+            alertBoxClass.showDialogHelper(getResources().getString(R.string.billing_purchase_success_dialogtitle),
+                    getResources().getString(R.string.billing_purchase_success_dialogdesc),
+                    null,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    },
+                    null
+            ).show(getSupportFragmentManager(),"Purchase confirmation");
+            break;
             case BillingClient.BillingResponse.OK:
                 //check if purchase has been made for specified SKU.
                 boolean isSpecificSKUPurchased = false;
@@ -140,7 +160,7 @@ public class LPG_Purchase_Notification extends AppCompatActivity implements Bill
                     isSpecificSKUPurchased = (purchase.getSku() == SKUID);
                 }
                 if (isSpecificSKUPurchased) { LPG_Purchase_Utility.setPremiumUserSku(this,SKUID); }
-                LPG_AlertBoxClass alertBoxClass = new LPG_AlertBoxClass();
+
                 alertBoxClass.showDialogHelper(getResources().getString(R.string.billing_purchase_success_dialogtitle),
                         getResources().getString(R.string.billing_purchase_success_dialogdesc),
                         null,
@@ -160,7 +180,7 @@ public class LPG_Purchase_Notification extends AppCompatActivity implements Bill
 
     }
     @Override
-    public void updatePurchaseInfo(){}
+    public void updatePurchaseInfo(boolean premium){}
 
 
 

@@ -259,6 +259,8 @@
     <string name="billing_SKU_cost">Cost for premium :</string>
     <string name="billing_purchase_success_dialogtitle">Thank You!!</string>
     <string name="billing_error_gathering_purchasedetails">Purchase details: fetch error</string>
+    <string name="billing_featurenotsupported">Error: Purchase unsupported</string>
+    <string name="billing_item_unavailable">Premium purchase unavailable</string>
 
     <string name="billing_purchase_success_dialogdesc">You are a premium user now. Thanks for your patronage, and we assure you a satisfying experience </string>
 </resources>
