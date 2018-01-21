@@ -67,6 +67,38 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        ///////////////////////////////////////
+        //Create recycler view and initialize it
+        //Create the query for database and set up recycler view
+        ///////////////////////////////////////
+
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.lpg_recycler_view);
+        //set recycler view to have same size
+        recyclerView.setHasFixedSize(true);
+        //set layout manager
+        LinearLayoutManager LPGLinearLayoutMgr = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(LPGLinearLayoutMgr);
+
+        //Columns for database ;
+        String[] sqLiteColumns = {LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME, LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER, LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY, LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID};
+        SQLiteCursor sqLiteCursor;
+        mSQLiteDatabase = new LPG_SQLOpenHelperClass(getApplicationContext()).getWritableDatabase();
+        if (mSQLiteDatabase == null) {
+            Log.v("MainActivity", "SQL DB does not exist");
+        }
+        sqLiteCursor = (SQLiteCursor) (mSQLiteDatabase.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,
+                sqLiteColumns,
+                null,
+                null,
+                null,
+                null,
+                null
+        ));
+        //set recycler view connections
+        recyclerView.setAdapter(new LPGCylinderListViewAdapter(sqLiteCursor));
+        //set no of connections
+        noOfConnections = sqLiteCursor.getCount();
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,28 +139,25 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
                 isPremium = mBillingManager.isSKUPurchased(LPG_Purchase_Utility.PREMIUM_USER_SKU);
                 switch (isPremium){
                     case LPG_Purchase_Utility.PREMIUM_USER:
-                        setPremiumUserFAB(true);
-                        mIsPremiumUser = true;
-                        setPremiumNavigationDrawer(mIsPremiumUser);
+
+                        updatePurchaseInfo(true);
                         break;
                     case LPG_Purchase_Utility.REGULAR_USER:
                         setPremiumUserFAB(false);
                         break;
-                    default:
+                    case LPG_Purchase_Utility.USER_DETAILS_FETCHED_ASYNCHRONOUS:
+                        updatePurchaseInfo(false);
                         break;
 
                 }
                 ///TO-DO
+            } else {
+                updatePurchaseInfo(false);
             }
-        }
 
-        //Set recycler view, by initialising the adapter
-        RecyclerView recyclerViewNavigation = (RecyclerView) findViewById(R.id.nav_recyclerview);
-        recyclerViewNavigation.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerViewNavigation.setLayoutManager(linearLayoutManager);
-        NavigationAdapter navigationAdapter = new NavigationAdapter(getApplicationContext(), this, false);
-        recyclerViewNavigation.setAdapter(navigationAdapter);
+        } else {updatePurchaseInfo(true);}
+
+
 
         //Enable toggle action button for drawer layout
         //toolbar.setNavigationIcon(R.drawable.ic_menu_48);
@@ -150,37 +179,7 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
         );
         mDrawerLayout.setDrawerListener(navDrawerToggle);
 
-        ///////////////////////////////////////
-        //Create recycler view and initialize it
-        //Create the query for database and set up recycler view
-        ///////////////////////////////////////
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.lpg_recycler_view);
-        //set recycler view to have same size
-        recyclerView.setHasFixedSize(true);
-        //set layout manager
-        LinearLayoutManager LPGLinearLayoutMgr = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(LPGLinearLayoutMgr);
-
-        //Columns for database ;
-        String[] sqLiteColumns = {LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME, LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER, LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY, LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID};
-        SQLiteCursor sqLiteCursor;
-        mSQLiteDatabase = new LPG_SQLOpenHelperClass(getApplicationContext()).getWritableDatabase();
-        if (mSQLiteDatabase == null) {
-            Log.v("MainActivity", "SQL DB does not exist");
-        }
-        sqLiteCursor = (SQLiteCursor) (mSQLiteDatabase.query(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME,
-                sqLiteColumns,
-                null,
-                null,
-                null,
-                null,
-                null
-                ));
-        //set recycler view connections
-        recyclerView.setAdapter(new LPGCylinderListViewAdapter(sqLiteCursor));
-        //set no of connections
-        noOfConnections = sqLiteCursor.getCount();
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -268,7 +267,7 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
         });
 
         //listener adapter for add lpg connection
-        if(mIsPremiumUser){
+        if( LPG_Purchase_Utility.returnPremiumUserStatus(mIsPremiumUser,noOfConnections)){
         listenerHashMap.put(new Integer(2), new View.OnClickListener() {
 
             @Override
@@ -469,7 +468,7 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
             });
 
         } else{
-            fab.setBackgroundResource(R.drawable.ic_add_connection_red);
+            fab.setImageResource(R.drawable.ic_add_connection_red);
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

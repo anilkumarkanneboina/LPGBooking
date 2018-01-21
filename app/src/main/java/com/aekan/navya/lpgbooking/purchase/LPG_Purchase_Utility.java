@@ -2,6 +2,7 @@ package com.aekan.navya.lpgbooking.purchase;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.aekan.navya.lpgbooking.R;
 import com.android.billingclient.api.Purchase;
@@ -24,12 +25,13 @@ public class LPG_Purchase_Utility {
     public static final String SKU_STATUS_DEFAULT="Default status for SKU";
     public static boolean isPurchaseChecked;
     public static List<Purchase> cachePurchaseList;
-    private static String userStatus = USER_STATUS_UNDEFINED;
+    private static String userStatus;
 
     private static final int CAP_FREEMIUM_CONNECTIONS = 1;
     static {
         isPurchaseChecked = false;
         cachePurchaseList = null;
+        userStatus = USER_STATUS_UNDEFINED;
     }
 
     public static void setPremiumUserSku(Context context,String skuID){
@@ -51,22 +53,28 @@ public class LPG_Purchase_Utility {
     public static boolean getSKUStatus(Context context,String skuID){
         SharedPreferences sharedPreferences = context.getSharedPreferences(context.getResources().getString(R.string.billing_sharedpref_filename),Context.MODE_PRIVATE);
         String SKUStatus = sharedPreferences.getString(context.getResources().getString(R.string.billing_sharedpref_key),SKU_STATUS_DEFAULT);
-
-        if(SKUStatus.equals(SKU_STATUS_DEFAULT)){
+        Log.v("Purchase ", SKUStatus);
+        Log.v("Purchase ", Boolean.toString( SKUStatus.equals(SKU_STATUS_DEFAULT)));
+        if(SKUStatus.equals(SKU_STATUS_DEFAULT) == true){
             return false;
         } else {
             return true;
         }
     }
 
-    public static boolean returnPremiumUserStatus(boolean userStatus, int noOfConnections){
+    public static boolean returnPremiumUserStatus(boolean userStatus, int noOfConnections) {
         boolean status = false;
-        if(userStatus){
-            if(noOfConnections < CAP_FREEMIUM_CONNECTIONS){
+
+        if (noOfConnections < CAP_FREEMIUM_CONNECTIONS) {
+            status = true;
+
+        } else {
+            if (userStatus) {
                 status = true;
-            } else {status = false;}
-        } else{status = false;}
-       return status;
+
+            }
+        }
+        return status;
     }
 
 }

@@ -94,12 +94,14 @@ public class LPG_BillingManager implements BillingManager,SkuDetailsResponseList
 
     @Override
     public void onBillingServiceDisconnected(){
+        Log.v("Purchase "," Billing service disconnected");
 
     }
 
     @Override
     public void onBillingSetupFinished(int ResponseCode){
         //set flag for active connection
+        Log.v("Purchase ","Billing set up finished with response code " + ResponseCode);
         switch (ResponseCode){
             case BillingClient.BillingResponse.DEVELOPER_ERROR:
                 Toast.makeText(mActivity.getApplicationContext(),mActivity.getResources().getString(R.string.billing_conn_developer_error),Toast.LENGTH_LONG);
@@ -120,7 +122,8 @@ public class LPG_BillingManager implements BillingManager,SkuDetailsResponseList
                     mRunnable.run();
                 } else {
                     //query for purchases
-                    if (LPG_Purchase_Utility.cachePurchaseList == null){
+                    if (LPG_Purchase_Utility.isPurchaseChecked == false){
+
                         //create SKU Details param list
                         mBillingClient.queryPurchaseHistoryAsync(mSKUID, new PurchaseHistoryResponseListener() {
                             @Override
@@ -146,7 +149,7 @@ public class LPG_BillingManager implements BillingManager,SkuDetailsResponseList
     public int isSKUPurchased(String SKUID){
         //Update whether user had already purchased the SKU item
         //this is preferably to be done only once when the app loads
-        int purchaseAvailable =LPG_Purchase_Utility.PREMIUM_USER;
+        int purchaseAvailable =LPG_Purchase_Utility.REGULAR_USER;
         if(mBillingClient.isReady()){
             Purchase.PurchasesResult purchasesResult = mBillingClient.queryPurchases(BillingClient.SkuType.INAPP);
             LPG_Purchase_Utility.isPurchaseChecked = true;
@@ -174,6 +177,7 @@ public class LPG_BillingManager implements BillingManager,SkuDetailsResponseList
             mRunnable = new Runnable() {
                 @Override
                 public void run() {
+                    Log.v("Purchase ", "Within Runnable for query purchase");
                     Purchase.PurchasesResult purchasesResult = mBillingClient.queryPurchases(BillingClient.SkuType.INAPP);
                     LPG_Purchase_Utility.isPurchaseChecked = true;
                     switch (purchasesResult.getResponseCode()) {
@@ -181,15 +185,20 @@ public class LPG_BillingManager implements BillingManager,SkuDetailsResponseList
                             Toast.makeText(mActivity.getApplicationContext(), mActivity.getResources().getString(R.string.billing_error_gathering_purchasedetails), Toast.LENGTH_LONG);
                             break;
                         case BillingClient.BillingResponse.OK:
-
+                            Log.v("Purchase "," Query purchase result ok");
+                            boolean skuPurChased = false;
                             for (Purchase counter : purchasesResult.getPurchasesList()) {
 
                                 if (counter.getSku().equals(mSKUID)) {
                                     if (mBillingConsumer != null) {
+                                        Log.v("Purchase "," about to call Main Activity");
+                                        skuPurChased = true;
                                         mBillingConsumer.updatePurchaseInfo(true);
-                                    }break;
+                                    }
+                                    break;
                                 }
                             }
+                            if ( !skuPurChased){ if ( mBillingConsumer != null) {mBillingConsumer.updatePurchaseInfo(skuPurChased);} }
                             break;
                     }
                 }

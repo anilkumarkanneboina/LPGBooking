@@ -15,10 +15,10 @@ android {
         applicationId "com.aekan.navya.lpgbooking"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        versionName 'AL0.0.1'
         signingConfig signingConfigs.config
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+        versionCode 2
     }
 
     buildTypes {
