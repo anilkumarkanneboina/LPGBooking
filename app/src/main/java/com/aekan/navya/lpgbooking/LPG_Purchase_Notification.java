@@ -50,6 +50,7 @@ public class LPG_Purchase_Notification extends AppCompatActivity implements Bill
 
 
         mBillingManager=new LPG_BillingManager(LPG_Purchase_Utility.PREMIUM_USER_SKU,this,this,this);
+        mBillingManager.getSKUDetails(LPG_Purchase_Utility.PREMIUM_USER_SKU);
 
         //set tool bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.purchase_toolbar);
