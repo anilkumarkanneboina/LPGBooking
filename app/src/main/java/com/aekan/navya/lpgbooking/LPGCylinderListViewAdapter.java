@@ -11,6 +11,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.ClipDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ShapeDrawable;
@@ -134,9 +136,12 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
         //set color for drawable
         LPG_Utility.ExpiryStatusParams expiryStatusParams = LPG_Utility.getExpiryStatusInfo(CurrentRow.getLPGLastBookedDate(),Integer.parseInt(CurrentRow.getLPGExpiryDays()));
         LayerDrawable progressDrawable = (LayerDrawable) LVH.mStatusIndicator.getProgressDrawable();
-        ShapeDrawable shapeDrawable = (ShapeDrawable) progressDrawable.getDrawable(2);
-        shapeDrawable.setColorFilter(new PorterDuffColorFilter(expiryStatusParams.getColor(), PorterDuff.Mode.SRC_IN));
+        ClipDrawable shapeDrawable = (ClipDrawable) progressDrawable.getDrawable(2);
+        shapeDrawable.setColorFilter(new PorterDuffColorFilter(expiryStatusParams.getColor(),PorterDuff.Mode.SRC_IN));
         LVH.mStatusIndicator.setProgressDrawable(progressDrawable);
+        //progressDrawable.setColor(expiryStatusParams.getColor());
+        LVH.mStatusIndicator.setProgressDrawable(progressDrawable);
+        Log.v("Progress"," Indicator percent " + expiryStatusParams.getExpiryPercent());
         LVH.mStatusIndicator.setProgress(expiryStatusParams.getExpiryPercent());
         //Paint progressPaint = ( (ShapeDrawable) progressDrawable.findDrawableByLayerId(2)).getPaint();
         //progressPaint.setColor(LPG_Utility.getExpiryStatusInfo(CurrentRow.getLPGLastBookedDate(),Integer.parseInt( CurrentRow.getLPGExpiryDays())).getColor());

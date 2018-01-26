@@ -706,8 +706,9 @@ public class LPG_Utility {
         GregorianCalendar currentDate = (GregorianCalendar) Calendar.getInstance();
         GregorianCalendar lastBookedDate = getCalendarFromString(date);
         GregorianCalendar expiryDate = getCalendarFromString(date);
+        //Log.v()
         expiryDate.add(Calendar.DAY_OF_MONTH,expiryDays);
-        double expiryPercent = getDateDiff(lastBookedDate,currentDate) /  getDateDiff(lastBookedDate,expiryDate);
+        double expiryPercent = 60.0; // getDateDiff(lastBookedDate,currentDate) /  getDateDiff(lastBookedDate,expiryDate);
         int progressColor;
         if(expiryPercent < CAP_EXPIRYSTATUS_GREEN){
             progressColor = R.color.colorPrimary;
