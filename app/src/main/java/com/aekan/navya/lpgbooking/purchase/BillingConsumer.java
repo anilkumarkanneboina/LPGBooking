@@ -11,4 +11,5 @@ import java.util.List;
 public interface BillingConsumer {
     public void updateSKUInfo(List<SkuDetails> skuDetails);
     public void updatePurchaseInfo(boolean premiumUserStatus);
+    public void updateBillingConnectionStatus(boolean connectionStatus);
 }

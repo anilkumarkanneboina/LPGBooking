@@ -52,7 +52,7 @@ public class LPG_Purchase_Utility {
 
     public static boolean getSKUStatus(Context context,String skuID){
         SharedPreferences sharedPreferences = context.getSharedPreferences(context.getResources().getString(R.string.billing_sharedpref_filename),Context.MODE_PRIVATE);
-        String SKUStatus = sharedPreferences.getString(context.getResources().getString(R.string.billing_sharedpref_key),SKU_STATUS_DEFAULT);
+        String SKUStatus = sharedPreferences.getString(context.getResources().getString(R.string.billing_sharedpref_key),SKU_STATUS_DEFAULT);//PREMIUM_USER_SKU
         Log.v("Purchase ", SKUStatus);
         Log.v("Purchase ", Boolean.toString( SKUStatus.equals(SKU_STATUS_DEFAULT)));
         if(SKUStatus.equals(SKU_STATUS_DEFAULT) == true){

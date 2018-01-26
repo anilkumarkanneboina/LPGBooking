@@ -8,6 +8,13 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.icu.util.Currency;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
@@ -17,12 +24,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aekan.navya.lpgbooking.purchase.LPG_Purchase_Utility;
 import com.aekan.navya.lpgbooking.utilities.LPG_AlertBoxClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQLOpenHelperClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
+import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
 import com.aekan.navya.lpgbooking.utilities.lpgconnectionparcel;
 
 import java.util.ArrayList;
@@ -50,7 +60,7 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
             //Initialise the Arraylist
             LPGCylinderList.add(new LPGCylinderListInfo("Cylinder no " + i,
                     "Cylinder Company is Cylinder " + i,
-                    "Cylinder will expiry in " + i + " days", "NA"
+                    "Cylinder will expiry in " + i + " days", "NA","NA","NA"
             ));
         }
     }
@@ -65,7 +75,7 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
         if (cursorCount == 0) {
 //            case 0 :
             //create the Array list with notification messages to user to create new connections
-            LPGCylinderList.add(new LPGCylinderListInfo("No Connections Found", "You can add your LPG connection now!!", "Just click on Add button below", NOLPGCYLINDERSADDED));
+            LPGCylinderList.add(new LPGCylinderListInfo("No Connections Found", "You can add your LPG connection now!!", "Just click on Add button below", NOLPGCYLINDERSADDED,"NA","NA"));
             Log.v("Initialisation",Integer.toString( LPGCylinderList.size()));
         }else{
 //            default:
@@ -74,15 +84,17 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
 
                 //get column count
                 int columnCount = sqLiteCursor.getColumnCount();
-                String lpgConnection, lpgAgency, lpgProvider,lpgRowId;
+                String lpgConnection, lpgAgency, lpgProvider,lpgRowId,lpgLastBookedDate,lpgExpiryDays;
                 while (sqLiteCursor.isAfterLast() != true   ){
                     {
                         lpgConnection = sqLiteCursor.getString(0);
                         lpgProvider = sqLiteCursor.getString(1);
                         lpgAgency = sqLiteCursor.getString(2);
                         lpgRowId = sqLiteCursor.getString(3);
+                        lpgLastBookedDate = sqLiteCursor.getString(sqLiteCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.LAST_BOOKED_DATE));
+                        lpgExpiryDays = sqLiteCursor.getString(sqLiteCursor.getColumnIndex(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS));
 
-                        LPGCylinderList.add(new LPGCylinderListInfo(lpgConnection, lpgProvider, lpgAgency, lpgRowId));
+                        LPGCylinderList.add(new LPGCylinderListInfo(lpgConnection, lpgProvider, lpgAgency, lpgRowId,lpgLastBookedDate,lpgExpiryDays));
 
                         sqLiteCursor.moveToNext();
                     }
@@ -119,6 +131,16 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
         LVH.marLPGCompanyName.setText(CurrentRow.LPGCylinderCompany);
         LVH.marLPGExpiry.setText(CurrentRow.LPGCylinderExpiry);
 
+        //set color for drawable
+        LPG_Utility.ExpiryStatusParams expiryStatusParams = LPG_Utility.getExpiryStatusInfo(CurrentRow.getLPGLastBookedDate(),Integer.parseInt(CurrentRow.getLPGExpiryDays()));
+        LayerDrawable progressDrawable = (LayerDrawable) LVH.mStatusIndicator.getProgressDrawable();
+        ShapeDrawable shapeDrawable = (ShapeDrawable) progressDrawable.getDrawable(2);
+        shapeDrawable.setColorFilter(new PorterDuffColorFilter(expiryStatusParams.getColor(), PorterDuff.Mode.SRC_IN));
+        LVH.mStatusIndicator.setProgressDrawable(progressDrawable);
+        LVH.mStatusIndicator.setProgress(expiryStatusParams.getExpiryPercent());
+        //Paint progressPaint = ( (ShapeDrawable) progressDrawable.findDrawableByLayerId(2)).getPaint();
+        //progressPaint.setColor(LPG_Utility.getExpiryStatusInfo(CurrentRow.getLPGLastBookedDate(),Integer.parseInt( CurrentRow.getLPGExpiryDays())).getColor());
+       // ( (ShapeDrawable) progressDrawable.findDrawableByLayerId(2));
 
 
         //Set onclick listeners only if user has added cylinder list
@@ -142,6 +164,7 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
             }
         });
 
+        LVH.mStatusIndicator.setProgress(40);
         //Assign a onClickListener to delete the connection
         // Also, when the connection is deleted, the associated alarms needs to be deleted as well
         LVH.mARDeleteConnection.setOnClickListener(new View.OnClickListener() {
@@ -267,12 +290,37 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
         protected String LPGCylinderExpiry;
         protected String LPG_ROW_ID;
 
+        public String getLPGLastBookedDate() {
+            return LPGLastBookedDate;
+        }
+
+        public void setLPGLastBookedDate(String LPGLastBookedDate) {
+            this.LPGLastBookedDate = LPGLastBookedDate;
+        }
+
+        public String getLPGExpiryDays() {
+            return LPGExpiryDays;
+        }
+
+        public void setLPGExpiryDays(String LPGExpiryDays) {
+            this.LPGExpiryDays = LPGExpiryDays;
+        }
+
+        protected String LPGLastBookedDate;
+        protected String LPGExpiryDays;
+
         //Constructor for LPG Cylinder list
-        public LPGCylinderListInfo(String LPGCylinderNameInit, String LPGCylinderCompanyInit, String LPGCylinderExpiryInit, String LPGrowid) {
+        public LPGCylinderListInfo(String LPGCylinderNameInit, String LPGCylinderCompanyInit,
+                                   String LPGCylinderExpiryInit, String LPGrowid,
+                                   String LPGLastBookedDateInit, String LPGExpiryDaysInit
+
+        ) {
             LPGCylinderName = LPGCylinderNameInit;
             LPGCylinderCompany = LPGCylinderCompanyInit;
             LPGCylinderExpiry = LPGCylinderExpiryInit;
             LPG_ROW_ID = LPGrowid;
+            LPGLastBookedDate= LPGLastBookedDateInit ;
+            LPGExpiryDays = LPGExpiryDaysInit;
         }
     }
 
@@ -285,6 +333,7 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
         protected ImageButton marEditConnection;
         protected ImageButton mARDeleteConnection;
         protected ImageButton mARLPGBookingCall;
+        protected ProgressBar mStatusIndicator;
 
         public LPGViewHolder(View v) {
             super(v);
@@ -295,6 +344,7 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
             marEditConnection = (ImageButton) v.findViewById(R.id.edit_connection_btn);
             mARDeleteConnection = (ImageButton) v.findViewById(R.id.delete_connection_btn);
             mARLPGBookingCall = (ImageButton) v.findViewById(R.id.call_refill_btn);
+            mStatusIndicator = (ProgressBar) v.findViewById(R.id.expiry_indicator);
 
         }
 

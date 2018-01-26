@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -19,6 +20,7 @@ import com.aekan.navya.lpgbooking.purchase.LPG_Purchase_Utility;
 import com.aekan.navya.lpgbooking.utilities.LPG_AlertBoxClass;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
+import com.android.billingclient.api.BillingFlowParams;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetails;
@@ -45,10 +47,11 @@ public class LPG_Purchase_Notification extends AppCompatActivity implements Bill
 
         final Intent intent = new Intent(getApplicationContext(),MainActivity.class);
 
-        //start service connection
+        //set purchase button as disbled till service connection is established
+        Log.v("Purchase" , " Button disabled");
+        updateBillingConnectionStatus(false);
 
-
-
+        //start service connection for purchases
         mBillingManager=new LPG_BillingManager(LPG_Purchase_Utility.PREMIUM_USER_SKU,this,this,this);
         mBillingManager.getSKUDetails(LPG_Purchase_Utility.PREMIUM_USER_SKU);
 
@@ -77,6 +80,7 @@ public class LPG_Purchase_Notification extends AppCompatActivity implements Bill
         startPurchase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mBillingManager.purchasePremium(LPG_Purchase_Utility.PREMIUM_USER_SKU, BillingClient.SkuType.INAPP);
 
             }
         });
@@ -140,9 +144,10 @@ public class LPG_Purchase_Notification extends AppCompatActivity implements Bill
                 Toast.makeText(getApplicationContext(),getResources().getString(R.string.billing_item_unavailable),Toast.LENGTH_LONG);
                 break;
             case BillingClient.BillingResponse.ITEM_ALREADY_OWNED:
+                updatePremiumStatus();
             { LPG_Purchase_Utility.setPremiumUserSku(this,SKUID); }
             alertBoxClass.showDialogHelper(getResources().getString(R.string.billing_purchase_success_dialogtitle),
-                    getResources().getString(R.string.billing_purchase_success_dialogdesc),
+                    getResources().getString(R.string.billing_purchase_alreadyowned),
                     null,
                     new DialogInterface.OnClickListener() {
                         @Override
@@ -152,8 +157,12 @@ public class LPG_Purchase_Notification extends AppCompatActivity implements Bill
                     },
                     null
             ).show(getSupportFragmentManager(),"Purchase confirmation");
+            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+            startActivity(intent);
             break;
             case BillingClient.BillingResponse.OK:
+                //update status of user
+                updatePremiumStatus();
                 //check if purchase has been made for specified SKU.
                 boolean isSpecificSKUPurchased = false;
                 for(Purchase purchase : purchases){
@@ -163,7 +172,7 @@ public class LPG_Purchase_Notification extends AppCompatActivity implements Bill
                 if (isSpecificSKUPurchased) { LPG_Purchase_Utility.setPremiumUserSku(this,SKUID); }
 
                 alertBoxClass.showDialogHelper(getResources().getString(R.string.billing_purchase_success_dialogtitle),
-                        getResources().getString(R.string.billing_purchase_success_dialogdesc),
+                        getResources().getString(R.string.billing_purchase_alreadyowned),
                         null,
                         new DialogInterface.OnClickListener() {
                             @Override
@@ -173,17 +182,48 @@ public class LPG_Purchase_Notification extends AppCompatActivity implements Bill
                         },
                         null
                 ).show(getSupportFragmentManager(),"Purchase confirmation");
+
+                Intent intentMain = new Intent(getApplicationContext(),MainActivity.class);
+                startActivity(intentMain);
                 break;
             default:
                 Toast.makeText(getApplicationContext(),getResources().getString(R.string.billing_purchase_default),Toast.LENGTH_LONG);
-
         }
 
     }
     @Override
-    public void updatePurchaseInfo(boolean premium){}
+    public void updatePurchaseInfo(boolean premium){
 
 
+    }
+
+    private void updatePremiumStatus(){
+        SharedPreferences sharedPreferences = getSharedPreferences(getResources().getString(R.string.billing_sharedpref_filename),Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(getResources().getString(R.string.billing_sharedpref_key),LPG_Purchase_Utility.PREMIUM_USER_SKU);
+        editor.commit();
+
+    }
+
+    @Override
+    public void updateBillingConnectionStatus(boolean connectionStatus){
+        Log.v("Purchase"," Within updateBillingConnectionStatus");
+
+        Button purchaseButton = (Button) findViewById(R.id.purchase_ok);
+        if(connectionStatus){
+            purchaseButton.setText(R.string.billing_purchase_yes);
+            Log.v("Purchase", "Button text set as Yes");
+
+        } else {
+            Log.v("Purchase","Button text set as Connecting..");
+            purchaseButton.setText(R.string.billing_purchase_yes_connecting);
+
+
+        }
+
+        purchaseButton.setEnabled(connectionStatus);
+
+    }
 
 
 }

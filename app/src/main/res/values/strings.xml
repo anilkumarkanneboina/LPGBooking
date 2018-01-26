@@ -263,4 +263,8 @@
     <string name="billing_item_unavailable">Premium purchase unavailable</string>
 
     <string name="billing_purchase_success_dialogdesc">You are a premium user now. Thanks for your patronage, and we assure you a satisfying experience </string>
+    <string name="billing_purchase_alreadyowned">You already own this item, so no purchases have been processed.We have updated our records. Thanks for your patronage.</string>
+
+    <string name="billing_purchase_yes_connecting">Connecting...</string>
+    <string name="billing_purchase_yes">Yes</string>
 </resources>

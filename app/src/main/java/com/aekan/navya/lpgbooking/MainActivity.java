@@ -80,7 +80,10 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
         recyclerView.setLayoutManager(LPGLinearLayoutMgr);
 
         //Columns for database ;
-        String[] sqLiteColumns = {LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME, LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER, LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY, LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID};
+        String[] sqLiteColumns = {LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_NAME, LPG_SQL_ContractClass.LPG_CONNECTION_ROW.PROVIDER, LPG_SQL_ContractClass.LPG_CONNECTION_ROW.AGENCY, LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID
+                , LPG_SQL_ContractClass.LPG_CONNECTION_ROW.LAST_BOOKED_DATE
+                , LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS
+        };
         SQLiteCursor sqLiteCursor;
         mSQLiteDatabase = new LPG_SQLOpenHelperClass(getApplicationContext()).getWritableDatabase();
         if (mSQLiteDatabase == null) {
@@ -488,6 +491,10 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
         recyclerViewNavigation.setLayoutManager(linearLayoutManager);
         NavigationAdapter navigationAdapter = new NavigationAdapter(getApplicationContext(), this, LPG_Purchase_Utility.returnPremiumUserStatus(premiumUser,noOfConnections));
         recyclerViewNavigation.setAdapter(navigationAdapter);
+
+    }
+
+    public void updateBillingConnectionStatus(boolean connectionStatus){
 
     }
 }

@@ -9,16 +9,16 @@ android {
             storePassword 'Navya280208'
         }
     }
-    compileSdkVersion 25
+    compileSdkVersion 27
     buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.aekan.navya.lpgbooking"
         minSdkVersion 19
-        targetSdkVersion 23
+        targetSdkVersion 27
         versionName 'AL0.0.1'
         signingConfig signingConfigs.config
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
-        versionCode 2
+        versionCode 3
     }
 
     buildTypes {

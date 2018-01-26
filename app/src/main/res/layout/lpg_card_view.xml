@@ -78,10 +78,29 @@
         android:textColor="@color/lpg_expiry_textcolor"
         android:textSize="@dimen/lpg_expiry_textheight"
         />
+
+        <ProgressBar
+            android:id="@+id/expiry_indicator"
+            android:indeterminate="false"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:progressDrawable="@drawable/progress_drawable"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_below="@id/lpg_expiry"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:progress="88"
+            android:visibility="visible" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/lpg_expiry"
+            android:layout_below="@id/expiry_indicator"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="8dp"
             android:layout_marginTop="24dp"

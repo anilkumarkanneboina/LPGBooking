@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/purchase_notification"
-
         android:gravity="center_vertical|center_horizontal"
         android:text="@string/purchase_notification"
         android:textSize="@dimen/confirmbooking_description_fontsize"
@@ -38,17 +37,17 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_horizontal"
-
         android:paddingTop="@dimen/add_edittext_margintop"
         android:layout_below="@id/sku_details"
         >
+
         <Button
             android:id="@+id/purchase_ok"
             android:layout_width="@dimen/confirmbooking_button_width"
             android:layout_height="@dimen/confirmbooking_button_height"
             android:layout_marginEnd="@dimen/confirmbooking_button_margin"
             android:layout_marginRight="@dimen/confirmbooking_button_margin"
-            android:background="@color/colorPrimary"
+            android:background="@drawable/button_state"
             android:minHeight="48dp"
             android:paddingEnd="@dimen/confirmbooking_button_internalpadding"
             android:paddingLeft="@dimen/confirmbooking_button_internalpadding"

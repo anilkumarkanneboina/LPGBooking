@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.aekan.navya.lpgbooking.R;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
+import com.android.billingclient.api.BillingFlowParams;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchaseHistoryResponseListener;
 import com.android.billingclient.api.PurchasesUpdatedListener;
@@ -62,7 +63,7 @@ public class LPG_BillingManager implements BillingManager,SkuDetailsResponseList
                     List<String> skuList = new ArrayList<>();
                     skuList.add(mSKUID);
                     SkuDetailsParams.Builder skuDetailsParams = SkuDetailsParams.newBuilder();
-                    skuDetailsParams.setSkusList(skuList);
+                    //skuDetailsParams.setSkusList(skuList);
                     skuDetailsParams.setType(BillingClient.SkuType.INAPP);
                     mBillingClient.querySkuDetailsAsync(skuDetailsParams.build(),LPG_BillingManager.this);
                 }
@@ -73,6 +74,17 @@ public class LPG_BillingManager implements BillingManager,SkuDetailsResponseList
 
     @Override
     public void onSkuDetailsResponse(int responseCode, List<SkuDetails> skuDetailsList){
+
+        //
+        Log.v("Purchase ", " responde code" + responseCode);
+        try{
+            for(SkuDetails sku:skuDetailsList){
+                Log.v("Purchase sku", sku.getSku());
+            }
+        } catch (Exception e){
+            Log.v("Purchase ", e.toString() );
+        }
+
         if(mBillingConsumer!=null){
         switch(responseCode){
             default:
@@ -95,6 +107,7 @@ public class LPG_BillingManager implements BillingManager,SkuDetailsResponseList
     @Override
     public void onBillingServiceDisconnected(){
         Log.v("Purchase "," Billing service disconnected");
+        if(mBillingConsumer != null ){ mBillingConsumer.updateBillingConnectionStatus(false); }
 
     }
 
@@ -105,19 +118,24 @@ public class LPG_BillingManager implements BillingManager,SkuDetailsResponseList
         switch (ResponseCode){
             case BillingClient.BillingResponse.DEVELOPER_ERROR:
                 Toast.makeText(mActivity.getApplicationContext(),mActivity.getResources().getString(R.string.billing_conn_developer_error),Toast.LENGTH_LONG);
+                if(mBillingConsumer != null ){ mBillingConsumer.updateBillingConnectionStatus(false); }
                 break;
             case BillingClient.BillingResponse.ERROR:
                 mIsServiceActive=false;
                 Toast.makeText(mActivity.getApplicationContext(),mActivity.getResources().getString(R.string.billing_conn_error),Toast.LENGTH_LONG);
+                if(mBillingConsumer != null ){ mBillingConsumer.updateBillingConnectionStatus(false); }
                 break;
             case BillingClient.BillingResponse.SERVICE_DISCONNECTED:
                 mIsServiceActive=false;
                 Toast.makeText(mActivity.getApplicationContext(),mActivity.getResources().getString(R.string.billing_conn_service_disconnected),Toast.LENGTH_LONG);
+                if(mBillingConsumer != null ){ mBillingConsumer.updateBillingConnectionStatus(false); }
                 break;
             case BillingClient.BillingResponse.SERVICE_UNAVAILABLE:
                 mIsServiceActive=false;
                 Toast.makeText(mActivity.getApplicationContext(),mActivity.getResources().getString(R.string.billing_conn_network_down),Toast.LENGTH_LONG);
+                if(mBillingConsumer != null ){ mBillingConsumer.updateBillingConnectionStatus(false); }
             case BillingClient.BillingResponse.OK:
+                if(mBillingConsumer != null ){ mBillingConsumer.updateBillingConnectionStatus(true); }
                 if(mRunnable != null){
                     mRunnable.run();
                 } else {
@@ -228,6 +246,29 @@ public class LPG_BillingManager implements BillingManager,SkuDetailsResponseList
                 break;
 
         }
+    }
+
+    @Override
+    public void purchasePremium(String SKUID, String type){
+        //Create Billing Purchase params object
+        BillingFlowParams.Builder billingParams = BillingFlowParams.newBuilder();
+        billingParams.setSku(SKUID);
+        billingParams.setType(type);
+
+        //check if purchase is allowed in the device
+
+
+        if(mBillingClient.isReady()){
+
+
+
+            mBillingClient.launchBillingFlow(mActivity,billingParams.build());
+        } else {
+            mBillingConsumer.updateBillingConnectionStatus(false);
+            mBillingClient.startConnection(this);
+        }
+
+
     }
 
 }

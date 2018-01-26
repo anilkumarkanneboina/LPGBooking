@@ -11,6 +11,7 @@ public interface BillingManager  {
 
     public void getSKUDetails(String SKUID);
     public int isSKUPurchased(String SKUID);
+    public void purchasePremium(String SKUID, String type);
     public boolean isReady();
     public void closeConnection();
 
