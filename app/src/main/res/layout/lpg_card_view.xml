@@ -85,7 +85,7 @@
             style="@android:style/Widget.ProgressBar.Horizontal"
         android:progressDrawable="@drawable/progress_drawable"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="8dp"
             android:layout_below="@id/lpg_expiry"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
@@ -94,7 +94,7 @@
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:progress="56"
+            android:progress="86"
             android:visibility="visible" />
 
         <LinearLayout

@@ -44,6 +44,9 @@ public class LPG_Utility {
     public final static String mRegexNumber = "^[1-9][0-9]{9}$";
     public final static double CAP_EXPIRYSTATUS_GREEN = 0.5;
     public final static double CAP_EXPIRYSTATUS_ORANGE = 0.75;
+    public final static int REFILL_STATUS_GREEN = 123567;
+    public final static int REFILL_STATUS_ORANGE = 67894657;
+    public final static int REFILL_STATUS_RED = 345567;
 
     public final static String LPG_ALARMINTENT_FLAG_DIDBOOKINGSTARTFROMNOTIFICATION = "Flag to check if LPG Booking started from notification";
     /*Constants to be defined for usage in permission checks*/
@@ -679,18 +682,19 @@ public class LPG_Utility {
             if(Date1.compareTo(Date2) == 0){
                 return 0;
             }
-            earlierDate = Date2;
-            laterDate = Date1;
+            return -1;
         } else {
             earlierDate = Date1;
             laterDate = Date2;
         }
-
+    //   Log.v("DateDiff" ," Earlier Date " + getStringDate(earlierDate));
+    //   Log.v("DateDiff" , " Earlier Date " + getStringDate(laterDate));
         do{
-            earlierDate.add(Calendar.DAY_OF_MONTH,++diff);
-        } while (laterDate.compareTo(earlierDate) < 0);
+            earlierDate.add(Calendar.DAY_OF_MONTH,1);
+            ++diff;
+        } while (laterDate.compareTo(earlierDate) > 0);
 
-        return diff - 1;
+        return diff;
     }
 
     public static GregorianCalendar getCalendarFromString(String date) {
@@ -705,10 +709,11 @@ public class LPG_Utility {
     public static ExpiryStatusParams getExpiryStatusInfo(String date, int expiryDays){
         GregorianCalendar currentDate = (GregorianCalendar) Calendar.getInstance();
         GregorianCalendar lastBookedDate = getCalendarFromString(date);
-        GregorianCalendar expiryDate = getCalendarFromString(date);
+        GregorianCalendar expiryDate = lastBookedDate;
+
         //Log.v()
         expiryDate.add(Calendar.DAY_OF_MONTH,expiryDays);
-        double expiryPercent = 60.0; // getDateDiff(lastBookedDate,currentDate) /  getDateDiff(lastBookedDate,expiryDate);
+        double expiryPercent =  getDateDiff(lastBookedDate,currentDate) /  getDateDiff(lastBookedDate,expiryDate);
         int progressColor;
         if(expiryPercent < CAP_EXPIRYSTATUS_GREEN){
             progressColor = R.color.colorPrimary;
@@ -718,6 +723,10 @@ public class LPG_Utility {
 
         return new ExpiryStatusParams(progressColor,(int) expiryPercent);
 
+    }
+
+    public static String getStringDate(Calendar C){
+        return C.get(Calendar.DAY_OF_MONTH) + "/" + (C.get(Calendar.MONTH) +1) + "/" + C.get(Calendar.YEAR);
     }
 
     public static class ExpiryStatusParams{

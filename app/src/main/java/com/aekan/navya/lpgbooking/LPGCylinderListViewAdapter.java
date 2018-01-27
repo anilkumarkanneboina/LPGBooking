@@ -39,6 +39,9 @@ import com.aekan.navya.lpgbooking.utilities.lpgconnectionparcel;
 
 import java.util.ArrayList;
 
+import static com.aekan.navya.lpgbooking.utilities.LPG_Utility.CAP_EXPIRYSTATUS_GREEN;
+import static com.aekan.navya.lpgbooking.utilities.LPG_Utility.CAP_EXPIRYSTATUS_ORANGE;
+
 /**
  * Created by arunramamurthy on 11/03/16.
  * Class to create LPGCylinderList.
@@ -133,16 +136,21 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
         LVH.marLPGCompanyName.setText(CurrentRow.LPGCylinderCompany);
         LVH.marLPGExpiry.setText(CurrentRow.LPGCylinderExpiry);
 
+
         //set color for drawable
         LPG_Utility.ExpiryStatusParams expiryStatusParams = LPG_Utility.getExpiryStatusInfo(CurrentRow.getLPGLastBookedDate(),Integer.parseInt(CurrentRow.getLPGExpiryDays()));
+        //set percentage for progress bar
+        //int progress= expiryStatusParams.getExpiryPercent();
+        LVH.mStatusIndicator.setProgress(expiryStatusParams.getExpiryPercent());
         LayerDrawable progressDrawable = (LayerDrawable) LVH.mStatusIndicator.getProgressDrawable();
         ClipDrawable shapeDrawable = (ClipDrawable) progressDrawable.getDrawable(2);
-        shapeDrawable.setColorFilter(new PorterDuffColorFilter(expiryStatusParams.getColor(),PorterDuff.Mode.SRC_IN));
+        shapeDrawable.setColorFilter(new PorterDuffColorFilter( getProgressColorCode(LVH.mStatusIndicator.getContext(),expiryStatusParams.getExpiryPercent()),PorterDuff.Mode.SRC_OVER));
         LVH.mStatusIndicator.setProgressDrawable(progressDrawable);
         //progressDrawable.setColor(expiryStatusParams.getColor());
-        LVH.mStatusIndicator.setProgressDrawable(progressDrawable);
+        //LVH.mStatusIndicator.setProgressDrawable(progressDrawable);
         Log.v("Progress"," Indicator percent " + expiryStatusParams.getExpiryPercent());
-        LVH.mStatusIndicator.setProgress(expiryStatusParams.getExpiryPercent());
+        Log.v("Progress"," Indicator set " + LVH.mStatusIndicator.getProgress());
+
         //Paint progressPaint = ( (ShapeDrawable) progressDrawable.findDrawableByLayerId(2)).getPaint();
         //progressPaint.setColor(LPG_Utility.getExpiryStatusInfo(CurrentRow.getLPGLastBookedDate(),Integer.parseInt( CurrentRow.getLPGExpiryDays())).getColor());
        // ( (ShapeDrawable) progressDrawable.findDrawableByLayerId(2));
@@ -169,7 +177,7 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
             }
         });
 
-        LVH.mStatusIndicator.setProgress(40);
+       // LVH.mStatusIndicator.setProgress(40);
         //Assign a onClickListener to delete the connection
         // Also, when the connection is deleted, the associated alarms needs to be deleted as well
         LVH.mARDeleteConnection.setOnClickListener(new View.OnClickListener() {
@@ -352,6 +360,16 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
             mStatusIndicator = (ProgressBar) v.findViewById(R.id.expiry_indicator);
 
         }
+
+    }
+
+    private int getProgressColorCode (Context context, int expiryPercent){
+        if(expiryPercent < (int) CAP_EXPIRYSTATUS_GREEN){
+            return  context.getResources().getColor( R.color.colorPrimary);
+        } else if (expiryPercent  < (int) CAP_EXPIRYSTATUS_ORANGE) {
+            return  context.getResources().getColor(R.color.colorOrange);
+        } else return  context.getResources().getColor(R.color.error_red);
+
 
     }
 }
