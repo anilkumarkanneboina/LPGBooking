@@ -42,8 +42,8 @@ public class LPG_Utility {
     public final static String LPG_ALARMINTENT_NOTIFICATIONID = "NotificationID";
     public final static String LPG_ALARMINTENT_NOTIFICATIONCONTENT = "Notification content";
     public final static String mRegexNumber = "^[1-9][0-9]{9}$";
-    public final static double CAP_EXPIRYSTATUS_GREEN = 0.5;
-    public final static double CAP_EXPIRYSTATUS_ORANGE = 0.75;
+    public final static double CAP_EXPIRYSTATUS_GREEN = 50;
+    public final static double CAP_EXPIRYSTATUS_ORANGE = 75;
     public final static int REFILL_STATUS_GREEN = 123567;
     public final static int REFILL_STATUS_ORANGE = 67894657;
     public final static int REFILL_STATUS_RED = 345567;
@@ -709,11 +709,22 @@ public class LPG_Utility {
     public static ExpiryStatusParams getExpiryStatusInfo(String date, int expiryDays){
         GregorianCalendar currentDate = (GregorianCalendar) Calendar.getInstance();
         GregorianCalendar lastBookedDate = getCalendarFromString(date);
-        GregorianCalendar expiryDate = lastBookedDate;
+        GregorianCalendar expiryDate = getCalendarFromString(date);;
 
         //Log.v()
         expiryDate.add(Calendar.DAY_OF_MONTH,expiryDays);
-        double expiryPercent =  getDateDiff(lastBookedDate,currentDate) /  getDateDiff(lastBookedDate,expiryDate);
+        int lapsedDays = getDateDiff(lastBookedDate,currentDate);
+        int totalRefillExpiryDays = getDateDiff(lastBookedDate,expiryDate);
+        double expiryPercent = 0.0;
+        if((lapsedDays < 0) || (totalRefillExpiryDays < 0) ) {
+            expiryPercent = 100.0;
+        }
+        else {
+            if(totalRefillExpiryDays == 0.0) { expiryPercent = 100.0;}
+            else {
+                expiryPercent = ((double)lapsedDays) / ((double) totalRefillExpiryDays) * 100.0;
+            }
+        }
         int progressColor;
         if(expiryPercent < CAP_EXPIRYSTATUS_GREEN){
             progressColor = R.color.colorPrimary;
@@ -722,6 +733,28 @@ public class LPG_Utility {
         } else progressColor = R.color.error_red;
 
         return new ExpiryStatusParams(progressColor,(int) expiryPercent);
+
+    }
+
+    public static int getExpiryStatus(String date, int expiryDays){
+        GregorianCalendar currentDate = (GregorianCalendar) Calendar.getInstance();
+        GregorianCalendar lastBookedDate = getCalendarFromString(date);
+
+
+        //Log.v()
+
+        int lapsedDays = getDateDiff(lastBookedDate,currentDate);
+
+        double expiryPercent = 0.0;
+        if(lapsedDays < 0)  {
+            expiryPercent = 100.0;
+        }
+        else {
+            expiryPercent = ((double)lapsedDays) / ((double) expiryDays) * 100.0;
+            }
+
+
+        return ((int) expiryPercent);
 
     }
 

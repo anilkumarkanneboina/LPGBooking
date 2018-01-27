@@ -161,6 +161,96 @@ public class LPG_UtilityTest {
                 ),
                 equalTo(366)
         );
+
     }
+
+    @Test
+    public void getExpiryStatus_08Jan18_and_45(){
+        assertEquals("Last booked date is 8 Jan 18 and expiry Days is 45",
+                (float) LPG_Utility.getExpiryStatus("08/1/2018",45),
+                42.0,
+                0.0
+        );
+
+    }
+
+    @Test
+    public void getExpiryStatus_27Jan18_and_10(){
+        assertEquals("Last booked date is 27 Jan 18 and expiry Days is 10",
+                (float) LPG_Utility.getExpiryStatus("27/1/2018",10),
+                0.0,
+                0.0
+        );
+
+    }
+
+    @Test
+    public void getExpiryStatus_26Jan18_and_2(){
+        assertEquals("Last booked date is 26 Jan 18 and expiry Days is 2",
+                (float) LPG_Utility.getExpiryStatus("26/1/2018",2),
+                50.0,
+                0.0
+        );
+
+    }
+
+    @Test
+    public void getExpiryStatus_02Jan18_and_30(){
+        assertEquals("Last booked date is 2 Jan 18 and expiry Days is 30",
+                (float) LPG_Utility.getExpiryStatus("02/1/2018",30),
+                83.0,
+                0.0
+        );
+
+    }
+
+    @Test
+    public void getExpiryStatus_22Jan18_and_10(){
+        assertEquals("Last booked date is 22 Jan 18 and expiry Days is 10",
+                (float) LPG_Utility.getExpiryStatus("22/1/2018",10),
+                50.0,
+                0.0
+        );
+
+    }
+
+    @Test
+    public void getExpiryStatus_02Jan18_and_45(){
+        assertEquals("Last booked date is 2 Jan 18 and expiry Days is 45",
+                (float) LPG_Utility.getExpiryStatus("02/1/2018",45),
+                55.0,
+                0.0
+        );
+
+    }
+
+    @Test
+    public void getExpiryStatus_10Jan18_and_45(){
+        assertEquals("Last booked date is 10 Jan 18 and expiry Days is 45",
+                (float) LPG_Utility.getExpiryStatus("10/1/2018",45),
+                37.0,
+                0.0
+        );
+
+    }
+
+    @Test
+    public void getExpiryStatus_31Dec17_and_45(){
+        assertEquals("Last booked date is 8 Jan 18 and expiry Days is 45",
+                (float) LPG_Utility.getExpiryStatus("31/12/2017",45),
+                60.0,
+                0.0
+        );
+
+    }
+
+
+
+
+
+
+
+
+
 
 }
