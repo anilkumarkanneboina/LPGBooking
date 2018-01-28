@@ -122,7 +122,7 @@
                 android:layout_height="24dp"
                 android:layout_marginLeft="@dimen/buttonleftmargin"
                 android:layout_marginRight="@dimen/buttonrightmargin"
-                android:background="@drawable/ic_call_black_36dp_2"
+                android:background="@drawable/ic_book_cylinder_icon"
                 android:scaleType="centerInside" />
             <ImageButton
                 android:id="@+id/delete_connection_btn"

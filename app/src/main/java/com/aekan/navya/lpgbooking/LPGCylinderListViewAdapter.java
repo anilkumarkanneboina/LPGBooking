@@ -75,13 +75,13 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
         //get count in cursor ;
         int cursorCount = sqLiteCursor.getCount();
         LPGCylinderList = new ArrayList<LPGCylinderListInfo>();
-        Log.v("Initialisation","Cursor " + cursorCount);
+
 
         if (cursorCount == 0) {
 //            case 0 :
             //create the Array list with notification messages to user to create new connections
             LPGCylinderList.add(new LPGCylinderListInfo("No Connections Found", "You can add your LPG connection now!!", "Just click on Add button below", NOLPGCYLINDERSADDED,"NA","NA"));
-            Log.v("Initialisation",Integer.toString( LPGCylinderList.size()));
+
         }else{
 //            default:
                 //create the Array list from SQLiteCursor
@@ -125,11 +125,9 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
     @Override
     public void onBindViewHolder(LPGViewHolder LVH, int i) {
         //get the contact list for the LPG view holderc
-        Log.v("Adapter on Bind", "Position " + i);
+
         final LPGCylinderListInfo CurrentRow = LPGCylinderList.get(i);
-        Log.v("Adapter on Bind", CurrentRow.LPGCylinderName);
-        Log.v("Adapter on Bind", CurrentRow.LPGCylinderCompany);
-        Log.v("Adapter on Bind", CurrentRow.LPGCylinderExpiry);
+
 
         //Assign the text value for each of the item
         LVH.mARLPGName.setText(CurrentRow.LPGCylinderName);
@@ -138,18 +136,17 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
 
 
         //set color for drawable
-        LPG_Utility.ExpiryStatusParams expiryStatusParams = LPG_Utility.getExpiryStatusInfo(CurrentRow.getLPGLastBookedDate(),Integer.parseInt(CurrentRow.getLPGExpiryDays()));
+        int expiryStatusParams = LPG_Utility.getExpiryStatus(CurrentRow.getLPGLastBookedDate(),Integer.parseInt(CurrentRow.getLPGExpiryDays()));
         //set percentage for progress bar
         //int progress= expiryStatusParams.getExpiryPercent();
-        LVH.mStatusIndicator.setProgress(expiryStatusParams.getExpiryPercent());
+        LVH.mStatusIndicator.setProgress(expiryStatusParams);
         LayerDrawable progressDrawable = (LayerDrawable) LVH.mStatusIndicator.getProgressDrawable();
         ClipDrawable shapeDrawable = (ClipDrawable) progressDrawable.getDrawable(2);
-        shapeDrawable.setColorFilter(new PorterDuffColorFilter( getProgressColorCode(LVH.mStatusIndicator.getContext(),expiryStatusParams.getExpiryPercent()),PorterDuff.Mode.SRC_OVER));
+        shapeDrawable.setColorFilter(new PorterDuffColorFilter( getProgressColorCode(LVH.mStatusIndicator.getContext(),expiryStatusParams),PorterDuff.Mode.SRC_OVER));
         LVH.mStatusIndicator.setProgressDrawable(progressDrawable);
         //progressDrawable.setColor(expiryStatusParams.getColor());
         //LVH.mStatusIndicator.setProgressDrawable(progressDrawable);
-        Log.v("Progress"," Indicator percent " + expiryStatusParams.getExpiryPercent());
-        Log.v("Progress"," Indicator set " + LVH.mStatusIndicator.getProgress());
+
 
         //Paint progressPaint = ( (ShapeDrawable) progressDrawable.findDrawableByLayerId(2)).getPaint();
         //progressPaint.setColor(LPG_Utility.getExpiryStatusInfo(CurrentRow.getLPGLastBookedDate(),Integer.parseInt( CurrentRow.getLPGExpiryDays())).getColor());
@@ -162,8 +159,7 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
         LVH.marEditConnection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.v("Edit Click", "Clicked the view");
-                Log.v("Edit Click", "Value of Row id " + CurrentRow.LPG_ROW_ID);
+
                 Intent intent = new Intent(v.getContext(), AddLPGConnection.class);
                 Bundle bundle = new Bundle();
                 CharSequence lpgRowId = CurrentRow.LPG_ROW_ID;
@@ -171,7 +167,7 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
                 bundle.putCharSequence(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.FIELD_CONNECTION_ID_EDIT, CurrentRow.LPG_ROW_ID);
                 //intent.putExtra(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.BUNDLE_NAME_EDIT_CONNECTION.toString(),bundle);
                 Bundle checkb = intent.getExtras();
-                Log.v("Edit Click", "Bundle Value " + checkb.toString());
+
                 v.getContext().startActivity(intent);
 
             }
@@ -186,14 +182,14 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
                 // Instruct the user to confirm if the connection needs to be deleted
                 // If the user confirms as yes, cancel the connection
                 // and delete the associated alarms with the connection
-                Log.v("Delete Connection","Entered Delete");
+
                 final SQLiteDatabase sqLiteDatabase = new LPG_SQLOpenHelperClass(v.getContext()).getWritableDatabase();
                 final Context context = v.getContext();
                 final LPG_AlertBoxClass lpgDeleteConnection = new LPG_AlertBoxClass();
                 final Toast toast =  Toast.makeText(v.getContext(),"Dummy", Toast.LENGTH_SHORT);
                 final AlarmManager alarmManager = (AlarmManager) v.getContext().getSystemService(Context.ALARM_SERVICE);
                 toast.setGravity(Gravity.BOTTOM, 0, 0);
-                toast.show();
+
                 lpgDeleteConnection.showDialogHelper("Do you want to delete this connection?"
                         , "Ok"
                         , "Cancel"
@@ -206,7 +202,7 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
                                 // give a toast to the user that the data has been deleted
                                 String deleteCondition = LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID + " = ? ";
                                 String[] deleteParameter = {CurrentRow.LPG_ROW_ID};
-                                Log.v("Delete ",CurrentRow.LPG_ROW_ID);
+
                                 //delete the record
                                 int deleteCount = sqLiteDatabase.delete(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.TABLE_NAME, deleteCondition, deleteParameter);
                                 // check no of deleted record
@@ -256,9 +252,9 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
                 /*Start LPG booking activity with passing on the parcel
                 with information about the LPG*/
                 Cursor c;
-                Log.v("ClickLPGBooking", "Inside On Click LIstener");
+
                 try {
-                    Log.v("ClickLPGBooking", "Inside try catch block");
+
 
                     {
 
@@ -270,7 +266,7 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
                         v.getContext().startActivity(intentLPGBooking);
                     }
                 } catch (Exception e) {
-                    Log.v("ClickLPGBooking", e.getMessage());
+
                     LPG_AlertBoxClass alertDialog = new LPG_AlertBoxClass();
                     alertDialog.showDialogHelper("Error in retrieving DB",
                             "Ok",
