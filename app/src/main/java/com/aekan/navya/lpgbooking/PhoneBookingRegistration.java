@@ -37,6 +37,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.HashMap;
 
@@ -70,7 +71,7 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
     private String mProvider;
     private InterstitialAd mInterstitialAd;
     private boolean mLoadInterstitialFromNavigation;
-
+    private FirebaseAnalytics mFireBaseAnalytics;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //call super class
@@ -80,6 +81,9 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
         //Configure tool bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.phoneregistration_toolbar);
         MobileAds.initialize(this, getResources().getString(R.string.AdView_App_ID_Test));
+
+        //Fire Base analytics
+        mFireBaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
 
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
@@ -404,6 +408,18 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
                 // Code to be executed when an ad request fails.
                 Log.i("Ads", "onAdFailedToLoad  Phone Booking + " + Integer.toString(errorCode));
             }
+
+            @Override
+            public void onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+                if(mFireBaseAnalytics != null ){
+                    Bundle bundleAdBannerClicked = new Bundle();
+                    bundleAdBannerClicked.putString(LPG_Utility.PARAMETER_ANALYTICS_EVENT_PARAM,LPG_Utility.CLICK_ADMOB );
+                    bundleAdBannerClicked.putString(LPG_Utility.PARAMETER_ANALYTICS_ACTIVITY_PARAM,"MainActivity");
+                    mFireBaseAnalytics.logEvent(LPG_Utility.CLICK_ADMOB,bundleAdBannerClicked );
+                }
+
+            }
         });
         adViewBanner.loadAd(adRequest);
     }
@@ -441,6 +457,18 @@ public class PhoneBookingRegistration extends AppCompatActivity implements LPGSe
                 if (mLoadInterstitialFromNavigation) {
                     Intent homeActivity = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(homeActivity);
+                }
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+
+                if (mFireBaseAnalytics != null) {
+                    // Code to be executed when the user has left the app.
+                    Bundle bundleInterstitialAd = new Bundle();
+                    bundleInterstitialAd.putString(LPG_Utility.PARAMETER_ANALYTICS_EVENT_PARAM, LPG_Utility.CLICK_INTERSTITIAL);
+                    bundleInterstitialAd.putString(LPG_Utility.PARAMETER_ANALYTICS_ACTIVITY_PARAM, "AddLPGConnection");
+                    mFireBaseAnalytics.logEvent(LPG_Utility.CLICK_INTERSTITIAL, bundleInterstitialAd);
                 }
             }
 

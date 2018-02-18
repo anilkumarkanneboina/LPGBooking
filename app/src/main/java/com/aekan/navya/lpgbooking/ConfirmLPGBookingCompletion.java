@@ -18,12 +18,15 @@ import com.aekan.navya.lpgbooking.utilities.LPG_AlertBoxClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQLOpenHelperClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_SQL_ContractClass;
 import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 /**
  * Created by aruramam on 1/8/2017.
+ * Analytics code was added on 18 Jan 2018
  */
 
 public class ConfirmLPGBookingCompletion extends AppCompatActivity {
@@ -31,7 +34,13 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
     public final String LPGCONNECTIONEXPIRYDAYS = "FAILURE TO FETCH CONNECTION EXPIRY DAYS FROM DB";
     private SQLiteDatabase mdb;
     private LPG_AlertBoxClass mAlertBox;
-
+    private FirebaseAnalytics mFirebaseAnalytics;
+    private String mEventConfirmation;
+    private String mEventFailure;
+    {
+        mEventConfirmation = "INVALID";
+        mEventFailure = "INVALID";
+    }
     /*Create the activity which would request confirmation from
     user about LPG Booking attempt - the activity will reset the corresponding
     LPG Cylinder's last booked date to current date, and create alarma.
@@ -41,10 +50,24 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
         //Call onCreate from super class
         super.onCreate(savedInstanceState);
 
+        //initialise FireBase Analytics object
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
         // Define the local variables for onCreate method
         //get connection id for the cylinder
         final String LPG_CONNECTION_ID = getIntent().getStringExtra(LPG_Utility.LPG_CONNECTION_ID) ;
         final String LPG_CONNECTION_NAME = getIntent().getStringExtra(LPG_Utility.LPG_CONNECTION_NAME);
+
+        //initialise value for event channel
+        if(getIntent().hasExtra(LPG_Utility.CONFIRMATION_CHANNEL)) {
+            String confirmationChannel = getIntent().getStringExtra(LPG_Utility.CONFIRMATION_CHANNEL);
+            if (confirmationChannel.equals(LPG_Utility.CONFIRMATION_CHANNEL_PHONE)){
+            mEventConfirmation = LPG_Utility.CONFIRM_REFILL_PHONE;
+            mEventFailure = LPG_Utility.BOOKING_FAILED_PHONE ;
+        } else if (confirmationChannel.equals(LPG_Utility.CONFIRMATION_CHANNEL_SMS)) {
+                mEventConfirmation = LPG_Utility.CONFIRM_REFILL_SMS;
+                mEventFailure = LPG_Utility.BOOKING_FAILED_SMS;
+            }
+        }
 
         final AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         final String LPGConnectionExpiryDays = getLPGCONNECTIONEXPIRYDAYS(LPG_CONNECTION_ID);
@@ -56,9 +79,9 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
 
         //set on click listeners for Yes and no buttons
         //get the button controls
-        Button buttonConfirmLPGBookingYes = (Button) findViewById(R.id.confirmbooking_yes);
-        Button buttonConfirmLPGBookingNo = (Button) findViewById(R.id.confirmbooking_no);
-        FloatingActionButton floatingActionButtonBack = (FloatingActionButton) findViewById(R.id.fabBack);
+        Button buttonConfirmLPGBookingYes =  findViewById(R.id.confirmbooking_yes);
+        Button buttonConfirmLPGBookingNo =  findViewById(R.id.confirmbooking_no);
+        FloatingActionButton floatingActionButtonBack =  findViewById(R.id.fabBack);
         mdb = new LPG_SQLOpenHelperClass(getApplicationContext()).getWritableDatabase();
 
         floatingActionButtonBack.setOnClickListener(new View.OnClickListener() {
@@ -88,7 +111,9 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
                     //set alarms for new expiry date
                     LPG_Utility.RefillAlarmNotification[] newRefillAlarmDates = LPG_Utility.getRefillRemainder(ConfirmLPGBookingCompletion.this, currentDateString, LPGConnectionExpiryDays, LPG_CONNECTION_ID, LPG_CONNECTION_NAME, LPG_Utility.LPG_GET_REGULAR_ALARM_NOTIFICATION_DATES);
                     for (LPG_Utility.RefillAlarmNotification counterRefillAlarmDates : newRefillAlarmDates) {
-                        alarmManager.set(AlarmManager.RTC, counterRefillAlarmDates.getGregorialCalendar().getTimeInMillis(), counterRefillAlarmDates.getRefillCylinder());
+                        if (!(alarmManager == null)) {
+                            alarmManager.set(AlarmManager.RTC, counterRefillAlarmDates.getGregorialCalendar().getTimeInMillis(), counterRefillAlarmDates.getRefillCylinder());
+                        }
                     }
                     Log.v("Alarm","Last Booked date is " + currentDateString + " and expiry date is " +  LPGConnectionExpiryDays );
                     Log.v("Alarm", "Midway alarm date is " + LPG_Utility.getDateFromCalendar(newRefillAlarmDates[0].getGregorialCalendar()));
@@ -105,6 +130,15 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
                             }, null).show(getSupportFragmentManager(), "Successful Booking");
 
 
+
+                    //Log FireBase Analytics for confirmation
+
+                        Bundle eventBundle = new Bundle();
+                        eventBundle.putString( LPG_Utility.PARAMETER_ANALYTICS_EVENT_PARAM,mEventConfirmation);
+                        eventBundle.putString(LPG_Utility.PARAMETER_ANALYTICS_ACTIVITY_PARAM,"ConfirmLPGBookingCompletion");
+                        mFirebaseAnalytics.logEvent(LPG_Utility.EVENT_CONFIRM_BOOKING,eventBundle);
+
+
                 }
 
 
@@ -119,7 +153,19 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
             public void onClick(View v) {
                 //set an alarm to notify user in a day's time
                 LPG_Utility.RefillAlarmNotification[] alarmSnooze = LPG_Utility.getRefillRemainder(ConfirmLPGBookingCompletion.this, currentDateString, LPGConnectionExpiryDays, LPG_CONNECTION_ID, LPG_CONNECTION_NAME, LPG_Utility.LPG_GET_SNOOZE_ALARM_DATES);
-                alarmManager.set(AlarmManager.RTC, alarmSnooze[0].getGregorialCalendar().getTimeInMillis(), alarmSnooze[0].getRefillCylinder());
+                if (alarmManager != null) {
+                    alarmManager.set(AlarmManager.RTC, alarmSnooze[0].getGregorialCalendar().getTimeInMillis(), alarmSnooze[0].getRefillCylinder());
+                }
+
+                //log event for failure to get confirmation
+
+
+
+
+                Bundle eventBundle = new Bundle();
+                eventBundle.putString( LPG_Utility.PARAMETER_ANALYTICS_EVENT_PARAM,mEventFailure);
+                eventBundle.putString(LPG_Utility.PARAMETER_ANALYTICS_ACTIVITY_PARAM,"ConfirmLPGBookingCompletion");
+                mFirebaseAnalytics.logEvent(LPG_Utility.EVENT_BOOKING_FAILED,eventBundle);
 
                 //Set a toast message that user can try booking
                 //after some time
@@ -130,6 +176,10 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
+                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                if ( intent.resolveActivity(getPackageManager()) != null){
+                                    startActivity(intent);
+                                }
                             }
                         },null
                 ).show(getSupportFragmentManager(),"Failure to update");
@@ -148,12 +198,12 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
         } else {
             Log.v("In ConfirmBooking ", "DB is not null");
         }
-        ContentValues updateFieldsList = new ContentValues();
+
         String[] fieldListExpectedExpiryDate = {LPG_SQL_ContractClass.LPG_CONNECTION_ROW.CONNECTION_EXPIRY_DAYS};
         String whereClause = LPG_SQL_ContractClass.LPG_CONNECTION_ROW._ID + " =?";
         String[] whereClauseFilter = {LPGCONNECTIONID};
 
-        String ConnectionExpiryDays = new String();
+        String ConnectionExpiryDays;
         try {
             Log.v("In ConfirmBoooking", " Before DB Query");
             SQLiteCursor c = (SQLiteCursor) mdb.query(
@@ -222,7 +272,7 @@ public class ConfirmLPGBookingCompletion extends AppCompatActivity {
             Log.v("UpdateDB ", "whereClause " + whereClause);
             Log.v("UpdateDB ", "Connection id " + LPG_CONNECTION_ID);
             Log.v("UpdateDB ", "Current Date String " + currentDateString);
-            Log.v("UpdateDB ", "whereClauseFilter " + whereClauseFilter);
+            Log.v("UpdateDB ", "whereClauseFilter " + Arrays.toString(whereClauseFilter));
             Log.v("UpdateDB ", "updated count " + Integer.toString(count));
 
 

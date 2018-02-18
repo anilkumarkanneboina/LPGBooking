@@ -37,7 +37,7 @@
             android:text="Test"
             android:textColor="@color/colorWhite"
             android:textSize="24sp"
-            card_view:font="Junicode"
+            card_view:fontCustom="Junicode"
             card_view:fonttypeFace="Bold" />
 
     <TextView

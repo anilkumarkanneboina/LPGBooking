@@ -63,6 +63,7 @@ public class LPG_PhoneListener extends PhoneStateListener {
 
                     else  {
                     Intent intentConfirmLPGBooking = new Intent(applicationContext, ConfirmLPGBookingCompletion.class);
+                    intentConfirmLPGBooking.putExtra(LPG_Utility.CONFIRMATION_CHANNEL,LPG_Utility.CONFIRMATION_CHANNEL_PHONE);
                     intentConfirmLPGBooking.putExtra(LPG_Utility.LPG_CONNECTION_ID, LPGConnectionId);
                         intentConfirmLPGBooking.putExtra(LPG_Utility.LPG_CONNECTION_NAME, LPGConnectionName);
                     intentConfirmLPGBooking.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

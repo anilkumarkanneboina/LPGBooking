@@ -18,6 +18,7 @@ import com.aekan.navya.lpgbooking.purchase.BillingManager;
 import com.aekan.navya.lpgbooking.purchase.LPG_BillingManager;
 import com.aekan.navya.lpgbooking.purchase.LPG_Purchase_Utility;
 import com.aekan.navya.lpgbooking.utilities.LPG_AlertBoxClass;
+import com.aekan.navya.lpgbooking.utilities.LPG_Utility;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingFlowParams;
@@ -37,6 +38,10 @@ public class LPG_Purchase_Notification extends AppCompatActivity implements Bill
 
     private boolean mIsServiceConnected;
     private BillingManager mBillingManager;
+    private int mBillingResponseFlag;
+    {
+        mBillingResponseFlag = LPG_Utility.BILLING_RESPONSE_YET_TO_BE_DEFINED;
+    }
 
 
     @Override
@@ -46,6 +51,8 @@ public class LPG_Purchase_Notification extends AppCompatActivity implements Bill
         setContentView(R.layout.activity_purchase);
 
         final Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+
+
 
         //set purchase button as disbled till service connection is established
         Log.v("Purchase" , " Button disabled");
@@ -123,42 +130,32 @@ public class LPG_Purchase_Notification extends AppCompatActivity implements Bill
         LPG_AlertBoxClass alertBoxClass = new LPG_AlertBoxClass();
         switch (responseCode){
             case BillingClient.BillingResponse.DEVELOPER_ERROR:
-                Toast.makeText(getApplicationContext(),getResources().getString(R.string.billing_conn_developer_error),Toast.LENGTH_LONG);
+                mBillingResponseFlag = BillingClient.BillingResponse.DEVELOPER_ERROR;
                 break;
             case BillingClient.BillingResponse.ERROR:
-
-                Toast.makeText(getApplicationContext(),getResources().getString(R.string.billing_conn_error),Toast.LENGTH_LONG);
+                mBillingResponseFlag = BillingClient.BillingResponse.ERROR;
                 break;
             case BillingClient.BillingResponse.SERVICE_DISCONNECTED:
+                mBillingResponseFlag = BillingClient.BillingResponse.SERVICE_DISCONNECTED;
 
-                Toast.makeText(getApplicationContext(),getResources().getString(R.string.billing_conn_service_disconnected),Toast.LENGTH_LONG);
                 break;
             case BillingClient.BillingResponse.SERVICE_UNAVAILABLE:
+                mBillingResponseFlag = BillingClient.BillingResponse.SERVICE_UNAVAILABLE;
 
-                Toast.makeText(getApplicationContext(),getResources().getString(R.string.billing_conn_network_down),Toast.LENGTH_LONG);
                 break;
             case BillingClient.BillingResponse.USER_CANCELED:
-                Toast.makeText(getApplicationContext(),getResources().getString(R.string.billing_user_cancelled),Toast.LENGTH_LONG);
+                mBillingResponseFlag = BillingClient.BillingResponse.USER_CANCELED;
+
                 break;
             case BillingClient.BillingResponse.ITEM_UNAVAILABLE:
-                Toast.makeText(getApplicationContext(),getResources().getString(R.string.billing_item_unavailable),Toast.LENGTH_LONG);
+                mBillingResponseFlag = BillingClient.BillingResponse.ITEM_UNAVAILABLE;
+
                 break;
             case BillingClient.BillingResponse.ITEM_ALREADY_OWNED:
                 updatePremiumStatus();
             { LPG_Purchase_Utility.setPremiumUserSku(this,SKUID); }
-            alertBoxClass.showDialogHelper(getResources().getString(R.string.billing_purchase_success_dialogtitle),
-                    getResources().getString(R.string.billing_purchase_alreadyowned),
-                    null,
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    },
-                    null
-            ).show(getSupportFragmentManager(),"Purchase confirmation");
-            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-            startActivity(intent);
+            mBillingResponseFlag = LPG_Utility.BILLING_RESPONSE_ALREADY_PURCHASED;
+
             break;
             case BillingClient.BillingResponse.OK:
                 //update status of user
@@ -170,21 +167,9 @@ public class LPG_Purchase_Notification extends AppCompatActivity implements Bill
                     isSpecificSKUPurchased = (purchase.getSku() == SKUID);
                 }
                 if (isSpecificSKUPurchased) { LPG_Purchase_Utility.setPremiumUserSku(this,SKUID); }
+                //set billing response flag
+                mBillingResponseFlag = LPG_Utility.BILLING_RESPONSE_IS_OK;
 
-                alertBoxClass.showDialogHelper(getResources().getString(R.string.billing_purchase_success_dialogtitle),
-                        getResources().getString(R.string.billing_purchase_alreadyowned),
-                        null,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        },
-                        null
-                ).show(getSupportFragmentManager(),"Purchase confirmation");
-
-                Intent intentMain = new Intent(getApplicationContext(),MainActivity.class);
-                startActivity(intentMain);
                 break;
             default:
                 Toast.makeText(getApplicationContext(),getResources().getString(R.string.billing_purchase_default),Toast.LENGTH_LONG);
@@ -222,6 +207,78 @@ public class LPG_Purchase_Notification extends AppCompatActivity implements Bill
         }
 
         purchaseButton.setEnabled(connectionStatus);
+
+    }
+
+    @Override
+    public void onResume(){
+        //call super onResume
+        super.onResume();
+
+        //show appropriate message as per response flag
+        LPG_AlertBoxClass alertBoxClass = new LPG_AlertBoxClass();
+        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+        switch (mBillingResponseFlag){
+            case LPG_Utility.BILLING_RESPONSE_ALREADY_PURCHASED:
+                alertBoxClass.showDialogHelper(getResources().getString(R.string.billing_purchase_success_dialogtitle),
+                        getResources().getString(R.string.billing_purchase_alreadyowned),
+                        null,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        },
+                        null
+                ).show(getSupportFragmentManager(),"Purchase confirmation");
+                //go to home page
+                if(intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intent);
+                }
+                break;
+            case LPG_Utility.BILLING_RESPONSE_IS_OK:
+                alertBoxClass.showDialogHelper(getResources().getString(R.string.billing_purchase_success_dialogdesc),
+                        getResources().getString(R.string.billing_purchase_alreadyowned),
+                        null,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        },
+                        null
+                ).show(getSupportFragmentManager(),"Purchase confirmation");
+                //go to home page
+                if(intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intent);
+                }
+                break;
+
+            case BillingClient.BillingResponse.DEVELOPER_ERROR:
+                Toast.makeText(getApplicationContext(),getResources().getString(R.string.billing_conn_developer_error),Toast.LENGTH_LONG);
+
+                break;
+            case BillingClient.BillingResponse.ERROR:
+                Toast.makeText(getApplicationContext(),getResources().getString(R.string.billing_conn_error),Toast.LENGTH_LONG);
+                break;
+            case BillingClient.BillingResponse.SERVICE_DISCONNECTED:
+                Toast.makeText(getApplicationContext(),getResources().getString(R.string.billing_conn_service_disconnected),Toast.LENGTH_LONG);
+                break;
+            case BillingClient.BillingResponse.SERVICE_UNAVAILABLE:
+                Toast.makeText(getApplicationContext(),getResources().getString(R.string.billing_conn_network_down),Toast.LENGTH_LONG);
+                break;
+            case BillingClient.BillingResponse.USER_CANCELED:
+                Toast.makeText(getApplicationContext(),getResources().getString(R.string.billing_user_cancelled),Toast.LENGTH_LONG);
+                break;
+            case BillingClient.BillingResponse.ITEM_UNAVAILABLE:
+                Toast.makeText(getApplicationContext(),getResources().getString(R.string.billing_item_unavailable),Toast.LENGTH_LONG);
+                break;
+            default:
+                Toast.makeText(getApplicationContext(),getResources().getString(R.string.billing_purchase_default),Toast.LENGTH_LONG);
+                break;
+
+
+        }
 
     }
 

@@ -46,6 +46,7 @@ import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -59,6 +60,7 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
     public GregorianCalendar test_alarm_midway;
     public GregorianCalendar test_alarm_final_expiry;
     private InterstitialAd mInterstitialAd;
+    private FirebaseAnalytics mFireBaseAnalytics;
 
     // Set REGEX strings for data validation
     private String mRegexNumber = "^[1-9][0-9]{9}$";
@@ -85,6 +87,9 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
         // Set REGEX strings for data validation
         final String regexNumber = "[0-9]{5,15}+";
         final String regexExpiryDays = "[0-9]+";
+
+        //instantiate Fire Base Analytics
+        mFireBaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
 
         //Instantiate the tool bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.addlpg_toolbar);
@@ -561,6 +566,18 @@ public class AddLPGConnection extends AppCompatActivity implements LPGServiceRes
                     startActivity(homeActivity);
                 }
 
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+
+                if (mFireBaseAnalytics != null) {
+                    // Code to be executed when the user has left the app.
+                    Bundle bundleInterstitialAd = new Bundle();
+                    bundleInterstitialAd.putString(LPG_Utility.PARAMETER_ANALYTICS_EVENT_PARAM, LPG_Utility.CLICK_INTERSTITIAL);
+                    bundleInterstitialAd.putString(LPG_Utility.PARAMETER_ANALYTICS_ACTIVITY_PARAM, "AddLPGConnection");
+                    mFireBaseAnalytics.logEvent(LPG_Utility.CLICK_INTERSTITIAL, bundleInterstitialAd);
+                }
             }
 
 

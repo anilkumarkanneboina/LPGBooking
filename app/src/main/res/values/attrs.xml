@@ -7,7 +7,7 @@
             <enum name="BoldItalic" value="2"/>
             <enum name="Italic" value="3"/>
         </attr>
-        <attr name="font" format="enum">
+        <attr name="fontCustom" format="enum">
             <enum name="Junicode" value="0"/>
         </attr>
 

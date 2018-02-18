@@ -15,6 +15,7 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import static com.aekan.navya.lpgbooking.utilities.LPG_Utility.ifWeCanShowInterstitialAdNow;
 
@@ -25,6 +26,7 @@ import static com.aekan.navya.lpgbooking.utilities.LPG_Utility.ifWeCanShowInters
 public class FAQs extends AppCompatActivity {
 
     private InterstitialAd mInterstitialAd;
+    private FirebaseAnalytics mFireBaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstance) {
@@ -32,6 +34,9 @@ public class FAQs extends AppCompatActivity {
 
         // inflate view
         setContentView(R.layout.faqs);
+
+        //instantiate firebase analytics;
+        mFireBaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
 
         //Set tool bar for the activity
         Toolbar toolbar = (Toolbar) findViewById(R.id.faqs_toolbar);
@@ -96,6 +101,22 @@ public class FAQs extends AppCompatActivity {
                 // Code to be executed when an ad request fails.
                 Log.i("Ads", "onAdFailedToLoad FAQs" + Integer.toString(errorCode));
             }
+
+
+            @Override
+            public void onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+                if(mFireBaseAnalytics != null ){
+                    Bundle bundleAdBannerClicked = new Bundle();
+                    bundleAdBannerClicked.putString(LPG_Utility.PARAMETER_ANALYTICS_EVENT_PARAM,LPG_Utility.CLICK_ADMOB );
+                    bundleAdBannerClicked.putString(LPG_Utility.PARAMETER_ANALYTICS_ACTIVITY_PARAM,"MainActivity");
+                    mFireBaseAnalytics.logEvent(LPG_Utility.CLICK_ADMOB,bundleAdBannerClicked );
+                }
+
+            }
+
+
+
         });
         adViewBanner.loadAd(adRequest);
     }

@@ -41,7 +41,12 @@ public class LPG_Utility {
     public final static String LPG_ALARMINTENT_NOTIFICATIONTITLE = "NotificationTitle";
     public final static String LPG_ALARMINTENT_NOTIFICATIONID = "NotificationID";
     public final static String LPG_ALARMINTENT_NOTIFICATIONCONTENT = "Notification content";
-    public final static String mRegexNumber = "^[1-9][0-9]{9}$";
+    private final static String mRegexNumber;
+
+    static {
+        mRegexNumber = "^[1-9][0-9]{9}$";
+    }
+
     public final static double CAP_EXPIRYSTATUS_GREEN = 50;
     public final static double CAP_EXPIRYSTATUS_ORANGE = 75;
     public final static int REFILL_STATUS_GREEN = 123567;
@@ -58,16 +63,20 @@ public class LPG_Utility {
     public final static String PERMISSION_INTIMATION_MESSAGE = "This string identifies the message to be pasted in permission check activity, to display SMS initimation message";
     public final static String PERMISSION_SMS_INTIMATION = "SHOW SMS MESSAGE";
     public final static String PERMISSION_CALL_INTIMATION = "SHOW CALL MESSAGE";
+    public final static String CONFIRMATION_CHANNEL ="Channel - SMS / Phone - used to book refill";
+    public final static String CONFIRMATION_CHANNEL_PHONE = "PHONE";
+    public final static String CONFIRMATION_CHANNEL_SMS= "SMS";
+
     public final static String PERMISSION_STATUS = "This string defines permission status";
     public final static String PERMISSION_DENIED = "PERMISSION DENIED";
     public final static String PERMISSION_ACCEPTED = "PERMISSION PROVIDED";
-    public final static String LPG_PROVIDER_INDANE = "INDANE";
-    public final static String LPG_PROVIDER_BHARATH = "BHARATH GAS";
-    public final static String LPG_PROVIDER_HP = "HP GAS";
-    public final static String LPG_REFILL_TEXT_BHARATH = "LPG";
-    public final static String LPG_REFILL_TEXT_INDANE = "IOC";
-    public final static String LPG_REFILL_TEXT_HP = "HPGAS";
-    public final static String[] LPG_PROVIDERS = {LPG_PROVIDER_INDANE, LPG_PROVIDER_BHARATH, LPG_PROVIDER_HP};
+    private final static String LPG_PROVIDER_INDANE = "INDANE";
+    private final static String LPG_PROVIDER_BHARATH = "BHARATH GAS";
+    private final static String LPG_PROVIDER_HP = "HP GAS";
+    private final static String LPG_REFILL_TEXT_BHARATH = "LPG";
+    private final static String LPG_REFILL_TEXT_INDANE = "IOC";
+    private final static String LPG_REFILL_TEXT_HP = "HPGAS";
+    private final static String[] LPG_PROVIDERS = {LPG_PROVIDER_INDANE, LPG_PROVIDER_BHARATH, LPG_PROVIDER_HP};
     public final static String[] LPG_PROVIDERS_EXTENDEDLIST = {"Indane", "Indian Oil Corp", "IOC", "Hindustan Petroleum", "HPCL", "HP Gas", "Bharath Gas"};
     public final static int LPG_PROVIDER_NOT_FOUND = 100;
     public final static int SENT_REFILL_SMS = 12;
@@ -78,13 +87,36 @@ public class LPG_Utility {
     public final static String PROGRESS_START = "Sending SMS....";
     public final static int NAVDRAWER_HEADER = 23;
     public final static int NAVDRAWER_LINEITEM = 12;
-    public final static int HASH_CAPACITY = 4;
-    public final static float HASH_LOAD_FACTOR = 0.8f;
+    private final static int HASH_CAPACITY = 4;
+    private final static float HASH_LOAD_FACTOR = 0.8f;
     public final static String TELLAFRIEND_DESC = "This LPG booking app is going to help you a lot. You can try!!!";
     public final static String TELLAFRIEND_WITH = "Share with your Friend through";
     public final static String CONTACTUS_URL = "https://lpgbookingapp.wordpress.com/contact/";
     public final static String PRIVACYPOLICY_URL = "https://lpgbookingapp.wordpress.com/privacy-policy/";
     public final static String NOTIFICATION_APP_TRANSCEND="You will be moved out of app to browser";
+    public final static int EXPIRY_INVALID = 234432;
+    public final static String EXPIRY_INVALID_STR = "Well, looks like the cylinder connection has not been created";
+    public final static int BILLING_RESPONSE_IS_OK = 43246;
+    public final static int BILLING_RESPONSE_ALREADY_PURCHASED = 123234;
+    public final static int BILLING_RESPONSE_YET_TO_BE_DEFINED = 75646789;
+
+    //analytics name
+    public final static String EVENT_CONFIRM_BOOKING = "CONFIRM_BOOKING";
+    public final static String EVENT_BOOKING_FAILED = "BOOKING_FAILED";
+    public final static String CLICK_ADMOB = "CLICK_ADMOB";
+    public final static String CLICK_INTERSTITIAL = "CLICK_INTERSTITIAL";
+    public final static String INTENT_BOOK = "INTENT_BOOK";
+
+    //analytics meta data parameters
+    public final static String CONFIRM_REFILL_PHONE = "CONFIRM_REFILL_PHONE";
+    public final static String CONFIRM_REFILL_SMS = "CONFIRM_REFILL_SMS";
+    public final static String BOOKING_FAILED_PHONE = "BOOKING_FAILED_PHONE";
+    public final static String BOOKING_FAILED_SMS = "BOOKING_FAILED_SMS";
+    public final static String BOOK_THRU_PHONE = "BOOK_THRU_PHONE";
+    public final static String BOOK_THRU_SMS = "BOOK_THRU_SMS";
+    public final static String PARAMETER_ANALYTICS_EVENT_PARAM = "EVENT";
+    public final static String PARAMETER_ANALYTICS_ACTIVITY_PARAM = "ACTIVITY";
+
 
     public final static int MSG_GETALLCYLINDERS = 0;
     public final static int MSG_INCREMENTPRIMARYKEY = 1243;
@@ -699,7 +731,13 @@ public class LPG_Utility {
 
     public static GregorianCalendar getCalendarFromString(String date) {
         String[] dateParams = date.split("/");
+
+        if (dateParams.length <2 ) {
+            return null;
+        }
+
         GregorianCalendar calendar = new GregorianCalendar();
+
         calendar.set( Integer.parseInt(dateParams[2]),Integer.parseInt(dateParams[1])-1,Integer.parseInt(dateParams[0]));
 
         return calendar;
@@ -736,21 +774,35 @@ public class LPG_Utility {
 
     }
 
-    public static int getExpiryStatus(String date, int expiryDays){
+    public static int getExpiryStatus(String date, String expiryDays){
+
+        double expiryPercent = 0.0;
+        int expiryDaysInt = 0;
+
+        try {
+            expiryDaysInt = Integer.parseInt(expiryDays);
+        } catch (Exception e){
+            return (EXPIRY_INVALID );
+        }
+
         GregorianCalendar currentDate = (GregorianCalendar) Calendar.getInstance();
         GregorianCalendar lastBookedDate = getCalendarFromString(date);
+
+        if(lastBookedDate == null ){
+            return EXPIRY_INVALID;
+        }
 
 
         //Log.v()
 
         int lapsedDays = getDateDiff(lastBookedDate,currentDate);
 
-        double expiryPercent = 0.0;
+
         if(lapsedDays < 0)  {
             expiryPercent = 100.0;
         }
         else {
-            expiryPercent = ((double)lapsedDays) / ((double) expiryDays) * 100.0;
+            expiryPercent = ((double)lapsedDays) / ((double) Integer.parseInt( expiryDays)) * 100.0;
             }
 
 

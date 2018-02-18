@@ -55,7 +55,7 @@ public class ARCust_TextView extends android.support.v7.widget.AppCompatTextView
         //Get the text typeface
         String fontFamily = new String(); //fontFamily
 
-           switch ( attrsArray.getInteger(R.styleable.ARCust_TextView_font,0)) {
+           switch ( attrsArray.getInteger(R.styleable.ARCust_TextView_fontCustom,0)) {
                case 0:
                    fontFamily = "Junicode";
                    break;
@@ -116,7 +116,7 @@ public class ARCust_TextView extends android.support.v7.widget.AppCompatTextView
         //Get the text typeface
         String fontFamily = new String(); //fontFamily
 
-        switch ( attrsArray.getInteger(R.styleable.ARCust_TextView_font,0)) {
+        switch ( attrsArray.getInteger(R.styleable.ARCust_TextView_fontCustom,0)) {
             case 0:
                 fontFamily = "Juniper";
                 break;

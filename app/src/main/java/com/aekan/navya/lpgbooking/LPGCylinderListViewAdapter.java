@@ -80,7 +80,7 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
         if (cursorCount == 0) {
 //            case 0 :
             //create the Array list with notification messages to user to create new connections
-            LPGCylinderList.add(new LPGCylinderListInfo("No Connections Found", "You can add your LPG connection now!!", "Just click on Add button below", NOLPGCYLINDERSADDED,"NA","NA"));
+            LPGCylinderList.add(new LPGCylinderListInfo("No Connections Found", "You can add your LPG connection now!!", "Just click on Add button below", NOLPGCYLINDERSADDED,"NA","0"));
 
         }else{
 //            default:
@@ -133,19 +133,26 @@ public class LPGCylinderListViewAdapter extends RecyclerView.Adapter<LPGCylinder
         LVH.mARLPGName.setText(CurrentRow.LPGCylinderName);
         LVH.marLPGCompanyName.setText(CurrentRow.LPGCylinderCompany);
         LVH.marLPGExpiry.setText(CurrentRow.LPGCylinderExpiry);
-
-
+        Log.v("Expiry Days " , Integer.toString( i));
+        Log.v("Expiry Days ", CurrentRow.getLPGExpiryDays());
         //set color for drawable
-        int expiryStatusParams = LPG_Utility.getExpiryStatus(CurrentRow.getLPGLastBookedDate(),Integer.parseInt(CurrentRow.getLPGExpiryDays()));
-        //set percentage for progress bar
-        //int progress= expiryStatusParams.getExpiryPercent();
-        LVH.mStatusIndicator.setProgress(expiryStatusParams);
-        LayerDrawable progressDrawable = (LayerDrawable) LVH.mStatusIndicator.getProgressDrawable();
-        ClipDrawable shapeDrawable = (ClipDrawable) progressDrawable.getDrawable(2);
-        shapeDrawable.setColorFilter(new PorterDuffColorFilter( getProgressColorCode(LVH.mStatusIndicator.getContext(),expiryStatusParams),PorterDuff.Mode.SRC_OVER));
-        LVH.mStatusIndicator.setProgressDrawable(progressDrawable);
-        //progressDrawable.setColor(expiryStatusParams.getColor());
-        //LVH.mStatusIndicator.setProgressDrawable(progressDrawable);
+        int expiryStatusParams = LPG_Utility.getExpiryStatus(CurrentRow.getLPGLastBookedDate(),CurrentRow.getLPGExpiryDays());
+        if (expiryStatusParams == LPG_Utility.EXPIRY_INVALID){
+            LVH.mStatusIndicator.setVisibility(View.INVISIBLE);
+        } else{
+            //set percentage for progress bar
+            //int progress= expiryStatusParams.getExpiryPercent();
+            LVH.mStatusIndicator.setProgress(expiryStatusParams);
+            LayerDrawable progressDrawable = (LayerDrawable) LVH.mStatusIndicator.getProgressDrawable();
+            ClipDrawable shapeDrawable = (ClipDrawable) progressDrawable.getDrawable(2);
+            shapeDrawable.setColorFilter(new PorterDuffColorFilter( getProgressColorCode(LVH.mStatusIndicator.getContext(),expiryStatusParams),PorterDuff.Mode.SRC_OVER));
+            LVH.mStatusIndicator.setProgressDrawable(progressDrawable);
+            //progressDrawable.setColor(expiryStatusParams.getColor());
+            //LVH.mStatusIndicator.setProgressDrawable(progressDrawable);
+
+
+        }
+
 
 
         //Paint progressPaint = ( (ShapeDrawable) progressDrawable.findDrawableByLayerId(2)).getPaint();

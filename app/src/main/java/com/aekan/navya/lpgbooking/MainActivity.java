@@ -41,6 +41,8 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crash.FirebaseCrash;
 
 import java.util.HashMap;
 import java.util.List;
@@ -59,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
     private BillingManager mBillingManager;
     private boolean mIsPremiumUser;
     private int noOfConnections;
+    private FirebaseAnalytics mFireBaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +69,16 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //Create a test FireBase Crash report
+        FirebaseCrash.log("Main Activity : Test Crashlytice");
+        FirebaseCrash.logcat(1,"Firebase","Main Activity : Test Crashlytice");
+
+        //Create a test log in FireBase Console
+        FirebaseCrash.report(new Exception("Test Crashlytics report"));
+
+        //instantiate FireBase analytics
+        mFireBaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
 
         ///////////////////////////////////////
         //Create recycler view and initialize it
@@ -210,6 +223,18 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
            public void onAdFailedToLoad(int errorCode) {
                // Code to be executed when an ad request fails.
                Log.i("Ads", "onAdFailedToLoad + " + Integer.toString(errorCode));
+           }
+
+           @Override
+           public void onAdLeftApplication() {
+               // Code to be executed when the user has left the app.
+               if(mFireBaseAnalytics != null ){
+                   Bundle bundleAdBannerClicked = new Bundle();
+                   bundleAdBannerClicked.putString(LPG_Utility.PARAMETER_ANALYTICS_EVENT_PARAM,LPG_Utility.CLICK_ADMOB );
+                   bundleAdBannerClicked.putString(LPG_Utility.PARAMETER_ANALYTICS_ACTIVITY_PARAM,"MainActivity");
+                   mFireBaseAnalytics.logEvent(LPG_Utility.CLICK_ADMOB,bundleAdBannerClicked );
+               }
+
            }
        });
        adViewBanner.loadAd(adRequest);

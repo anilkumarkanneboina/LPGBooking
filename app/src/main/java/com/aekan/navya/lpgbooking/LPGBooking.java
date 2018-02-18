@@ -45,6 +45,7 @@ import com.aekan.navya.lpgbooking.utilities.lpgconnectionparcel;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -61,11 +62,15 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
     //constants to identify permission requests
     private final static int LPG_BOOKING_REQUEST_PERMISSION_CALL_PHONE = 1;
     private final static int LPG_BOOKING_REQUEST_PERMISSION_SMS = 2;
+    private final static int PERMISSION_DENIED = 765324;
+    private final static int PERMISSION_NOT_REQUESTED = 234;
     String lpgparcelConnectionProvider;
-    String lpgparcelConnectionPhoneNumber;
+    private  int mPermissionStatus;
+
     Intent lpgBookingCallIntent;
 
     private InterstitialAd mInterstitialAd;
+    private FirebaseAnalytics mFireBaseAnalytics;
     // use a field within this class to store phone no
     // this field would be initialised during onCreate and would
     // be used subsequently during permission response handling
@@ -101,10 +106,13 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
         findViewById(R.id.lpgbooking_provider_edittext).setEnabled(false);
         findViewById(R.id.lpgbooking_expected_expiry_date_edittext).setEnabled(false);
 
+        //instantiate Firebase analytics;
+        mFireBaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
 
         final ImageView lpgBookingCall = (ImageView) findViewById(R.id.lpgbooking_call_img);
         final ImageView lpgBookingSMS = (ImageView) findViewById(R.id.lpgbooking_sms_img);
         final TextView smsTipTextView = (TextView) findViewById(R.id.lpgbooking_smsnotification);
+        mPermissionStatus = PERMISSION_NOT_REQUESTED;
         //make the edittext as non clickable
 
 
@@ -177,6 +185,16 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
             public void onClick(View v) {
 
 
+                //trigger analytics code
+                    if (mFireBaseAnalytics != null) {
+                        // Code to be executed when the user has left the app.
+                        Bundle bundleInterstitialAd = new Bundle();
+                        bundleInterstitialAd.putString(LPG_Utility.PARAMETER_ANALYTICS_EVENT_PARAM, LPG_Utility.BOOK_THRU_PHONE);
+                        bundleInterstitialAd.putString(LPG_Utility.PARAMETER_ANALYTICS_ACTIVITY_PARAM, "AddLPGConnection");
+                        mFireBaseAnalytics.logEvent(LPG_Utility.INTENT_BOOK, bundleInterstitialAd);
+                    }
+
+
                 //check if the app has been given permissions to make a call
                 if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                     //get permission from user to use the phone again
@@ -214,7 +232,14 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
             @Override
             public void onClick(View v) {
                 Log.v("SMS", "Within SMS Click");
-
+                //trigger analytics code
+                if (mFireBaseAnalytics != null) {
+                    // Code to be executed when the user has left the app.
+                    Bundle bundleInterstitialAd = new Bundle();
+                    bundleInterstitialAd.putString(LPG_Utility.PARAMETER_ANALYTICS_EVENT_PARAM, LPG_Utility.BOOK_THRU_PHONE);
+                    bundleInterstitialAd.putString(LPG_Utility.PARAMETER_ANALYTICS_ACTIVITY_PARAM, "AddLPGConnection");
+                    mFireBaseAnalytics.logEvent(LPG_Utility.INTENT_BOOK, bundleInterstitialAd);
+                }
 
                 //check if application has permission to send sms
                 if ((ContextCompat.checkSelfPermission(v.getContext(), Manifest.permission.SEND_SMS)) != PackageManager.PERMISSION_GRANTED) {
@@ -264,22 +289,10 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
 
 
                 } else {
-                    FragmentManager fragmentManager = getSupportFragmentManager();
 
-                    if (fragmentManager == null) {
-                        Log.v("LPGBooking ", "fragment manager is null");
-                    } else {
-                        Log.v("LPGBooking ", fragmentManager.toString());
-                    }
+                    mPermissionStatus = PERMISSION_DENIED;
 
-                    Alert.showDialogHelper(getResources().getString(R.string.lpgbooking_callpermissiondialog_title), "OK", null, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
-                            startActivity(homeIntent);
-                        }
-                    }, null).show(getSupportFragmentManager(), "Cancel permission");
+
                 }
                 break;
             }
@@ -292,16 +305,8 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
                     Log.v("SMS", "Send SMS after permission grant");
                     sendSMS();
                 } else {
-                    FragmentManager supportFragmentManager = getSupportFragmentManager();
 
-                    Alert.showDialogHelper(getResources().getString(R.string.lpgbooking_callpermissiondialog_title), "OK", null, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
-                            startActivity(homeIntent);
-                        }
-                    }, null).show(getSupportFragmentManager(), "Cancel permission");
+                    mPermissionStatus = PERMISSION_DENIED;
                 }
                 break;
             }
@@ -535,6 +540,7 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
         //No call for super(). Bug on API Level > 11.
     }
 
@@ -598,9 +604,43 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
                 startActivity(homeActivity);
             }
 
+            @Override
+            public void onAdLeftApplication() {
+
+                if (mFireBaseAnalytics != null) {
+                    // Code to be executed when the user has left the app.
+                    Bundle bundleInterstitialAd = new Bundle();
+                    bundleInterstitialAd.putString(LPG_Utility.PARAMETER_ANALYTICS_EVENT_PARAM, LPG_Utility.CLICK_INTERSTITIAL);
+                    bundleInterstitialAd.putString(LPG_Utility.PARAMETER_ANALYTICS_ACTIVITY_PARAM, "AddLPGConnection");
+                    mFireBaseAnalytics.logEvent(LPG_Utility.CLICK_INTERSTITIAL, bundleInterstitialAd);
+                }
+            }
+
 
         });
         mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice(getResources().getString(R.string.AdMob_TestDevice)).build());
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        //provide status to user
+        switch (mPermissionStatus){
+            case  PERMISSION_DENIED:
+
+                Alert.showDialogHelper(getResources().getString(R.string.lpgbooking_callpermissiondialog_title), "OK", null, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(homeIntent);
+                    }
+                }, null).show(getSupportFragmentManager(), "Cancel permission");
+                break;
+            default:
+                break;
+        }
     }
 
     public static class mSMSBroadcastReceiver extends BroadcastReceiver {
@@ -635,6 +675,8 @@ public class LPGBooking extends AppCompatActivity implements LPGServiceResponseC
 
 
         }
+
+
 
     }
 
