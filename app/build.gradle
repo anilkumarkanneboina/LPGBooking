@@ -10,7 +10,7 @@ android {
         }
     }
     compileSdkVersion 27
-    buildToolsVersion '26.0.2'
+
     defaultConfig {
         applicationId "com.aekan.navya.lpgbooking"
         minSdkVersion 19
@@ -24,6 +24,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            debuggable true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {

@@ -47,7 +47,7 @@ import com.google.firebase.crash.FirebaseCrash;
 import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements NavigationAdapter.ListenerAdapter,PurchasesUpdatedListener,BillingConsumer {
+public class MainActivity extends AppCompatActivity implements NavigationAdapter.ListenerAdapter, PurchasesUpdatedListener, BillingConsumer {
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -72,10 +72,8 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
 
         //Create a test FireBase Crash report
         FirebaseCrash.log("Main Activity : Test Crashlytice");
-        FirebaseCrash.logcat(1,"Firebase","Main Activity : Test Crashlytice");
+        FirebaseCrash.logcat(1, "Firebase", "Main Activity : Test Crashlytice");
 
-        //Create a test log in FireBase Console
-        FirebaseCrash.report(new Exception("Test Crashlytics report"));
 
         //instantiate FireBase analytics
         mFireBaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
@@ -138,14 +136,13 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
         });
 
 
-
         //request for Ad
         showBannerAd();
 
         //set premium user status and define user interaction accordingly
         int isPremium;
-        if(!(LPG_Purchase_Utility.getSKUStatus(this,LPG_Purchase_Utility.PREMIUM_USER_SKU))){
-            if (LPG_Purchase_Utility.isPurchaseChecked == false){
+        if (!(LPG_Purchase_Utility.getSKUStatus(this, LPG_Purchase_Utility.PREMIUM_USER_SKU))) {
+            if (LPG_Purchase_Utility.isPurchaseChecked == false) {
                 //check for purchases
                 mBillingManager = new LPG_BillingManager(LPG_Purchase_Utility.PREMIUM_USER_SKU,
                         this,
@@ -153,13 +150,12 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
                         this
                 );
                 isPremium = mBillingManager.isSKUPurchased(LPG_Purchase_Utility.PREMIUM_USER_SKU);
-                switch (isPremium){
+                switch (isPremium) {
                     case LPG_Purchase_Utility.PREMIUM_USER:
-
                         updatePurchaseInfo(true);
                         break;
                     case LPG_Purchase_Utility.REGULAR_USER:
-                        setPremiumUserFAB(false);
+                        updatePurchaseInfo(false);
                         break;
                     case LPG_Purchase_Utility.USER_DETAILS_FETCHED_ASYNCHRONOUS:
                         updatePurchaseInfo(false);
@@ -171,8 +167,9 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
                 updatePurchaseInfo(false);
             }
 
-        } else {updatePurchaseInfo(true);}
-
+        } else {
+            updatePurchaseInfo(true);
+        }
 
 
         //Enable toggle action button for drawer layout
@@ -196,50 +193,47 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
         mDrawerLayout.setDrawerListener(navDrawerToggle);
 
 
-
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
-
-
 
 
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
 
-   private void showBannerAd(){
-       MobileAds.initialize(this, getResources().getString(R.string.AdView_App_ID_Test));
-       AdView adViewBanner = (AdView) findViewById(R.id.banner_homescreen);
-       AdRequest adRequest = new AdRequest.Builder().addTestDevice("14B1C04D47670D84DE173A350418C2B4").build();//build();
-       //addTestDevice("14B1C04D47670D84DE173A350418C2B4").build();
-       adViewBanner.setAdListener(new AdListener() {
-           @Override
-           public void onAdLoaded() {
-               // Code to be executed when an ad finishes loading.
-               Log.i("Ads", "onAdLoaded");
-           }
+    private void showBannerAd() {
+        MobileAds.initialize(this, getResources().getString(R.string.AdView_App_ID_Test));
+        AdView adViewBanner = (AdView) findViewById(R.id.banner_homescreen);
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("14B1C04D47670D84DE173A350418C2B4").build();//build();
+        //addTestDevice("14B1C04D47670D84DE173A350418C2B4").build();
+        adViewBanner.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+                Log.i("Ads", "onAdLoaded");
+            }
 
-           @Override
-           public void onAdFailedToLoad(int errorCode) {
-               // Code to be executed when an ad request fails.
-               Log.i("Ads", "onAdFailedToLoad + " + Integer.toString(errorCode));
-           }
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                // Code to be executed when an ad request fails.
+                Log.i("Ads", "onAdFailedToLoad + " + Integer.toString(errorCode));
+            }
 
-           @Override
-           public void onAdLeftApplication() {
-               // Code to be executed when the user has left the app.
-               if(mFireBaseAnalytics != null ){
-                   Bundle bundleAdBannerClicked = new Bundle();
-                   bundleAdBannerClicked.putString(LPG_Utility.PARAMETER_ANALYTICS_EVENT_PARAM,LPG_Utility.CLICK_ADMOB );
-                   bundleAdBannerClicked.putString(LPG_Utility.PARAMETER_ANALYTICS_ACTIVITY_PARAM,"MainActivity");
-                   mFireBaseAnalytics.logEvent(LPG_Utility.CLICK_ADMOB,bundleAdBannerClicked );
-               }
+            @Override
+            public void onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+                if (mFireBaseAnalytics != null) {
+                    Bundle bundleAdBannerClicked = new Bundle();
+                    bundleAdBannerClicked.putString(LPG_Utility.PARAMETER_ANALYTICS_EVENT_PARAM, LPG_Utility.CLICK_ADMOB);
+                    bundleAdBannerClicked.putString(LPG_Utility.PARAMETER_ANALYTICS_ACTIVITY_PARAM, "MainActivity");
+                    mFireBaseAnalytics.logEvent(LPG_Utility.CLICK_ADMOB, bundleAdBannerClicked);
+                }
 
-           }
-       });
-       adViewBanner.loadAd(adRequest);
+            }
+        });
+        adViewBanner.loadAd(adRequest);
 
-   }
+    }
 
     @Override
     public void onStart() {
@@ -295,22 +289,22 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
         });
 
         //listener adapter for add lpg connection
-        if( LPG_Purchase_Utility.returnPremiumUserStatus(mIsPremiumUser,noOfConnections)){
-        listenerHashMap.put(new Integer(2), new View.OnClickListener() {
+        if (LPG_Purchase_Utility.returnPremiumUserStatus(mIsPremiumUser, noOfConnections)) {
+            listenerHashMap.put(new Integer(2), new View.OnClickListener() {
 
-            @Override
-            public void onClick(View view) {
-                Intent addLPGIntent = new Intent(getApplicationContext(), AddLPGConnection.class);
-                addLPGIntent.putExtra(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.FIELD_CONNECTION_ID_EDIT, LPG_Utility.LPG_CONNECTION_ID);
-                startActivity(addLPGIntent);
+                @Override
+                public void onClick(View view) {
+                    Intent addLPGIntent = new Intent(getApplicationContext(), AddLPGConnection.class);
+                    addLPGIntent.putExtra(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.FIELD_CONNECTION_ID_EDIT, LPG_Utility.LPG_CONNECTION_ID);
+                    startActivity(addLPGIntent);
 
-            }
-        });
+                }
+            });
         } else {
             listenerHashMap.put(new Integer(2), new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent showPremiumUser = new Intent(getApplicationContext(),LPG_Purchase_Notification.class);
+                    Intent showPremiumUser = new Intent(getApplicationContext(), LPG_Purchase_Notification.class);
                     startActivity(showPremiumUser);
                 }
             });
@@ -351,8 +345,8 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
         listenerHashMap.put(new Integer(6), new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent  tellAFriend = new Intent(Intent.ACTION_SEND);
-                Log.v("Share","Message is " + v.getContext().getResources().getString( R.string.tellafriend_desc));
+                Intent tellAFriend = new Intent(Intent.ACTION_SEND);
+                Log.v("Share", "Message is " + v.getContext().getResources().getString(R.string.tellafriend_desc));
                 final Intent intent = tellAFriend.putExtra(Intent.EXTRA_TEXT, LPG_Utility.TELLAFRIEND_DESC);
                 tellAFriend.setType("text/plain");
                 startActivity(Intent.createChooser(tellAFriend, LPG_Utility.TELLAFRIEND_WITH));
@@ -379,7 +373,7 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
                                         dialog.dismiss();
                                     }
                                 }
-                        ).show(getSupportFragmentManager(),"Contact Us");
+                        ).show(getSupportFragmentManager(), "Contact Us");
 
                     }
                 }
@@ -405,7 +399,7 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
                                         dialog.dismiss();
                                     }
                                 }
-                        ).show(getSupportFragmentManager(),"Privacy Policy");
+                        ).show(getSupportFragmentManager(), "Privacy Policy");
 
                     }
                 }
@@ -448,31 +442,37 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
 
     @Override
     public void updateSKUInfo(List<SkuDetails> skuDetails) {
+        Log.v("Purchase ", " update SKU Detais from Main Activity ");
 
     }
 
     @Override
-    public void updatePurchaseInfo(boolean premiumUserInfo){
-      // premiumUserInfo = true;
-       mIsPremiumUser = premiumUserInfo;
-       setPremiumUserFAB(mIsPremiumUser);
-       setPremiumNavigationDrawer(mIsPremiumUser);
+    public void updatePurchaseInfo(boolean premiumUserInfo) {
+        // premiumUserInfo = true;
+        mIsPremiumUser = premiumUserInfo;
+        setPremiumUserFAB(mIsPremiumUser);
+        setPremiumNavigationDrawer(mIsPremiumUser);
+
+        if(!premiumUserInfo){
+            LPG_Purchase_Utility.setRegularUser(this, LPG_Purchase_Utility.USER_STATUS_REGULAR);
+        }
 
     }
 
     @Override
-    protected void onDestroy(){
+    protected void onDestroy() {
         //call super method first
         super.onDestroy();
         //disconnect billing connection if still valid
-        if(mBillingManager.isReady()){ mBillingManager.closeConnection(); }
+        Log.v("Purchase Main", " In Destroy");
+        mBillingManager.closeConnection();
     }
 
-    private void setPremiumUserFAB(boolean userStatus){
+    private void setPremiumUserFAB(boolean userStatus) {
         //set FAB click listeners and image based on user status
-        boolean allowConnections = LPG_Purchase_Utility.returnPremiumUserStatus(userStatus,noOfConnections);
+        boolean allowConnections = LPG_Purchase_Utility.returnPremiumUserStatus(userStatus, noOfConnections);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        if(allowConnections == true){
+        if (allowConnections == true) {
 
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -481,26 +481,23 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
                             .setAction("+", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-
                                     //create an intent for add lpg connection activity
                                     Intent intentLPGAdd = new Intent(getApplicationContext(), AddLPGConnection.class);
                                     intentLPGAdd.putExtra(LPG_SQL_ContractClass.LPG_CONNECTION_ROW.FIELD_CONNECTION_ID_EDIT, LPG_Utility.LPG_CONNECTION_ID);
                                     startActivity(intentLPGAdd);
                                 }
-
-
-                            }).show();
+                                }).show();
                 }
 
                 //Test commit - dummy comment
             });
 
-        } else{
+        } else {
             fab.setImageResource(R.drawable.ic_add_connection_red);
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getApplicationContext(),LPG_Purchase_Notification.class);
+                    Intent intent = new Intent(getApplicationContext(), LPG_Purchase_Notification.class);
                     startActivity(intent);
                 }
             });
@@ -508,18 +505,19 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
         }
     }
 
-    private void setPremiumNavigationDrawer(boolean premiumUser){
+    private void setPremiumNavigationDrawer(boolean premiumUser) {
         //Set recycler view, by initialising the adapter
         RecyclerView recyclerViewNavigation = (RecyclerView) findViewById(R.id.nav_recyclerview);
         recyclerViewNavigation.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerViewNavigation.setLayoutManager(linearLayoutManager);
-        NavigationAdapter navigationAdapter = new NavigationAdapter(getApplicationContext(), this, LPG_Purchase_Utility.returnPremiumUserStatus(premiumUser,noOfConnections));
+        NavigationAdapter navigationAdapter = new NavigationAdapter(getApplicationContext(), this, LPG_Purchase_Utility.returnPremiumUserStatus(premiumUser, noOfConnections));
         recyclerViewNavigation.setAdapter(navigationAdapter);
 
     }
 
-    public void updateBillingConnectionStatus(boolean connectionStatus){
+    public void updateBillingConnectionStatus(boolean connectionStatus) {
+        Log.v("Purchase Main", " Billing Connection Established in MainActivity");
 
     }
 }

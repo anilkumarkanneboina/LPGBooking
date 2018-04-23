@@ -137,39 +137,34 @@ public class LPG_Purchase_Notification extends AppCompatActivity implements Bill
                 break;
             case BillingClient.BillingResponse.SERVICE_DISCONNECTED:
                 mBillingResponseFlag = BillingClient.BillingResponse.SERVICE_DISCONNECTED;
-
                 break;
             case BillingClient.BillingResponse.SERVICE_UNAVAILABLE:
                 mBillingResponseFlag = BillingClient.BillingResponse.SERVICE_UNAVAILABLE;
-
                 break;
             case BillingClient.BillingResponse.USER_CANCELED:
                 mBillingResponseFlag = BillingClient.BillingResponse.USER_CANCELED;
-
                 break;
             case BillingClient.BillingResponse.ITEM_UNAVAILABLE:
                 mBillingResponseFlag = BillingClient.BillingResponse.ITEM_UNAVAILABLE;
-
                 break;
             case BillingClient.BillingResponse.ITEM_ALREADY_OWNED:
                 updatePremiumStatus();
-            { LPG_Purchase_Utility.setPremiumUserSku(this,SKUID); }
-            mBillingResponseFlag = LPG_Utility.BILLING_RESPONSE_ALREADY_PURCHASED;
-
-            break;
+                LPG_Purchase_Utility.setPremiumUserSku(this,LPG_Purchase_Utility.PREMIUM_USER_SKU);
+                mBillingResponseFlag = LPG_Utility.BILLING_RESPONSE_ALREADY_PURCHASED;
+                break;
             case BillingClient.BillingResponse.OK:
-                //update status of user
-                updatePremiumStatus();
                 //check if purchase has been made for specified SKU.
                 boolean isSpecificSKUPurchased = false;
                 for(Purchase purchase : purchases){
-
                     isSpecificSKUPurchased = (purchase.getSku() == SKUID);
                 }
-                if (isSpecificSKUPurchased) { LPG_Purchase_Utility.setPremiumUserSku(this,SKUID); }
+                if (isSpecificSKUPurchased) {
+                    LPG_Purchase_Utility.setPremiumUserSku(this,LPG_Purchase_Utility.PREMIUM_USER_SKU);
+                    //update status of user
+                    updatePremiumStatus();
+                }
                 //set billing response flag
                 mBillingResponseFlag = LPG_Utility.BILLING_RESPONSE_IS_OK;
-
                 break;
             default:
                 Toast.makeText(getApplicationContext(),getResources().getString(R.string.billing_purchase_default),Toast.LENGTH_LONG);
@@ -177,18 +172,14 @@ public class LPG_Purchase_Notification extends AppCompatActivity implements Bill
 
     }
     @Override
-    public void updatePurchaseInfo(boolean premium){
-
-
-    }
+    public void updatePurchaseInfo(boolean premium){ }
 
     private void updatePremiumStatus(){
         SharedPreferences sharedPreferences = getSharedPreferences(getResources().getString(R.string.billing_sharedpref_filename),Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(getResources().getString(R.string.billing_sharedpref_key),LPG_Purchase_Utility.PREMIUM_USER_SKU);
         editor.commit();
-
-    }
+        }
 
     @Override
     public void updateBillingConnectionStatus(boolean connectionStatus){

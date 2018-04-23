@@ -37,13 +37,14 @@ public class LPG_Purchase_Utility {
     public static void setPremiumUserSku(Context context,String skuID){
         userStatus = USER_STATUS_PREMIUM;
         updateUserStatus(context,skuID);
-
-
-    }
+        }
+        public static void setRegularUser(Context context,String skuID){
+        userStatus = USER_STATUS_REGULAR;
+        updateUserStatus(context,skuID);
+        }
 
     private  static void updateUserStatus(Context context,String skuID){
         //update share preference
-
         SharedPreferences sharedPreferences = context.getSharedPreferences(context.getResources().getString(R.string.billing_sharedpref_filename),Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(context.getResources().getString(R.string.billing_sharedpref_key),skuID);
@@ -55,7 +56,8 @@ public class LPG_Purchase_Utility {
         String SKUStatus = sharedPreferences.getString(context.getResources().getString(R.string.billing_sharedpref_key),SKU_STATUS_DEFAULT);//PREMIUM_USER_SKU
         Log.v("Purchase ", SKUStatus);
         Log.v("Purchase ", Boolean.toString( SKUStatus.equals(SKU_STATUS_DEFAULT)));
-        if(SKUStatus.equals(SKU_STATUS_DEFAULT) == true){
+
+        if((SKUStatus.equals(SKU_STATUS_DEFAULT) == true) || (SKUStatus.equals(USER_STATUS_REGULAR) == true)){
             return false;
         } else {
             return true;
