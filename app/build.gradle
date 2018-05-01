@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
+
     signingConfigs {
         config {
             keyAlias 'MyKeys'
@@ -18,7 +26,7 @@ android {
         versionName 'AL0.0.1'
         signingConfig signingConfigs.config
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
-        versionCode 4
+        versionCode 6
     }
 
     buildTypes {

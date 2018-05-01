@@ -269,8 +269,11 @@ public class LPG_BillingManager implements BillingManager, SkuDetailsResponseLis
         billingParams.setSku(SKUID);
         billingParams.setType(type);
 
+        Log.v("Purchase " ," Purchase Premium status " + mBillingClient.isReady());
+
         //check if purchase is allowed in the device
         if (mBillingClient.isReady()) {
+            Log.v("Purchase ", " Before launching billing flow");
             mBillingClient.launchBillingFlow(mActivity, billingParams.build());
         } else {
             mBillingConsumer.updateBillingConnectionStatus(false);

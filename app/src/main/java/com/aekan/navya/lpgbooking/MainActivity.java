@@ -465,7 +465,9 @@ public class MainActivity extends AppCompatActivity implements NavigationAdapter
         super.onDestroy();
         //disconnect billing connection if still valid
         Log.v("Purchase Main", " In Destroy");
-        mBillingManager.closeConnection();
+        if (mBillingManager != null ) {
+            mBillingManager.closeConnection();
+        }
     }
 
     private void setPremiumUserFAB(boolean userStatus) {
